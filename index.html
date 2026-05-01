@@ -2366,8 +2366,8 @@ function svcUpdateNav() {
           <div class="bg-slate-900 rounded-lg p-3 text-xs">
             <div class="text-emerald-300 font-semibold mb-2">키 설계</div>
             <div class="space-y-2 text-slate-300">
-              <div><span class="text-amber-300">Primary Key</span> — 각 Object 인스턴스를 고유 식별하는 키<br><span class="text-slate-500 ml-2">예: wafer_id = "WF2310-45A72"</span></div>
-              <div><span class="text-amber-300">Title Key</span> — 사용자에게 표시될 인간 친화적 이름<br><span class="text-slate-500 ml-2">예: display_name = "45A72 (Lot: L345)"</span></div>
+              <div><span class="text-amber-300">Primary Key</span> — 각 Object 인스턴스를 고유 식별하는 키<br><span class="text-slate-500 ml-2">예: dispatch_id = "JNFD-2024-08291"</span></div>
+              <div><span class="text-amber-300">Title Key</span> — 사용자에게 표시될 인간 친화적 이름<br><span class="text-slate-500 ml-2">예: display_name = "신안군 화재 (2024-08-29)"</span></div>
             </div>
           </div>
         </div>
@@ -2380,20 +2380,20 @@ function svcUpdateNav() {
             </div>
             <div class="bg-violet-50 border border-violet-200 rounded-lg p-2.5">
               <div class="font-semibold text-violet-700 mb-1">일대다 (1:N)</div>
-              <div class="text-violet-600">한 인스턴스 → 여러 인스턴스 연결<br><span class="text-slate-500">예: 생산 로트 → 다수 웨이퍼, 설비 → 다수 센서</span></div>
+              <div class="text-violet-600">한 인스턴스 → 여러 인스턴스 연결<br><span class="text-slate-500">예: 소방서 → 출동건, 출동건 → 현장사진</span></div>
             </div>
             <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-2.5">
               <div class="font-semibold text-indigo-700 mb-1">다대다 (N:N)</div>
-              <div class="text-indigo-600">두 Object Type 간 상호 다수 관계, 조인 테이블 필요<br><span class="text-slate-500">예: 설비 ↔ 레시피, 작업자 ↔ 권한</span></div>
+              <div class="text-indigo-600">두 Object Type 간 상호 다수 관계, 조인 테이블 필요<br><span class="text-slate-500">예: 소방차 ↔ 관할구역, 소방관 ↔ 교육과정</span></div>
             </div>
           </div>
           <div class="bg-slate-50 rounded-lg p-3 border border-slate-200 text-xs">
-            <div class="font-semibold text-slate-600 mb-1.5">반도체 제조 예시</div>
+            <div class="font-semibold text-slate-600 mb-1.5">소방본부 출동 예시</div>
             <div class="space-y-1 text-slate-500 font-mono">
-              <div>생산 로트 <span class="text-blue-500">1:N →</span> 웨이퍼</div>
-              <div>웨이퍼 <span class="text-blue-500">1:N →</span> 측정값</div>
-              <div>공정 설비 <span class="text-indigo-500">N:N ↔</span> 레시피</div>
-              <div>제품 사양 <span class="text-violet-500">1:1 ↔</span> 테스트 기준</div>
+              <div>소방서 <span class="text-blue-500">1:N →</span> 출동건</div>
+              <div>출동건 <span class="text-blue-500">1:N →</span> 현장기록</div>
+              <div>소방차 <span class="text-indigo-500">N:N ↔</span> 관할구역</div>
+              <div>소방관 <span class="text-violet-500">1:1 ↔</span> 면허증</div>
             </div>
           </div>
         </div>
@@ -2418,11 +2418,11 @@ function svcUpdateNav() {
               <div><span class="font-semibold">이력 추적:</span> 모든 액션은 자동으로 감사 추적 가능한 이력을 남겨 규제 준수 지원</div>
             </div>
             <div class="bg-emerald-50 rounded-lg p-3 border border-emerald-200 text-emerald-700">
-              <div class="font-semibold mb-1">반도체 산업 예시</div>
+              <div class="font-semibold mb-1">소방본부 예시</div>
               <div class="space-y-1">
-                <div>· Lot Hold/Release 액션 — 품질 이슈 발견 시 즉시 생산 중단</div>
-                <div>· 장비 레시피 변경 승인 워크플로 — 엔지니어/관리자 다중 승인</div>
-                <div>· PM(계획정비) 완료 확인 — 체크리스트와 결과 기록</div>
+                <div>· 출동 명령 발령 액션 — 화재 신고 접수 시 즉시 소방차 배치</div>
+                <div>· 인접 소방서 지원 요청 워크플로 — 도서·산간 지역 다중 승인</div>
+                <div>· 현장 지휘권 이관 확인 — 체크리스트 및 귀소 결과 기록</div>
               </div>
             </div>
           </div>
@@ -2436,11 +2436,11 @@ function svcUpdateNav() {
               <div><span class="font-semibold">AI/에이전트 실행 컨텍스트:</span> AI가 온톨로지 함수를 호출하여 승인된 범위 내에서 안전하게 운영 결정 수행</div>
             </div>
             <div class="bg-violet-50 rounded-lg p-3 border border-violet-200 text-violet-700">
-              <div class="font-semibold mb-1">반도체 산업 예시</div>
+              <div class="font-semibold mb-1">소방본부 예시</div>
               <div class="space-y-1">
-                <div>· 수율 영향도 계산 함수 — 공정 변경 시 예상 수율 계산</div>
-                <div>· 설비 다운타임 알림 권한 — 특정 임계값 초과 시 자동 확대</div>
-                <div>· 자동화된 유지보수 일정 최적화 — 생산 계획과 통합</div>
+                <div>· 취약도 계산 함수 — 노후건물·출동시간·기상을 종합한 지역 위험도 산출</div>
+                <div>· 소방차 가용성 알림 권한 — 가용 차량 임계값 이하 시 자동 에스컬레이션</div>
+                <div>· 출동 스케줄 최적화 — 기상 예보·행사 일정과 통합하여 대기 인력 배치</div>
               </div>
             </div>
           </div>
@@ -2530,7 +2530,7 @@ function svcUpdateNav() {
             <div>· 포인트앤클릭 방식 대규모 테이블 데이터 분석 (Spark SQL)</div>
             <div>· 데이터 정제 → 집계 → 시각화 → 대시보드 동기화</div>
             <div>· 분석 결과를 신규 Dataset으로 저장·공유</div>
-            <div class="text-blue-600 pt-1">예: Daily Throughput — mes_log 필터(574k→1,453 rows) → 일별 생산량 차트</div>
+            <div class="text-blue-600 pt-1">예: Daily 출동건수 — fire_dispatch_log 필터(12k→1,453 rows) → 시군별 일별 출동 차트</div>
           </div>
         </div>
         <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
@@ -2560,21 +2560,21 @@ function svcUpdateNav() {
   <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
     <div class="px-6 py-3.5 border-b border-slate-100 flex items-center gap-2">
       <i data-lucide="table-2" class="w-4 h-4 text-blue-500"></i>
-      <h2 class="font-semibold text-slate-700 text-sm">Contour 분석 예시 — 반도체 MES 데이터 (SMT2020)</h2>
+      <h2 class="font-semibold text-slate-700 text-sm">Contour 분석 예시 — 전남소방본부 출동 데이터 (2024)</h2>
     </div>
     <div class="p-5 space-y-4 text-xs">
-      <!-- 예시 1: Daily Throughput -->
+      <!-- 예시 1: Daily Dispatch -->
       <div class="space-y-2">
-        <div class="font-semibold text-slate-700">① Daily Throughput 분석</div>
+        <div class="font-semibold text-slate-700">① Daily 출동건수 분석</div>
         <div class="bg-slate-900 rounded-xl p-4 font-mono text-xs">
-          <div class="text-slate-400 mb-2">[Contour — mes_log_throughput 데이터셋]</div>
+          <div class="text-slate-400 mb-2">[Contour — fire_dispatch_log 데이터셋]</div>
           <div class="flex items-center gap-2 mb-2">
-            <span class="bg-blue-600 text-white px-2 py-0.5 rounded text-[10px]">Filter Complete</span>
-            <span class="text-slate-400">where area is Complete</span>
-            <span class="text-emerald-400 ml-auto">574,212 rows → 1,453 rows</span>
+            <span class="bg-blue-600 text-white px-2 py-0.5 rounded text-[10px]">Filter 진압완료</span>
+            <span class="text-slate-400">where stage is 귀소완료</span>
+            <span class="text-emerald-400 ml-auto">12,847 rows → 1,453 rows</span>
           </div>
           <div class="border-t border-slate-700 pt-3">
-            <div class="text-slate-400 text-[10px] mb-2">Daily Throughput segmented by route (제조 완료 LOT 일자별)</div>
+            <div class="text-slate-400 text-[10px] mb-2">Daily 출동건수 segmented by region (시군별 완료 출동건 일자별)</div>
             <div class="space-y-1">
               <div class="flex items-end gap-1 h-16">
                 <div class="flex flex-col justify-end items-center gap-0.5" style="width:12px"><div class="bg-violet-500 rounded-sm" style="height:28px"></div><div class="text-[8px] text-slate-500">1/3</div></div>
@@ -2593,42 +2593,42 @@ function svcUpdateNav() {
                 <div class="flex flex-col justify-end items-center gap-0.5" style="width:12px"><div class="bg-emerald-500 rounded-sm" style="height:46px"></div><div class="text-[8px] text-slate-500">2/12</div></div>
               </div>
               <div class="flex gap-3 text-[9px] text-slate-400 pt-1">
-                <span class="flex items-center gap-1"><span class="w-2 h-2 bg-violet-500 rounded-sm inline-block"></span>route_1</span>
-                <span class="flex items-center gap-1"><span class="w-2 h-2 bg-blue-500 rounded-sm inline-block"></span>route_2</span>
-                <span class="flex items-center gap-1"><span class="w-2 h-2 bg-teal-500 rounded-sm inline-block"></span>route_3</span>
-                <span class="flex items-center gap-1"><span class="w-2 h-2 bg-emerald-500 rounded-sm inline-block"></span>route_4</span>
-                <span class="flex items-center gap-1"><span class="w-2 h-2 bg-amber-500 rounded-sm inline-block"></span>route_5</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 bg-violet-500 rounded-sm inline-block"></span>신안군</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 bg-blue-500 rounded-sm inline-block"></span>완도군</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 bg-teal-500 rounded-sm inline-block"></span>진도군</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 bg-emerald-500 rounded-sm inline-block"></span>고흥군</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 bg-amber-500 rounded-sm inline-block"></span>해남군</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- 예시 2: Operation Duration -->
+      <!-- 예시 2: Stage Duration -->
       <div class="space-y-2">
-        <div class="font-semibold text-slate-700">② Operation Duration 분석</div>
+        <div class="font-semibold text-slate-700">② 출동 단계별 소요시간 분석</div>
         <div class="bg-slate-50 rounded-xl border border-slate-200 p-4">
-          <div class="text-slate-500 mb-2 text-[10px]">mes_log 데이터셋에 duration 값 산출 (lot_idx로 partition → timestamp로 sorting)</div>
+          <div class="text-slate-500 mb-2 text-[10px]">fire_dispatch_log 데이터셋에 duration 값 산출 (dispatch_id로 partition → timestamp로 sorting)</div>
           <div class="overflow-x-auto">
             <table class="text-[10px] w-full min-w-[360px]">
               <thead class="bg-slate-200">
                 <tr>
-                  <th class="px-2 py-1.5 text-left text-slate-600">operation</th>
+                  <th class="px-2 py-1.5 text-left text-slate-600">출동 단계</th>
                   <th class="px-2 py-1.5 text-right text-slate-600">평균(분)</th>
                   <th class="px-2 py-1.5 text-right text-slate-600">표준편차</th>
                   <th class="px-2 py-1.5 text-left text-slate-600 w-40">분포</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100">
-                <tr><td class="px-2 py-1 text-slate-700 font-mono">000_Commit</td><td class="px-2 py-1 text-right text-blue-700">0.4</td><td class="px-2 py-1 text-right text-slate-500">0.1</td><td class="px-2 py-1"><div class="bg-blue-400 h-2 rounded" style="width:4px"></div></td></tr>
-                <tr class="bg-red-50"><td class="px-2 py-1 text-slate-700 font-mono">001_Diffusion</td><td class="px-2 py-1 text-right text-red-700 font-bold">2847</td><td class="px-2 py-1 text-right text-slate-500">312</td><td class="px-2 py-1"><div class="bg-red-400 h-2 rounded" style="width:140px"></div></td></tr>
-                <tr><td class="px-2 py-1 text-slate-700 font-mono">002_Wet_Etch</td><td class="px-2 py-1 text-right text-blue-700">186</td><td class="px-2 py-1 text-right text-slate-500">24</td><td class="px-2 py-1"><div class="bg-blue-400 h-2 rounded" style="width:18px"></div></td></tr>
-                <tr><td class="px-2 py-1 text-slate-700 font-mono">003_Dep_Etch</td><td class="px-2 py-1 text-right text-blue-700">94</td><td class="px-2 py-1 text-right text-slate-500">11</td><td class="px-2 py-1"><div class="bg-blue-400 h-2 rounded" style="width:9px"></div></td></tr>
-                <tr class="bg-amber-50"><td class="px-2 py-1 text-slate-700 font-mono">004_Diffusion</td><td class="px-2 py-1 text-right text-amber-700 font-bold">1203</td><td class="px-2 py-1 text-right text-slate-500">178</td><td class="px-2 py-1"><div class="bg-amber-400 h-2 rounded" style="width:60px"></div></td></tr>
-                <tr><td class="px-2 py-1 text-slate-700 font-mono">005_Wet_Etch</td><td class="px-2 py-1 text-right text-blue-700">145</td><td class="px-2 py-1 text-right text-slate-500">18</td><td class="px-2 py-1"><div class="bg-blue-400 h-2 rounded" style="width:14px"></div></td></tr>
+                <tr><td class="px-2 py-1 text-slate-700 font-mono">신고접수</td><td class="px-2 py-1 text-right text-blue-700">0.8</td><td class="px-2 py-1 text-right text-slate-500">0.2</td><td class="px-2 py-1"><div class="bg-blue-400 h-2 rounded" style="width:4px"></div></td></tr>
+                <tr class="bg-red-50"><td class="px-2 py-1 text-slate-700 font-mono">현장도착</td><td class="px-2 py-1 text-right text-red-700 font-bold">31.5</td><td class="px-2 py-1 text-right text-slate-500">8.3</td><td class="px-2 py-1"><div class="bg-red-400 h-2 rounded" style="width:140px"></div></td></tr>
+                <tr><td class="px-2 py-1 text-slate-700 font-mono">진압활동</td><td class="px-2 py-1 text-right text-blue-700">18.6</td><td class="px-2 py-1 text-right text-slate-500">5.4</td><td class="px-2 py-1"><div class="bg-blue-400 h-2 rounded" style="width:18px"></div></td></tr>
+                <tr><td class="px-2 py-1 text-slate-700 font-mono">잔불정리</td><td class="px-2 py-1 text-right text-blue-700">9.4</td><td class="px-2 py-1 text-right text-slate-500">3.1</td><td class="px-2 py-1"><div class="bg-blue-400 h-2 rounded" style="width:9px"></div></td></tr>
+                <tr class="bg-amber-50"><td class="px-2 py-1 text-slate-700 font-mono">지원요청대기</td><td class="px-2 py-1 text-right text-amber-700 font-bold">12.0</td><td class="px-2 py-1 text-right text-slate-500">4.7</td><td class="px-2 py-1"><div class="bg-amber-400 h-2 rounded" style="width:60px"></div></td></tr>
+                <tr><td class="px-2 py-1 text-slate-700 font-mono">귀소이동</td><td class="px-2 py-1 text-right text-blue-700">14.5</td><td class="px-2 py-1 text-right text-slate-500">3.8</td><td class="px-2 py-1"><div class="bg-blue-400 h-2 rounded" style="width:14px"></div></td></tr>
               </tbody>
             </table>
           </div>
-          <div class="mt-2 text-[10px] text-red-600 font-semibold">→ 001_Diffusion이 병목: 평균 2,847분, 전체 Cycle Time의 40% 차지</div>
+          <div class="mt-2 text-[10px] text-red-600 font-semibold">→ 현장도착이 병목: 평균 31.5분 (신안군 기준), 전체 출동시간의 40% 차지</div>
         </div>
       </div>
     </div>
@@ -2638,99 +2638,99 @@ function svcUpdateNav() {
   <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
     <div class="px-6 py-3.5 border-b border-slate-100 flex items-center gap-2">
       <i data-lucide="trending-up" class="w-4 h-4 text-emerald-500"></i>
-      <h2 class="font-semibold text-slate-700 text-sm">Quiver 분석 예시 — 장비별 가동률 &amp; 운영 현황</h2>
+      <h2 class="font-semibold text-slate-700 text-sm">Quiver 분석 예시 — 소방차별 가동률 &amp; 출동 현황</h2>
     </div>
     <div class="p-5 space-y-4 text-xs">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Operation Worktime -->
+        <!-- Dispatch Stage Worktime -->
         <div class="space-y-2">
-          <div class="font-semibold text-slate-700">① Operation Worktime segmented by State</div>
+          <div class="font-semibold text-slate-700">① 출동 단계별 시간 구성 (State별 세그먼트)</div>
           <div class="bg-slate-50 rounded-xl border border-slate-200 p-3">
-            <div class="text-[10px] text-slate-500 mb-2">Status 기준 세그먼트 — 상태별 소요시간 비교</div>
+            <div class="text-[10px] text-slate-500 mb-2">시군별 출동 단계 소요시간 비율 비교</div>
             <div class="space-y-1">
               <div class="flex items-center gap-2">
-                <div class="text-[10px] text-slate-500 w-20 shrink-0 font-mono truncate">001_Diffu..</div>
+                <div class="text-[10px] text-slate-500 w-20 shrink-0 font-mono truncate">신안군</div>
                 <div class="flex-1 flex h-3 rounded overflow-hidden">
-                  <div class="bg-blue-500" style="width:8%"></div>
-                  <div class="bg-emerald-500" style="width:65%"></div>
-                  <div class="bg-amber-400" style="width:12%"></div>
-                  <div class="bg-red-400" style="width:10%"></div>
-                  <div class="bg-slate-300" style="width:5%"></div>
-                </div>
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="text-[10px] text-slate-500 w-20 shrink-0 font-mono truncate">004_Diffu..</div>
-                <div class="flex-1 flex h-3 rounded overflow-hidden">
-                  <div class="bg-blue-500" style="width:6%"></div>
-                  <div class="bg-emerald-500" style="width:58%"></div>
-                  <div class="bg-amber-400" style="width:18%"></div>
-                  <div class="bg-red-400" style="width:12%"></div>
-                  <div class="bg-slate-300" style="width:6%"></div>
-                </div>
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="text-[10px] text-slate-500 w-20 shrink-0 font-mono truncate">002_Wet_E..</div>
-                <div class="flex-1 flex h-3 rounded overflow-hidden">
-                  <div class="bg-blue-500" style="width:15%"></div>
+                  <div class="bg-blue-500" style="width:2%"></div>
                   <div class="bg-emerald-500" style="width:42%"></div>
-                  <div class="bg-amber-400" style="width:22%"></div>
-                  <div class="bg-red-400" style="width:14%"></div>
-                  <div class="bg-slate-300" style="width:7%"></div>
+                  <div class="bg-amber-400" style="width:25%"></div>
+                  <div class="bg-red-400" style="width:16%"></div>
+                  <div class="bg-slate-300" style="width:15%"></div>
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <div class="text-[10px] text-slate-500 w-20 shrink-0 font-mono truncate">014_Litho.</div>
+                <div class="text-[10px] text-slate-500 w-20 shrink-0 font-mono truncate">완도군</div>
                 <div class="flex-1 flex h-3 rounded overflow-hidden">
-                  <div class="bg-blue-500" style="width:20%"></div>
-                  <div class="bg-emerald-500" style="width:35%"></div>
-                  <div class="bg-amber-400" style="width:25%"></div>
-                  <div class="bg-red-400" style="width:15%"></div>
-                  <div class="bg-slate-300" style="width:5%"></div>
+                  <div class="bg-blue-500" style="width:2%"></div>
+                  <div class="bg-emerald-500" style="width:38%"></div>
+                  <div class="bg-amber-400" style="width:28%"></div>
+                  <div class="bg-red-400" style="width:18%"></div>
+                  <div class="bg-slate-300" style="width:14%"></div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="text-[10px] text-slate-500 w-20 shrink-0 font-mono truncate">진도군</div>
+                <div class="flex-1 flex h-3 rounded overflow-hidden">
+                  <div class="bg-blue-500" style="width:2%"></div>
+                  <div class="bg-emerald-500" style="width:40%"></div>
+                  <div class="bg-amber-400" style="width:26%"></div>
+                  <div class="bg-red-400" style="width:17%"></div>
+                  <div class="bg-slate-300" style="width:15%"></div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="text-[10px] text-slate-500 w-20 shrink-0 font-mono truncate">고흥군</div>
+                <div class="flex-1 flex h-3 rounded overflow-hidden">
+                  <div class="bg-blue-500" style="width:2%"></div>
+                  <div class="bg-emerald-500" style="width:52%"></div>
+                  <div class="bg-amber-400" style="width:20%"></div>
+                  <div class="bg-red-400" style="width:14%"></div>
+                  <div class="bg-slate-300" style="width:12%"></div>
                 </div>
               </div>
             </div>
             <div class="flex gap-2 mt-2 text-[9px] flex-wrap">
-              <span class="flex items-center gap-1"><span class="w-2 h-2 bg-blue-500 rounded-sm inline-block"></span>LOAD</span>
-              <span class="flex items-center gap-1"><span class="w-2 h-2 bg-emerald-500 rounded-sm inline-block"></span>PROC</span>
-              <span class="flex items-center gap-1"><span class="w-2 h-2 bg-amber-400 rounded-sm inline-block"></span>RESV</span>
-              <span class="flex items-center gap-1"><span class="w-2 h-2 bg-red-400 rounded-sm inline-block"></span>SELE</span>
-              <span class="flex items-center gap-1"><span class="w-2 h-2 bg-slate-300 rounded-sm inline-block"></span>WAIT</span>
+              <span class="flex items-center gap-1"><span class="w-2 h-2 bg-blue-500 rounded-sm inline-block"></span>신고접수</span>
+              <span class="flex items-center gap-1"><span class="w-2 h-2 bg-emerald-500 rounded-sm inline-block"></span>현장이동</span>
+              <span class="flex items-center gap-1"><span class="w-2 h-2 bg-amber-400 rounded-sm inline-block"></span>진압활동</span>
+              <span class="flex items-center gap-1"><span class="w-2 h-2 bg-red-400 rounded-sm inline-block"></span>지원대기</span>
+              <span class="flex items-center gap-1"><span class="w-2 h-2 bg-slate-300 rounded-sm inline-block"></span>귀소이동</span>
             </div>
           </div>
         </div>
-        <!-- EQP Utilization -->
+        <!-- Vehicle Utilization -->
         <div class="space-y-2">
-          <div class="font-semibold text-slate-700">② EQP Utilization — 장비별 가동률</div>
+          <div class="font-semibold text-slate-700">② 소방차 가동률 — 지역별 출동 차량</div>
           <div class="bg-slate-50 rounded-xl border border-slate-200 p-3">
-            <div class="text-[10px] text-slate-500 mb-2">eqp_name 그룹화, sum of WorkTime Minutes</div>
+            <div class="text-[10px] text-slate-500 mb-2">vehicle_id 그룹화, sum of 출동시간(분)</div>
             <table class="w-full text-[10px]">
               <thead class="bg-slate-200">
                 <tr>
-                  <th class="px-2 py-1 text-left text-slate-600">eqp_name</th>
-                  <th class="px-2 py-1 text-right text-slate-600">WorkTime</th>
+                  <th class="px-2 py-1 text-left text-slate-600">차량번호</th>
+                  <th class="px-2 py-1 text-right text-slate-600">출동시간(분)</th>
                   <th class="px-2 py-1 text-right text-slate-600">가동률</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100">
-                <tr class="bg-red-50"><td class="px-2 py-1 font-mono text-slate-700">DIF3143</td><td class="px-2 py-1 text-right text-slate-600">15,213</td><td class="px-2 py-1 text-right text-red-600 font-bold">151%</td></tr>
-                <tr class="bg-red-50"><td class="px-2 py-1 font-mono text-slate-700">DIF3155</td><td class="px-2 py-1 text-right text-slate-600">13,528</td><td class="px-2 py-1 text-right text-red-600 font-bold">135%</td></tr>
-                <tr class="bg-amber-50"><td class="px-2 py-1 font-mono text-slate-700">DIF3157</td><td class="px-2 py-1 text-right text-slate-600">13,103</td><td class="px-2 py-1 text-right text-amber-600 font-bold">130%</td></tr>
-                <tr class="bg-amber-50"><td class="px-2 py-1 font-mono text-slate-700">DIF3156</td><td class="px-2 py-1 text-right text-slate-600">12,901</td><td class="px-2 py-1 text-right text-amber-600 font-bold">128%</td></tr>
-                <tr><td class="px-2 py-1 font-mono text-slate-700">DIF3142</td><td class="px-2 py-1 text-right text-slate-600">12,863</td><td class="px-2 py-1 text-right text-slate-600">128%</td></tr>
+                <tr class="bg-red-50"><td class="px-2 py-1 font-mono text-slate-700">SNJ-T01</td><td class="px-2 py-1 text-right text-slate-600">15,213</td><td class="px-2 py-1 text-right text-red-600 font-bold">151%</td></tr>
+                <tr class="bg-red-50"><td class="px-2 py-1 font-mono text-slate-700">WAN-T01</td><td class="px-2 py-1 text-right text-slate-600">13,528</td><td class="px-2 py-1 text-right text-red-600 font-bold">135%</td></tr>
+                <tr class="bg-amber-50"><td class="px-2 py-1 font-mono text-slate-700">JND-T01</td><td class="px-2 py-1 text-right text-slate-600">13,103</td><td class="px-2 py-1 text-right text-amber-600 font-bold">130%</td></tr>
+                <tr class="bg-amber-50"><td class="px-2 py-1 font-mono text-slate-700">GHG-T01</td><td class="px-2 py-1 text-right text-slate-600">12,901</td><td class="px-2 py-1 text-right text-amber-600 font-bold">128%</td></tr>
+                <tr><td class="px-2 py-1 font-mono text-slate-700">HNM-T01</td><td class="px-2 py-1 text-right text-slate-600">12,863</td><td class="px-2 py-1 text-right text-slate-600">128%</td></tr>
               </tbody>
             </table>
-            <div class="mt-2 text-[10px] text-red-600 font-semibold">→ DIF3143·DIF3155 과부하(151%·135%) — 즉각 증설 또는 스케줄 재조정 필요</div>
+            <div class="mt-2 text-[10px] text-red-600 font-semibold">→ SNJ-T01·WAN-T01 과부하(151%·135%) — 도서지역 증차 또는 인접 소방서 지원 필요</div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Machinery 반도체 예시 -->
+  <!-- Machinery 소방 예시 -->
   <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
     <div class="px-6 py-3.5 border-b border-slate-100 flex items-center gap-2">
       <i data-lucide="activity" class="w-4 h-4 text-amber-500"></i>
-      <h2 class="font-semibold text-slate-700 text-sm">Machinery 반도체 예시 — Fab Simulator 프로세스 마이닝</h2>
+      <h2 class="font-semibold text-slate-700 text-sm">Machinery 소방 예시 — 전남소방본부 출동 프로세스 마이닝</h2>
     </div>
     <div class="p-5 space-y-4 text-xs">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2739,61 +2739,61 @@ function svcUpdateNav() {
           <div class="bg-slate-900 rounded-xl p-4 font-mono text-xs">
             <div class="text-emerald-300 mb-2">Log Object 정의</div>
             <div class="text-slate-300 space-y-1">
-              <div><span class="text-amber-300">Process ID</span> = lot_idx</div>
-              <div><span class="text-amber-300">State</span>     = operation</div>
+              <div><span class="text-amber-300">Process ID</span> = dispatch_id</div>
+              <div><span class="text-amber-300">State</span>     = stage_name</div>
               <div><span class="text-amber-300">Timestamp</span> = timestamp</div>
             </div>
             <div class="mt-3 border-t border-slate-700 pt-3">
               <div class="text-violet-300 mb-1">연관 Object 간 링크</div>
               <div class="text-slate-400 space-y-1">
-                <div>mes_log ─1:N→ Lot</div>
-                <div>mes_log ─N:1→ EQP (공정 설비)</div>
-                <div>mes_log ─N:1→ Route (공정 경로)</div>
+                <div>fire_log ─1:N→ DispatchCase (출동건)</div>
+                <div>fire_log ─N:1→ Vehicle (소방차)</div>
+                <div>fire_log ─N:1→ Region (관할구역)</div>
               </div>
             </div>
           </div>
           <div class="bg-amber-50 rounded-xl p-3 border border-amber-200">
             <div class="font-semibold text-amber-700 mb-2">핵심 KPI 자동 계산</div>
             <div class="grid grid-cols-2 gap-2 text-amber-700">
-              <div class="bg-white rounded p-2"><div class="font-bold text-sm">Throughput</div><div class="text-[10px]">일별 완료 LOT 수</div></div>
-              <div class="bg-white rounded p-2"><div class="font-bold text-sm">Cycle Time</div><div class="text-[10px]">공정 단계별 소요시간</div></div>
-              <div class="bg-white rounded p-2"><div class="font-bold text-sm">WIP</div><div class="text-[10px]">재공(진행중 LOT 수)</div></div>
-              <div class="bg-white rounded p-2"><div class="font-bold text-sm">OEE</div><div class="text-[10px]">설비종합효율</div></div>
+              <div class="bg-white rounded p-2"><div class="font-bold text-sm">Throughput</div><div class="text-[10px]">일별 완료 출동건수</div></div>
+              <div class="bg-white rounded p-2"><div class="font-bold text-sm">Cycle Time</div><div class="text-[10px]">출동 단계별 소요시간</div></div>
+              <div class="bg-white rounded p-2"><div class="font-bold text-sm">Active</div><div class="text-[10px]">진행중 출동건수</div></div>
+              <div class="bg-white rounded p-2"><div class="font-bold text-sm">가동률</div><div class="text-[10px]">소방차 실가동 비율</div></div>
             </div>
           </div>
         </div>
         <div class="space-y-3">
-          <div class="font-semibold text-slate-700">Fab 공정 프로세스 흐름 (626개 Operation)</div>
+          <div class="font-semibold text-slate-700">소방 출동 프로세스 흐름 (전남 연간 1,000건)</div>
           <div class="bg-slate-900 rounded-xl p-4">
-            <div class="text-[10px] text-slate-400 mb-3">Process Explorer — submitted → approved 전체 흐름</div>
+            <div class="text-[10px] text-slate-400 mb-3">Process Explorer — 신고접수 → 귀소완료 전체 흐름</div>
             <div class="space-y-2">
               <div class="flex items-center gap-2">
-                <div class="bg-blue-600 text-white text-[9px] px-2 py-1 rounded-md w-28 text-center">submitted<br><span class="text-blue-200">COUNT: 1000</span></div>
+                <div class="bg-blue-600 text-white text-[9px] px-2 py-1 rounded-md w-28 text-center">신고접수<br><span class="text-blue-200">COUNT: 1000</span></div>
                 <div class="text-slate-500 text-[9px]">→ 100%</div>
               </div>
               <div class="flex items-center gap-2 ml-4">
-                <div class="bg-teal-600 text-white text-[9px] px-2 py-1 rounded-md w-28 text-center">claimed<br><span class="text-teal-200">COUNT: 987</span></div>
-                <div class="text-slate-500 text-[9px]">→ 98.7%</div>
+                <div class="bg-teal-600 text-white text-[9px] px-2 py-1 rounded-md w-28 text-center">출동명령<br><span class="text-teal-200">COUNT: 995</span></div>
+                <div class="text-slate-500 text-[9px]">→ 99.5%</div>
               </div>
               <div class="flex items-center gap-2 ml-8">
-                <div class="bg-violet-600 text-white text-[9px] px-2 py-1 rounded-md w-28 text-center">data entry<br><span class="text-violet-200">COUNT: 952</span></div>
-                <div class="text-slate-500 text-[9px]">→ 96.4%</div>
+                <div class="bg-violet-600 text-white text-[9px] px-2 py-1 rounded-md w-28 text-center">현장이동<br><span class="text-violet-200">COUNT: 987</span></div>
+                <div class="text-slate-500 text-[9px]">→ 98.7%</div>
               </div>
               <div class="flex items-center gap-2 ml-12">
-                <div class="bg-indigo-600 text-white text-[9px] px-2 py-1 rounded-md w-28 text-center">fields complete<br><span class="text-indigo-200">COUNT: 901</span></div>
-                <div class="text-slate-500 text-[9px]">→ 94.6%</div>
+                <div class="bg-indigo-600 text-white text-[9px] px-2 py-1 rounded-md w-28 text-center">현장도착<br><span class="text-indigo-200">COUNT: 967</span></div>
+                <div class="text-slate-500 text-[9px]">→ 96.7%</div>
               </div>
               <div class="flex items-center gap-2 ml-16">
-                <div class="bg-amber-600 text-white text-[9px] px-2 py-1 rounded-md w-28 text-center">under investigation<br><span class="text-amber-200">COUNT: 78</span></div>
+                <div class="bg-amber-600 text-white text-[9px] px-2 py-1 rounded-md w-28 text-center">지원요청대기<br><span class="text-amber-200">COUNT: 78</span></div>
                 <div class="text-red-400 text-[9px] font-semibold">⚠ 병목</div>
               </div>
               <div class="flex items-center gap-2 ml-4 mt-2">
-                <div class="bg-emerald-600 text-white text-[9px] px-2 py-1 rounded-md w-24 text-center">approved<br><span class="text-emerald-200">COUNT: 823</span></div>
-                <div class="text-slate-500 text-[9px] ml-2">|</div>
-                <div class="bg-red-700 text-white text-[9px] px-2 py-1 rounded-md w-20 text-center">rejected<br><span class="text-red-200">COUNT: 78</span></div>
+                <div class="bg-emerald-600 text-white text-[9px] px-2 py-1 rounded-md w-24 text-center">진압완료<br><span class="text-emerald-200">COUNT: 889</span></div>
+                <div class="text-slate-500 text-[9px] ml-2">→</div>
+                <div class="bg-blue-700 text-white text-[9px] px-2 py-1 rounded-md w-20 text-center">귀소완료<br><span class="text-blue-200">COUNT: 889</span></div>
               </div>
             </div>
-            <div class="mt-3 text-[9px] text-red-400">→ "under investigation" 단계에서 7.8% LOT 체류 — 이상 원인 분석 필요</div>
+            <div class="mt-3 text-[9px] text-red-400">→ "지원요청대기" 단계에서 7.8% 출동건 체류 — 도서지역 고립으로 인접 소방서 지원 지연</div>
           </div>
         </div>
       </div>
@@ -2963,7 +2963,7 @@ function svcUpdateNav() {
             <div>· 입력: Log Object (Process ID, State, Timestamp 필수)</div>
             <div>· 결과: 이상 경로/병목/리드타임 시각화, 프로세스 모델 자동 생성</div>
             <div>· 자동화 — 로그 데이터로부터 파이프라인 자동 생성, 온톨로지 통합</div>
-            <div class="text-slate-600 pt-1">반도체 예: Lot 흐름 626개 Operation 단계 시각화, 병목 공정 자동 식별</div>
+            <div class="text-slate-600 pt-1">소방 예: 출동 흐름 단계 시각화, 지원요청대기 병목 자동 식별</div>
           </div>
         </div>
       </div>
