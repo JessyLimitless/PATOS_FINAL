@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>매핑 설계도 — Raw CSV → Entity → Rule → Action</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body { font-family: Inter, sans-serif; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .triple-line { padding: 2px 0; }
+  .rule-fired { background: linear-gradient(to right, #ecfccb 0%, #f7fee7 100%); border-left: 4px solid #65a30d; }
+  .layer-arrow { font-size: 28px; color: #94a3b8; line-height: 1; }
+  pre.ttl { white-space: pre; }
+  .schema-node { transition: transform 0.15s; cursor: default; }
+  .schema-node.center { filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.3)); }
+</style>
+</head>
+<body class="bg-slate-100 min-h-screen">
+
+<!-- Header -->
+<header class="bg-white border-b border-slate-200 px-6 py-5">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex items-start gap-4">
+      <div class="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-700 rounded-xl flex items-center justify-center flex-shrink-0">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7l9 4 9-4-9-4-9 4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
+      </div>
+      <div class="flex-1">
+        <h1 class="text-2xl font-bold text-slate-800">매핑 설계도</h1>
+        <p class="text-sm text-slate-500 mt-0.5">Raw CSV → Entity → Rule → Action 의 4단 추상화</p>
+        <div class="text-xs text-slate-400 mt-2 flex flex-wrap gap-x-4 gap-y-1">
+          <span>기준 시나리오: <code class="bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">ruledata.cloud5.socialbrain.co.kr/#how</code></span>
+          <span>장소: <strong class="text-slate-600">무안 한옥마을 #B-3021</strong></span>
+          <span>트리거: <strong class="text-red-600">2024-03-15 15:14:23 · fireRisk = 0.85</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto p-6 grid grid-cols-12 gap-6">
+
+  <!-- LEFT: Macro Schema -->
+  <aside class="col-span-12 lg:col-span-5">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 lg:sticky lg:top-6">
+      <div class="flex items-center justify-between mb-1">
+        <h2 class="text-base font-bold text-slate-800">매크로: 도메인 스키마</h2>
+        <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">7 클러스터</span>
+      </div>
+      <p class="text-xs text-slate-500 mb-4">화재 도메인의 의미 지도. 가운데 Building이 추적 대상.</p>
+
+      <svg viewBox="0 0 600 540" class="w-full">
+        <!-- Relations (back layer) -->
+        <line x1="200" y1="170" x2="245" y2="240" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="160" y="210" fill="#64748b" font-size="10" font-family="JetBrains Mono">:memberOf</text>
+
+        <line x1="380" y1="280" x2="435" y2="280" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="385" y="270" fill="#64748b" font-size="10" font-family="JetBrains Mono">:observed</text>
+
+        <line x1="380" y1="240" x2="425" y2="170" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="4,3"/>
+        <text x="395" y="215" fill="#b45309" font-size="10" font-family="JetBrains Mono">:about</text>
+
+        <path d="M 365 320 Q 430 360, 365 360" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="395" y="345" fill="#64748b" font-size="10" font-family="JetBrains Mono">:adjacentTo</text>
+
+        <line x1="220" y1="320" x2="180" y2="395" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="135" y="365" fill="#64748b" font-size="10" font-family="JetBrains Mono">:jurisdiction</text>
+
+        <line x1="300" y1="320" x2="300" y2="395" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="307" y="365" fill="#64748b" font-size="10" font-family="JetBrains Mono">:homeStation</text>
+
+        <line x1="495" y1="170" x2="475" y2="395" stroke="#94a3b8" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.6"/>
+        <text x="500" y="290" fill="#94a3b8" font-size="10" font-family="JetBrains Mono">:notifies</text>
+
+        <!-- Building (center) -->
+        <g class="schema-node center">
+          <rect x="220" y="240" width="160" height="80" rx="14" fill="#6366f1" stroke="#4338ca" stroke-width="2"/>
+          <text x="300" y="276" text-anchor="middle" fill="white" font-weight="700" font-size="15">Building</text>
+          <text x="300" y="294" text-anchor="middle" fill="#c7d2fe" font-size="10">12채 · #B-3021 추적</text>
+          <text x="300" y="308" text-anchor="middle" fill="#a5b4fc" font-size="9" font-family="JetBrains Mono">buildings.csv</text>
+        </g>
+
+        <!-- TraditionalCluster (top-left) -->
+        <g class="schema-node">
+          <rect x="50" y="125" width="160" height="60" rx="10" fill="#fff" stroke="#6366f1" stroke-width="1.5"/>
+          <text x="130" y="148" text-anchor="middle" fill="#1e293b" font-weight="600" font-size="12">TraditionalCluster</text>
+          <text x="130" y="164" text-anchor="middle" fill="#64748b" font-size="9" font-family="JetBrains Mono">traditional_clusters.csv</text>
+          <text x="130" y="177" text-anchor="middle" fill="#94a3b8" font-size="9">CL-01</text>
+        </g>
+
+        <!-- Incident (top-right) -->
+        <g class="schema-node">
+          <rect x="400" y="125" width="160" height="60" rx="10" fill="#fff" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="480" y="148" text-anchor="middle" fill="#1e293b" font-weight="600" font-size="12">Incident</text>
+          <text x="480" y="164" text-anchor="middle" fill="#64748b" font-size="9" font-family="JetBrains Mono">incidents.csv</text>
+          <text x="480" y="177" text-anchor="middle" fill="#b45309" font-size="9">INC-882 (활성)</text>
+        </g>
+
+        <!-- Observation (right) -->
+        <g class="schema-node">
+          <rect x="435" y="250" width="125" height="60" rx="10" fill="#fff" stroke="#8b5cf6" stroke-width="1.5"/>
+          <text x="497" y="273" text-anchor="middle" fill="#1e293b" font-weight="600" font-size="12">Observation</text>
+          <text x="497" y="289" text-anchor="middle" fill="#64748b" font-size="9" font-family="JetBrains Mono">fire_risk_obs.csv</text>
+          <text x="497" y="302" text-anchor="middle" fill="#94a3b8" font-size="9">시계열 10건</text>
+        </g>
+
+        <!-- FireStation (bottom-left) -->
+        <g class="schema-node">
+          <rect x="50" y="395" width="160" height="60" rx="10" fill="#fff" stroke="#10b981" stroke-width="1.5"/>
+          <text x="130" y="418" text-anchor="middle" fill="#1e293b" font-weight="600" font-size="12">FireStation</text>
+          <text x="130" y="434" text-anchor="middle" fill="#64748b" font-size="9" font-family="JetBrains Mono">fire_stations.csv</text>
+          <text x="130" y="447" text-anchor="middle" fill="#94a3b8" font-size="9">5개 관서</text>
+        </g>
+
+        <!-- Resource (bottom-center) -->
+        <g class="schema-node">
+          <rect x="220" y="395" width="160" height="60" rx="10" fill="#fff" stroke="#10b981" stroke-width="1.5"/>
+          <text x="300" y="418" text-anchor="middle" fill="#1e293b" font-weight="600" font-size="12">Resource</text>
+          <text x="300" y="434" text-anchor="middle" fill="#64748b" font-size="9" font-family="JetBrains Mono">resources.csv</text>
+          <text x="300" y="447" text-anchor="middle" fill="#94a3b8" font-size="9">차량·팀 8개</text>
+        </g>
+
+        <!-- Agency (bottom-right) -->
+        <g class="schema-node">
+          <rect x="400" y="395" width="160" height="60" rx="10" fill="#fff" stroke="#ef4444" stroke-width="1.5"/>
+          <text x="480" y="418" text-anchor="middle" fill="#1e293b" font-weight="600" font-size="12">Agency</text>
+          <text x="480" y="434" text-anchor="middle" fill="#64748b" font-size="9" font-family="JetBrains Mono">agencies.csv</text>
+          <text x="480" y="447" text-anchor="middle" fill="#94a3b8" font-size="9">외부기관 4개</text>
+        </g>
+
+        <!-- Bottom note -->
+        <text x="300" y="495" text-anchor="middle" fill="#94a3b8" font-size="10" font-style="italic">↓ 우측 마이크로 패널: Building #B-3021 한 행의 추적 ↓</text>
+      </svg>
+
+      <!-- Legend -->
+      <div class="mt-3 pt-3 border-t border-slate-100 text-xs space-y-1.5">
+        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-indigo-500"></span><span class="text-slate-600">Core Entity (추적 대상)</span></div>
+        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded border-2 border-amber-500"></span><span class="text-slate-600">Event (Incident — 룰 발동 결과)</span></div>
+        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded border-2 border-violet-500"></span><span class="text-slate-600">Time-series (시계열 관찰)</span></div>
+        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded border-2 border-emerald-500"></span><span class="text-slate-600">Resource Cluster</span></div>
+        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded border-2 border-red-400"></span><span class="text-slate-600">External Agent</span></div>
+      </div>
+
+      <!-- Cross-cluster join risks -->
+      <div class="mt-4 pt-3 border-t border-slate-100">
+        <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">⚠ Join 위험 지점</div>
+        <ul class="text-xs text-slate-600 space-y-1.5">
+          <li>· <strong>이름 기반 join</strong> (jurisdiction, heritage_authority): 행정개편 시 깨짐 → URI 정규화 필요</li>
+          <li>· <strong>denormalized fireRisk</strong> (Building) vs <strong>Observation</strong> 시계열: 일관성 동기화 책임자?</li>
+          <li>· <strong>type=TraditionalCluster</strong>: literal vs subclass 결정이 룰 평가 의미를 바꿈</li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+  <!-- RIGHT: Micro 4-Stage Panels -->
+  <section class="col-span-12 lg:col-span-7 space-y-4">
+
+    <div class="bg-violet-50 border border-violet-200 rounded-xl p-3 text-sm text-violet-800">
+      📍 <strong>추적 대상</strong>: Building <code class="mono">#B-3021</code> · 한옥마을 21호 (김씨고가) · 1923년 일반목구조 한식기와
+    </div>
+
+    <!-- Layer 0: RAW CSV -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="bg-slate-900 text-white px-5 py-3 flex items-center gap-3">
+        <span class="bg-slate-700 text-xs mono px-2 py-0.5 rounded">LAYER 0</span>
+        <span class="font-semibold text-sm">RAW · CSV 한 행</span>
+        <span class="text-xs text-slate-400 ml-auto mono">buildings.csv:2</span>
+      </div>
+      <div class="p-5">
+        <div class="overflow-x-auto rounded-lg border border-slate-200">
+          <table class="text-xs mono w-full">
+            <thead class="bg-slate-50 border-b border-slate-200">
+              <tr>
+                <th class="text-left p-2 text-slate-500 font-medium">컬럼</th>
+                <th class="text-left p-2 text-slate-500 font-medium">CSV 값</th>
+                <th class="text-left p-2 text-slate-500 font-medium">→ 매핑 결정</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr><td class="p-2 text-slate-500">bldg_id</td><td class="p-2 text-slate-900">#B-3021</td><td class="p-2 text-violet-700">URI <code class="bg-violet-50 px-1 rounded">:Building/B-3021</code></td></tr>
+              <tr><td class="p-2 text-slate-500">name</td><td class="p-2 text-slate-900">한옥마을 21호 (김씨고가)</td><td class="p-2 text-violet-700"><code class="bg-violet-50 px-1 rounded">rdfs:label</code></td></tr>
+              <tr><td class="p-2 text-slate-500">type</td><td class="p-2 text-slate-900">TraditionalCluster</td><td class="p-2 text-violet-700"><code class="bg-violet-50 px-1 rounded">rdf:type :TraditionalClusterMember</code> (subclass)</td></tr>
+              <tr><td class="p-2 text-slate-500">sub_type</td><td class="p-2 text-slate-900">한옥</td><td class="p-2 text-violet-700"><code class="bg-violet-50 px-1 rounded">:subType :BldgSubType/한옥</code></td></tr>
+              <tr><td class="p-2 text-slate-500">year</td><td class="p-2 text-slate-900">1923</td><td class="p-2 text-violet-700"><code class="bg-violet-50 px-1 rounded">:builtYear "1923"^^xsd:gYear</code></td></tr>
+              <tr><td class="p-2 text-slate-500">structure</td><td class="p-2 text-slate-900">일반목구조</td><td class="p-2 text-violet-700"><code class="bg-violet-50 px-1 rounded">:structure :StructureCode/...</code> (URI 정규화)</td></tr>
+              <tr><td class="p-2 text-slate-500">fire_risk_current</td><td class="p-2 text-red-600 font-bold">0.85</td><td class="p-2 text-violet-700"><code class="bg-violet-50 px-1 rounded">:fireRisk "0.85"^^xsd:decimal</code></td></tr>
+              <tr><td class="p-2 text-slate-500">cluster_id</td><td class="p-2 text-slate-900">CL-01</td><td class="p-2 text-violet-700"><code class="bg-violet-50 px-1 rounded">:memberOf :Cluster/CL-01</code> (FK→URI)</td></tr>
+              <tr><td class="p-2 text-slate-500">location_addr</td><td class="p-2 text-slate-900">전남 무안군 몽탄면 한옥마을길 21</td><td class="p-2 text-violet-700">분해 → 시도/시군구/읍면동/도로명/번호</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-3 text-xs text-slate-500 bg-amber-50 rounded-lg p-3 border-l-4 border-amber-400">
+          <strong class="text-amber-800">매핑 결정 포인트 ①</strong> · <code class="mono">type=TraditionalCluster</code>를 *literal value*로 둘지 *클래스 멤버십*으로 끌어올릴지 — 후자 선택. <code class="mono">:Building</code>의 subclass <code class="mono">:TraditionalClusterMember</code>로 표현하면 RULE-002의 <code class="mono">type == TraditionalCluster</code> 조건이 OWL <strong>subsumption</strong>으로 평가 가능.
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center layer-arrow">↓</div>
+
+    <!-- Layer 1: Entity (RDF Triples) -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="bg-indigo-700 text-white px-5 py-3 flex items-center gap-3">
+        <span class="bg-indigo-900 text-xs mono px-2 py-0.5 rounded">LAYER 1</span>
+        <span class="font-semibold text-sm">ENTITY · RDF Triples</span>
+        <span class="text-xs text-indigo-200 ml-auto mono">.ttl (Turtle)</span>
+      </div>
+      <div class="bg-slate-900 p-5 overflow-x-auto">
+<pre class="ttl mono text-xs text-emerald-300 leading-relaxed">@prefix :    &lt;http://patos.example/ontology#&gt; .
+@prefix rdf:  &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix xsd:  &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+<span class="text-amber-300"># --- 클래스 계층 (정적 어휘, OWL/RDFS) ---</span>
+:TraditionalClusterMember rdfs:subClassOf :Building .
+:Hanok                    rdfs:subClassOf :TraditionalClusterMember .
+
+<span class="text-amber-300"># --- 인스턴스: 한 행이 entity가 됨 ---</span>
+<span class="text-violet-300">:Building/B-3021</span>
+    rdf:type           :Hanok ;
+    rdfs:label         "한옥마을 21호 (김씨고가)" ;
+    :builtYear         "1923"^^xsd:gYear ;
+    :structure         :StructureCode/일반목구조 ;
+    :roof              :RoofCode/한식기와 ;
+    :totalArea         "158.4"^^xsd:decimal ;
+    :fireRisk          "0.85"^^xsd:decimal ;
+    :status            :Status/경보 ;
+    :memberOf          :Cluster/CL-01 ;
+    :address           [ :sido       :Region/전라남도 ;
+                         :sigungu    :Region/무안군 ;
+                         :eupmyundong :Region/몽탄면 ;
+                         :roadName   "한옥마을길" ;
+                         :buildingNo "21" ] ;
+    :ownerRole         "보존회 위탁운영" ;
+    :adjacentTo        :Building/B-3019 ,
+                       :Building/B-3022 ,
+                       :Building/B-3025 ,
+                       :Building/B-3018 ,
+                       :Building/B-3027 .
+
+<span class="text-amber-300"># --- subsumption으로 자동 도출 (reasoner 또는 query expansion) ---</span>
+<span class="text-slate-500">:Building/B-3021 rdf:type :TraditionalClusterMember .  # via :Hanok subclass</span>
+<span class="text-slate-500">:Building/B-3021 rdf:type :Building .                  # via :TraditionalClusterMember subclass</span></pre>
+      </div>
+    </div>
+
+    <div class="text-center layer-arrow">↓</div>
+
+    <!-- Layer 2: Rule Evaluation -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="bg-emerald-700 text-white px-5 py-3 flex items-center gap-3">
+        <span class="bg-emerald-900 text-xs mono px-2 py-0.5 rounded">LAYER 2</span>
+        <span class="font-semibold text-sm">RULE EVALUATION · 4개 룰 평가</span>
+        <span class="text-xs text-emerald-200 ml-auto mono">rules.yaml</span>
+      </div>
+      <div class="p-5 space-y-3">
+
+        <div class="rule-fired p-3 rounded-lg">
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="text-xs font-bold text-emerald-800 mono">RULE-001</span>
+            <span class="text-xs text-emerald-700">건물 화재위험 임계 초과</span>
+            <span class="ml-auto text-xs bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full font-semibold">FIRED · T+0ms</span>
+          </div>
+          <div class="text-xs text-slate-700 mono leading-relaxed">
+            <span class="text-slate-500">when:</span> Building.fireRisk > 0.70<br>
+            <span class="text-slate-500">eval:</span> 0.85 > 0.70 → <strong class="text-emerald-700">true</strong><br>
+            <span class="text-slate-500">action:</span> create :Incident/INC-882 (severity=HIGH)
+          </div>
+        </div>
+
+        <div class="rule-fired p-3 rounded-lg">
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="text-xs font-bold text-emerald-800 mono">RULE-002</span>
+            <span class="text-xs text-emerald-700">전통건축물 자원 매칭</span>
+            <span class="ml-auto text-xs bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full font-semibold">FIRED · T+78ms</span>
+          </div>
+          <div class="text-xs text-slate-700 mono leading-relaxed">
+            <span class="text-slate-500">when:</span> incident.building.type == TraditionalCluster<br>
+            <span class="text-slate-500">eval:</span> :B-3021 a :Hanok ⊑ :TraditionalClusterMember → <strong class="text-emerald-700">true</strong> <span class="text-slate-400">(subsumption)</span><br>
+            <span class="text-slate-500">match:</span> 폼차×2 + 전통건축팀×1, exclude 화학소방차<br>
+            <span class="text-slate-500">→ 자원:</span> <code class="bg-white px-1 rounded">VEH-117</code>, <code class="bg-white px-1 rounded">VEH-203</code>, <code class="bg-white px-1 rounded">TEAM-T1</code>
+          </div>
+        </div>
+
+        <div class="rule-fired p-3 rounded-lg">
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="text-xs font-bold text-emerald-800 mono">RULE-003</span>
+            <span class="text-xs text-emerald-700">인접 건물 선제 경보</span>
+            <span class="ml-auto text-xs bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full font-semibold">FIRED · T+112ms</span>
+          </div>
+          <div class="text-xs text-slate-700 mono leading-relaxed">
+            <span class="text-slate-500">when:</span> incident.severity == HIGH<br>
+            <span class="text-slate-500">collect:</span> :B-3021 :adjacentTo ?b WHERE distance < 100<br>
+            <span class="text-slate-500">→ 매칭:</span> <code class="bg-white px-1 rounded">#B-3019(42m)</code> <code class="bg-white px-1 rounded">#B-3022(68m)</code> <code class="bg-white px-1 rounded">#B-3025(93m)</code><br>
+            <span class="text-slate-500">→ 제외:</span> #B-3018(135m), #B-3027(210m)
+          </div>
+        </div>
+
+        <div class="rule-fired p-3 rounded-lg">
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="text-xs font-bold text-emerald-800 mono">RULE-004</span>
+            <span class="text-xs text-emerald-700">외부 기관 통보</span>
+            <span class="ml-auto text-xs bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full font-semibold">FIRED · T+156ms</span>
+          </div>
+          <div class="text-xs text-slate-700 mono leading-relaxed">
+            <span class="text-slate-500">when:</span> incident.building.type == TraditionalCluster → <strong class="text-emerald-700">true</strong><br>
+            <span class="text-slate-500">notify:</span> 무안소방서(<code class="bg-white px-1 rounded">AG-01</code>) + 국가유산청(<code class="bg-white px-1 rounded">AG-02</code>) + 보존회장(<code class="bg-white px-1 rounded">AG-03</code>)
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-500 bg-blue-50 rounded-lg p-3 border-l-4 border-blue-400 mt-2">
+          <strong class="text-blue-800">매핑 결정 포인트 ②</strong> · 룰 4개 중 <strong>RULE-001은 임계비교</strong> (산술), <strong>RULE-002는 클래스 멤버십</strong> (OWL subsumption), <strong>RULE-003은 그래프 traversal + 거리 필터</strong> (SPARQL/SHACL/외부 룰), <strong>RULE-004는 다중 entity 조회 + 통지</strong>. 같은 yaml 파일 안에 4가지 *서로 다른 종류의 추론*이 섞여 있음. → 룰 엔진은 이 모든 걸 통일된 인터페이스로 처리. OWL DL reasoner는 RULE-002만 처리 가능.
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center layer-arrow">↓</div>
+
+    <!-- Layer 3: Trigger + Action -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="bg-red-600 text-white px-5 py-3 flex items-center gap-3">
+        <span class="bg-red-800 text-xs mono px-2 py-0.5 rounded">LAYER 3</span>
+        <span class="font-semibold text-sm">TRIGGER + ACTION · 200ms 시퀀스</span>
+        <span class="text-xs text-red-200 ml-auto">의미 → 행동</span>
+      </div>
+      <div class="p-5 space-y-4">
+
+        <div>
+          <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">5 Dispatches</div>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+            <div class="bg-red-50 border border-red-200 rounded-lg p-2.5 text-xs">
+              <div class="flex justify-between items-baseline"><span class="mono font-bold text-slate-800">VEH-117</span><span class="text-red-600 font-bold">4min</span></div>
+              <div class="text-slate-500 text-[10px]">폼차 · 무안소방서</div>
+            </div>
+            <div class="bg-red-50 border border-red-200 rounded-lg p-2.5 text-xs">
+              <div class="flex justify-between items-baseline"><span class="mono font-bold text-slate-800">VEH-203</span><span class="text-red-600 font-bold">6min</span></div>
+              <div class="text-slate-500 text-[10px]">폼차 · 일로119</div>
+            </div>
+            <div class="bg-red-50 border border-red-200 rounded-lg p-2.5 text-xs">
+              <div class="flex justify-between items-baseline"><span class="mono font-bold text-slate-800">TEAM-T1</span><span class="text-red-600 font-bold">8min</span></div>
+              <div class="text-slate-500 text-[10px]">전통건축팀 · 임시거점</div>
+            </div>
+            <div class="bg-red-50 border border-red-200 rounded-lg p-2.5 text-xs">
+              <div class="flex justify-between items-baseline"><span class="mono font-bold text-slate-800">AMB-09</span><span class="text-red-600 font-bold">2min</span></div>
+              <div class="text-slate-500 text-[10px]">구급차 · 무안소방서</div>
+            </div>
+            <div class="bg-red-50 border border-red-200 rounded-lg p-2.5 text-xs">
+              <div class="flex justify-between items-baseline"><span class="mono font-bold text-slate-800">CMD-01</span><span class="text-red-600 font-bold">5min</span></div>
+              <div class="text-slate-500 text-[10px]">지휘차 · 무안소방서</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">6 Notifications</div>
+          <div class="space-y-2 text-xs">
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-2.5">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="bg-amber-200 text-amber-900 mono text-[10px] px-1.5 py-0.5 rounded font-bold">RULE-003</span>
+                <span class="text-amber-800 font-semibold">인접 (3건)</span>
+              </div>
+              <div class="text-slate-600 mono text-[11px]">#B-3019, #B-3022, #B-3025</div>
+              <div class="text-slate-500 text-[11px]">"선제대피 권고" · SMS+APP</div>
+            </div>
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-2.5">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="bg-amber-200 text-amber-900 mono text-[10px] px-1.5 py-0.5 rounded font-bold">RULE-004</span>
+                <span class="text-amber-800 font-semibold">외부 기관 (3건)</span>
+              </div>
+              <div class="text-slate-600 text-[11px]">무안소방서 · 국가유산청 · 보존회장</div>
+              <div class="text-slate-500 text-[11px]">API + SMS + 이메일</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 rounded-lg p-3">
+          <div class="text-xs text-slate-400 mb-1.5 font-semibold">200ms 시퀀스 (시스템 시각)</div>
+<pre class="mono text-[11px] text-emerald-300 leading-relaxed">15:14:23.001  RULE-001 fires      → Incident INC-882 created
+15:14:23.045  graph traversal     → cluster, residents, adjacentTo
+15:14:23.078  RULE-002 fires      → 자원 매칭: VEH-117, VEH-203, TEAM-T1
+15:14:23.112  RULE-003 fires      → 인접 3건 통보
+15:14:23.156  RULE-004 fires      → 외부 기관 3건 통보
+15:14:23.201  dispatch 실행       → 5 vehicles + 6 notifications</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-xs text-slate-400 text-center pt-2 pb-6">
+      이 4단 추상화가 ruledata #how의 200ms 트리거 시퀀스와 1:1 대응합니다.<br>
+      단계별 RDF 변환 상세는 <code class="mono bg-slate-100 px-1.5 py-0.5 rounded">abstraction_steps.md</code> 참조.
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

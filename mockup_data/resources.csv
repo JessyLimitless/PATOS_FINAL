@@ -1,0 +1,9 @@
+resource_id,type,home_station,deployed_at,status,eta_to_b3021_min,note
+VEH-117,폼차,ST-101,ST-101,available,4,주력 진압차
+VEH-203,폼차,ST-103,ST-103,available,6,일로 거점
+VEH-308,폼차,ST-104,ST-104,on_call,12,타 출동 중
+VEH-401,탱크차,ST-101,ST-101,available,5,
+AMB-09,구급차,ST-101,ST-101,available,2,최단거리
+AMB-12,구급차,ST-103,ST-103,available,8,예비
+CMD-01,지휘차,ST-101,ST-101,available,5,
+TEAM-T1,전통건축팀,ST-201,몽탄면 한옥마을 보존회 임시거점,available,8,주1회 정기점검 차 출장 중

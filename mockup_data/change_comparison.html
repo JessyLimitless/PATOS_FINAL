@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>변화 비교 — 시나리오 방식 vs OWL 추론 방식</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { font-family: Inter, sans-serif; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeIn 0.4s ease-out both; }
+  .tab-btn { transition: all 0.15s; }
+  .tab-btn.active { background: #1e293b; color: white; }
+  pre { white-space: pre-wrap; word-break: break-word; }
+</style>
+</head>
+<body class="bg-slate-100 min-h-screen p-4 md:p-6">
+<div class="max-w-7xl mx-auto">
+
+<!-- Header -->
+<header class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-5">
+  <div class="flex items-center gap-4">
+    <div class="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-700 rounded-xl flex items-center justify-center text-white text-2xl">⚖️</div>
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800">변화 비교</h1>
+      <p class="text-sm text-slate-500 mt-0.5">시나리오 방식 vs OWL 추론 방식 — 같은 데이터·같은 변화 → 다른 *비용*</p>
+    </div>
+  </div>
+  <div class="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900">
+    👇 시나리오 탭 선택 → "<strong>▶ 변화 적용</strong>" 버튼 → 양쪽이 어떻게 다르게 반응하는지 펼쳐집니다.
+  </div>
+</header>
+
+<!-- Scenario tabs -->
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 mb-5">
+  <div class="flex flex-wrap gap-2 mb-4">
+    <button id="tab-A" onclick="selectScenario('A')" class="tab-btn active px-4 py-2 rounded-lg text-sm font-medium bg-slate-200 text-slate-700">시나리오 A · 한옥카페 추가</button>
+    <button id="tab-B" onclick="selectScenario('B')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-200 text-slate-700">시나리오 B · 기관명 개편</button>
+  </div>
+  <div id="scenario-desc" class="text-sm text-slate-600 mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200"></div>
+  <div class="text-center">
+    <button id="apply-btn" onclick="applyChange()" class="bg-gradient-to-r from-violet-600 to-indigo-700 hover:from-violet-700 hover:to-indigo-800 text-white font-bold px-8 py-3 rounded-xl shadow-lg transition">
+      ▶ 변화 적용
+    </button>
+    <button onclick="resetChange()" class="ml-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-4 py-3 rounded-xl">↻ Reset</button>
+  </div>
+</div>
+
+<!-- Comparison columns -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+  <div class="bg-white rounded-2xl border-2 border-red-200 shadow-sm overflow-hidden">
+    <div class="bg-gradient-to-r from-red-600 to-rose-700 text-white px-5 py-3">
+      <h2 class="font-bold flex items-center gap-2"><span class="text-xl">📋</span><span>시나리오 방식</span></h2>
+      <p class="text-xs text-red-100 mt-0.5">if-else로 케이스를 일일이 명시</p>
+    </div>
+    <div id="left-content" class="p-5"></div>
+  </div>
+  <div class="bg-white rounded-2xl border-2 border-emerald-200 shadow-sm overflow-hidden">
+    <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white px-5 py-3">
+      <h2 class="font-bold flex items-center gap-2"><span class="text-xl">🦉</span><span>OWL 추론 방식</span></h2>
+      <p class="text-xs text-emerald-100 mt-0.5">규칙 + 자동 도출</p>
+    </div>
+    <div id="right-content" class="p-5"></div>
+  </div>
+</div>
+
+<!-- Cost summary -->
+<div id="cost-summary" class="mt-5" style="display:none"></div>
+
+<!-- Footer note -->
+<div class="text-xs text-slate-500 text-center mt-6 px-4 leading-relaxed pb-6">
+  실제 시스템에선 두 방식이 *섞여* 있는 경우가 많고, 변화의 빈도·규모에 따라 적정선이 달라집니다.<br>
+  이 비교는 *극단의 두 case*를 대조해 학습하는 용도예요. 작은 도메인엔 시나리오로 충분할 수 있습니다.
+</div>
+
+</div>
+
+<script>
+let currentScenario = 'A';
+let changeApplied = false;
+
+const scenarios = {
+  A: {
+    desc: `<strong>변화:</strong> 무안 한옥마을에 새로운 한옥카페가 영업 시작 → 데이터에 <code class="mono bg-white px-1 rounded">#B-9999, type=한옥카페</code> 추가됨.<br><span class="text-slate-500 text-xs mt-1 block">기존엔 <code class="mono">type=TraditionalCluster</code>인 건물 3채만 있었음.</span>`,
+
+    leftBefore: `<div class="space-y-3">
+      <div class="text-sm font-bold text-slate-700 mb-1">현재 상태</div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <div class="text-xs text-slate-500 mb-1 mono font-semibold">buildings.csv</div>
+        <pre class="mono text-xs text-slate-700">#B-3021, type=TraditionalCluster
+#B-3019, type=TraditionalCluster
+#B-3022, type=TraditionalCluster</pre>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <div class="text-xs text-slate-500 mb-1 mono font-semibold">rules.yaml — 조건은 <em>문자열 일치</em></div>
+        <pre class="mono text-xs text-slate-700">RULE-002:
+  when: type == "TraditionalCluster"
+  match: 폼차×2 + 전통건축팀
+
+RULE-004:
+  when: type == "TraditionalCluster"
+  notify: [관할소방서, 국가유산청, 보존회장]</pre>
+      </div>
+      <div class="bg-emerald-50 rounded-lg p-3 text-xs text-emerald-800 border border-emerald-200">
+        ✅ 3채 모두에서 RULE-002, 004 정상 작동
+      </div>
+    </div>`,
+
+    leftAfter: `<div class="space-y-3 fade-in">
+      <div class="text-sm font-bold text-slate-700 mb-1">변화 후 — <span class="text-red-600">⚠ 침묵의 실패</span></div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <div class="text-xs text-slate-500 mb-1 mono font-semibold">buildings.csv (한 행 추가됨)</div>
+        <pre class="mono text-xs text-slate-700">#B-3021, type=TraditionalCluster  <span class="text-emerald-600">✓</span>
+#B-3019, type=TraditionalCluster  <span class="text-emerald-600">✓</span>
+#B-3022, type=TraditionalCluster  <span class="text-emerald-600">✓</span>
+<span class="text-red-600 font-bold">#B-9999, type=한옥카페           ❌ 룰 미스매치</span></pre>
+      </div>
+      <div class="bg-red-50 rounded-lg p-3 border border-red-200">
+        <div class="text-xs font-bold text-red-800 mb-2">B-9999 화재 발생 시:</div>
+        <ul class="text-xs text-red-700 space-y-1.5">
+          <li>❌ RULE-002: <code class="mono bg-white px-1 rounded">type=="TraditionalCluster"</code> 매치 실패 → 폼차·전통팀 자동 매칭 안 됨</li>
+          <li>❌ <strong>화학소방차 출동 가능</strong> (목재 손상 위험!)</li>
+          <li>❌ RULE-004 매치 실패 → 보존회장·국가유산청 통보 누락</li>
+          <li>❌ 일반 건물처럼 잘못 대응</li>
+        </ul>
+      </div>
+      <div class="bg-amber-50 rounded-lg p-3 border border-amber-200">
+        <div class="text-xs font-bold text-amber-800 mb-2">고치려면 — rules.yaml 수정:</div>
+        <pre class="mono text-xs text-amber-700">RULE-002:
+  when: type in ["TraditionalCluster", "한옥카페"]  # 수정
+RULE-004:
+  when: type in ["TraditionalCluster", "한옥카페"]  # 수정</pre>
+        <div class="text-xs text-amber-700 mt-2 leading-relaxed">→ 미래 한옥체험관·종가카페·사찰펜션 추가될 때마다 *또* 룰 수정 필요</div>
+      </div>
+      <div class="bg-slate-900 rounded-lg p-3 text-xs">
+        <div class="text-amber-300 font-bold mb-1">변경 비용</div>
+        <div class="mono text-rose-300">파일 수정: rules.yaml × 2 룰 × 1 줄 = 즉시 2 변경</div>
+        <div class="mono text-rose-300">N개 새 타입 추가 시: 2N 룰 수정 (선형 비용)</div>
+      </div>
+    </div>`,
+
+    rightBefore: `<div class="space-y-3">
+      <div class="text-sm font-bold text-slate-700 mb-1">현재 상태</div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <div class="text-xs text-slate-500 mb-1 mono font-semibold">ontology.ttl — 클래스 계층</div>
+        <pre class="mono text-xs text-slate-700">:Hanok rdfs:subClassOf :TraditionalClusterMember .
+:TraditionalClusterMember rdfs:subClassOf :Building .</pre>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <div class="text-xs text-slate-500 mb-1 mono font-semibold">rules.yaml — 조건은 <em>클래스 멤버십</em></div>
+        <pre class="mono text-xs text-slate-700">RULE-002:
+  when: target a :TraditionalClusterMember
+  match: 폼차×2 + 전통건축팀
+
+RULE-004:
+  when: target a :TraditionalClusterMember
+  notify: [관할소방서, 국가유산청, 보존회장]</pre>
+      </div>
+      <div class="bg-emerald-50 rounded-lg p-3 text-xs text-emerald-800 border border-emerald-200">
+        ✅ 3채 모두 RULE-002, 004 정상 작동 (모두 :Hanok 인스턴스 → subsumption으로 :TradMember)
+      </div>
+    </div>`,
+
+    rightAfter: `<div class="space-y-3 fade-in">
+      <div class="text-sm font-bold text-slate-700 mb-1">변화 후 — <span class="text-emerald-600">✅ 자동 흡수</span></div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <div class="text-xs text-slate-500 mb-1 mono font-semibold">ontology.ttl — <em>한 줄만</em> 추가</div>
+        <pre class="mono text-xs text-slate-700">:Hanok rdfs:subClassOf :TraditionalClusterMember .
+:TraditionalClusterMember rdfs:subClassOf :Building .
+<span class="text-emerald-700 font-bold">:한옥카페 rdfs:subClassOf :Hanok .  ← 추가</span></pre>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <div class="text-xs text-slate-500 mb-1 mono font-semibold">Reasoner 자동 추론</div>
+        <pre class="mono text-xs text-slate-700">B-9999 a :한옥카페                    (asserted)
+B-9999 a :Hanok                       <span class="text-emerald-700">(✨ R1)</span>
+B-9999 a :TraditionalClusterMember    <span class="text-emerald-700">(✨ R1 transitive)</span>
+B-9999 a :Building                    <span class="text-emerald-700">(✨ R1 transitive)</span></pre>
+      </div>
+      <div class="bg-emerald-50 rounded-lg p-3 border border-emerald-200">
+        <div class="text-xs font-bold text-emerald-800 mb-2">B-9999 화재 발생 시:</div>
+        <ul class="text-xs text-emerald-700 space-y-1.5">
+          <li>✅ RULE-002: <code class="mono bg-white px-1 rounded">target a :TraditionalClusterMember</code> 매치 (subsumption)</li>
+          <li>✅ 폼차×2 + 전통건축팀 자동 매칭, 화학소방차 자동 제외</li>
+          <li>✅ RULE-004 매치 → 보존회장·국가유산청 자동 통보</li>
+          <li>✅ 한옥과 동일한 처리 — <strong>룰 수정 0줄</strong></li>
+        </ul>
+      </div>
+      <div class="bg-slate-900 rounded-lg p-3 text-xs">
+        <div class="text-amber-300 font-bold mb-1">변경 비용</div>
+        <div class="mono text-emerald-300">파일 수정: ontology.ttl × 1 줄</div>
+        <div class="mono text-emerald-300">N개 새 타입 추가 시: N 줄 (룰 수정 0)</div>
+        <div class="mono text-emerald-300">규칙 자체는 *영원히 그대로*</div>
+      </div>
+    </div>`,
+
+    cost: {
+      scenario: '룰 수정 즉시 2줄 + 미래 새 타입마다 2줄씩 더 (선형 누적)',
+      owl: 'ontology 한 줄 추가. 룰은 영원히 안 건드림. 미래 타입도 한 줄씩만.',
+      lesson: '시나리오는 *룰을 매번* 수정. OWL은 *분류만* 추가하고 *룰은 보존*.'
+    }
+  },
+
+  B: {
+    desc: `<strong>변화:</strong> 2024년 5월, 정부 조직 개편으로 <code class="mono bg-white px-1 rounded">문화재청</code>이 <code class="mono bg-white px-1 rounded">국가유산청</code>으로 명칭 변경.<br><span class="text-slate-500 text-xs mt-1 block">기존 데이터·룰·다른 시스템 모두 "문화재청"으로 적혀 있는 상태.</span>`,
+
+    leftBefore: `<div class="space-y-3">
+      <div class="text-sm font-bold text-slate-700 mb-1">개편 전 상태</div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <div class="text-xs text-slate-500 mb-1 mono font-semibold">agencies.csv</div>
+        <pre class="mono text-xs text-slate-700">AG-02, 문화재청, 중앙기관, ...</pre>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <div class="text-xs text-slate-500 mb-1 mono font-semibold">rules.yaml RULE-004</div>
+        <pre class="mono text-xs text-slate-700">notify: ["관할소방서", "문화재청", "보존회장"]</pre>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <div class="text-xs text-slate-500 mb-1 mono font-semibold">incidents.csv (과거 사건 누적)</div>
+        <pre class="mono text-xs text-slate-700">INC-321, ..., notified="문화재청"
+INC-456, ..., notified="문화재청"
+INC-577, ..., notified="문화재청"
+... (수천 건)</pre>
+      </div>
+    </div>`,
+
+    leftAfter: `<div class="space-y-3 fade-in">
+      <div class="text-sm font-bold text-slate-700 mb-1">개편 후 — <span class="text-red-600">⚠ 다발성 깨짐</span></div>
+      <div class="bg-red-50 rounded-lg p-3 border border-red-200">
+        <div class="text-xs font-bold text-red-800 mb-2">고쳐야 할 곳 — 모든 등장 위치:</div>
+        <ul class="text-xs text-red-700 space-y-1.5">
+          <li>① <code class="mono bg-white px-1 rounded">agencies.csv</code> AG-02 row</li>
+          <li>② <code class="mono bg-white px-1 rounded">rules.yaml</code> RULE-004 notify list</li>
+          <li>③ <code class="mono bg-white px-1 rounded">incidents.csv</code> 과거 기록 수천 건</li>
+          <li>④ 다른 시스템(소방청·자체 보고 시스템) 매핑</li>
+          <li>⑤ 문서·UI 라벨·이메일 템플릿</li>
+        </ul>
+      </div>
+      <div class="bg-amber-50 rounded-lg p-3 border border-amber-200">
+        <div class="text-xs font-bold text-amber-800 mb-2">선택의 딜레마:</div>
+        <ul class="text-xs text-amber-700 space-y-2">
+          <li><strong>옵션 A</strong> — 옛 데이터까지 모두 "국가유산청"으로 변경<br><span class="text-red-600">→ historical accuracy 손실 (옛날엔 "문화재청"이라 불렀던 사실이 사라짐)</span></li>
+          <li><strong>옵션 B</strong> — 옛 데이터는 "문화재청" 유지, 새 데이터만 "국가유산청"<br><span class="text-red-600">→ 검색·집계 깨짐 ("국가유산청 통보 사례" 검색 시 옛 기록 안 나옴)</span></li>
+        </ul>
+      </div>
+      <div class="bg-red-50 rounded-lg p-3 text-xs text-red-700 border border-red-200">
+        ❌ 빠뜨린 곳이 *반드시 생김* (Silent bug). 다음 화재 통보에서 누락 발견될 수 있음.
+      </div>
+      <div class="bg-slate-900 rounded-lg p-3 text-xs">
+        <div class="text-amber-300 font-bold mb-1">변경 비용</div>
+        <div class="mono text-rose-300">N개 등장 위치 × M개 시스템 = N × M 변경</div>
+        <div class="mono text-rose-300">+ 관계자 협의·테스트·롤아웃 + accuracy/search 트레이드오프</div>
+      </div>
+    </div>`,
+
+    rightBefore: `<div class="space-y-3">
+      <div class="text-sm font-bold text-slate-700 mb-1">개편 전 상태</div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <div class="text-xs text-slate-500 mb-1 mono font-semibold">ontology.ttl — URI로 <em>불투명 식별</em></div>
+        <pre class="mono text-xs text-slate-700">:Agency/AG-02 a :CentralAuthority ;
+    rdfs:label "문화재청" .</pre>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <div class="text-xs text-slate-500 mb-1 mono font-semibold">RULE-004 — URI 참조 (이름 아님)</div>
+        <pre class="mono text-xs text-slate-700">notify: [
+  :관할소방서,
+  :Agency/AG-02,    # URI (이름 아님)
+  :보존회장
+]</pre>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <div class="text-xs text-slate-500 mb-1 mono font-semibold">incidents.csv (과거 사건)</div>
+        <pre class="mono text-xs text-slate-700">INC-321, ..., notified=:Agency/AG-02
+INC-456, ..., notified=:Agency/AG-02
+... (수천 건)</pre>
+      </div>
+    </div>`,
+
+    rightAfter: `<div class="space-y-3 fade-in">
+      <div class="text-sm font-bold text-slate-700 mb-1">개편 후 — <span class="text-emerald-600">✅ 라벨 한 줄</span></div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <div class="text-xs text-slate-500 mb-1 mono font-semibold">ontology.ttl — <em>한 곳만</em> 변경</div>
+        <pre class="mono text-xs text-slate-700">:Agency/AG-02 a :CentralAuthority ;
+    rdfs:label "국가유산청" ;       <span class="text-emerald-700 font-bold">← label 변경</span>
+    skos:altLabel "문화재청" .       <span class="text-emerald-700 font-bold">← 옛 명칭 보존</span></pre>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <div class="text-xs text-slate-500 mb-1 mono font-semibold">외부 시스템과의 매핑 (선택)</div>
+        <pre class="mono text-xs text-slate-700">:Agency/AG-02 owl:sameAs ext:CHA-old-id ;
+              owl:sameAs ext:KHA-new-id .</pre>
+      </div>
+      <div class="bg-emerald-50 rounded-lg p-3 border border-emerald-200">
+        <div class="text-xs font-bold text-emerald-800 mb-2">자동 효과:</div>
+        <ul class="text-xs text-emerald-700 space-y-1.5">
+          <li>✅ rules.yaml의 <code class="mono bg-white px-1 rounded">:Agency/AG-02</code> 참조 *그대로* 유효</li>
+          <li>✅ 과거 incidents.csv의 모든 참조 *그대로* 유효 (옛 데이터 보존)</li>
+          <li>✅ "국가유산청" 검색 → 옛 기록도 자동 매칭 (rdfs:label)</li>
+          <li>✅ "문화재청" 검색 → 옛/새 모두 매칭 (skos:altLabel)</li>
+          <li>✅ historical accuracy + 현재 search *둘 다 유지*</li>
+        </ul>
+      </div>
+      <div class="bg-slate-900 rounded-lg p-3 text-xs">
+        <div class="text-amber-300 font-bold mb-1">변경 비용</div>
+        <div class="mono text-emerald-300">파일 수정: ontology.ttl 한 곳 (label + altLabel)</div>
+        <div class="mono text-emerald-300">데이터·룰·과거기록: 0 변경</div>
+        <div class="mono text-emerald-300">→ *명칭과 의미가 분리*되어 있어서 가능</div>
+      </div>
+    </div>`,
+
+    cost: {
+      scenario: '모든 등장 위치 × 모든 시스템 = N × M 변경. 빠뜨림 위험 高. historical accuracy ↔ search 트레이드오프',
+      owl: 'URI 한 곳의 label 변경. 룰·데이터·과거기록 모두 그대로. 옛 명칭은 altLabel로 보존',
+      lesson: '시나리오는 *이름 = 의미*. OWL은 *URI = 의미, label = 표시*. 명칭이 바뀌어도 *의미는 그대로*.'
+    }
+  }
+};
+
+function selectScenario(s) {
+  currentScenario = s;
+  changeApplied = false;
+  document.getElementById('tab-A').classList.toggle('active', s === 'A');
+  document.getElementById('tab-B').classList.toggle('active', s === 'B');
+  document.getElementById('scenario-desc').innerHTML = scenarios[s].desc;
+  document.getElementById('cost-summary').style.display = 'none';
+  render();
+}
+
+function applyChange() {
+  changeApplied = true;
+  render();
+  document.getElementById('cost-summary').style.display = 'block';
+  renderCostSummary();
+}
+
+function resetChange() {
+  changeApplied = false;
+  render();
+  document.getElementById('cost-summary').style.display = 'none';
+}
+
+function render() {
+  const s = scenarios[currentScenario];
+  document.getElementById('left-content').innerHTML = changeApplied
+    ? s.leftBefore + '<hr class="my-4 border-slate-200">' + s.leftAfter
+    : s.leftBefore;
+  document.getElementById('right-content').innerHTML = changeApplied
+    ? s.rightBefore + '<hr class="my-4 border-slate-200">' + s.rightAfter
+    : s.rightBefore;
+}
+
+function renderCostSummary() {
+  const s = scenarios[currentScenario];
+  document.getElementById('cost-summary').innerHTML = `
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 fade-in">
+      <h2 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2"><span>📊</span><span>변경 비용 비교</span></h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div class="text-sm font-bold text-red-800 mb-2 flex items-center gap-2">📋 시나리오 방식</div>
+          <div class="text-xs text-red-700 leading-relaxed">${s.cost.scenario}</div>
+        </div>
+        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+          <div class="text-sm font-bold text-emerald-800 mb-2 flex items-center gap-2">🦉 OWL 추론 방식</div>
+          <div class="text-xs text-emerald-700 leading-relaxed">${s.cost.owl}</div>
+        </div>
+      </div>
+      <div class="bg-violet-50 border border-violet-200 rounded-lg p-4">
+        <div class="text-sm font-bold text-violet-800 mb-1">💡 핵심 교훈</div>
+        <div class="text-xs text-violet-700 leading-relaxed">${s.cost.lesson}</div>
+      </div>
+    </div>
+  `;
+}
+
+selectScenario('A');
+</script>
+</body>
+</html>

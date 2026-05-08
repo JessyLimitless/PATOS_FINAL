@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RuleData — 온톨로지의 진짜 무게</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+html { -webkit-text-size-adjust: 100%; }
+body { font-family: Inter, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.code-line { line-height: 1.7; }
+.gradient-text { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.gradient-text-blue { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.grid-cell { transition: all 0.2s; }
+@media (hover: hover) {
+  .grid-cell:hover { transform: scale(1.15); z-index: 10; }
+  .layer-card:hover { transform: translateX(8px); }
+}
+@keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fade-in 0.6s ease-out both; }
+@keyframes pulse-glow { 0%,100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 50% { box-shadow: 0 0 0 12px rgba(59, 130, 246, 0); } }
+.pulse-glow { animation: pulse-glow 2s infinite; }
+.layer-card { transition: transform 0.3s, box-shadow 0.3s; }
+@keyframes alert-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.05); } }
+.alert-pulse { animation: alert-pulse 2s ease-in-out infinite; }
+/* Mobile: prevent text overflow */
+@media (max-width: 640px) {
+  h1, h2, h3 { word-break: keep-all; }
+  table { font-size: 0.8rem; }
+}
+/* Routing */
+[data-page] { display: none; }
+[data-page].is-active { display: block; }
+.route-link { transition: all 0.2s; }
+.route-link.active { background: #0f172a; color: #fff; }
+.route-link.active:hover { background: #1e293b; }
+@keyframes page-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+[data-page].is-active { animation: page-fade 0.4s ease-out; }
+</style>
+</head>
+<body class="bg-slate-100">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- STICKY NAV                                           -->
+<!-- ═══════════════════════════════════════════════════ -->
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between gap-2">
+    <a href="#why" class="flex items-center gap-2 font-black text-slate-900 text-sm md:text-base shrink-0">
+      <span class="w-7 h-7 bg-gradient-to-br from-amber-500 to-red-500 rounded-md flex items-center justify-center text-white text-xs">R</span>
+      <span class="hidden sm:inline">RuleData</span>
+    </a>
+    <nav class="flex gap-1 sm:gap-2 text-xs sm:text-sm">
+      <a href="#why" data-route="why" class="route-link px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-slate-600 font-medium">왜 온톨로지인가</a>
+      <a href="#how" data-route="how" class="route-link px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-slate-600 font-medium">어떻게 작동하나</a>
+    </nav>
+  </div>
+</header>
+
+<div class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12 space-y-12">
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- HERO  (Page 1)                                       -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section data-page="why" class="text-center fade-in">
+    <div class="mono text-xs text-amber-600 tracking-[0.3em] mb-4">JOURNEY OF SKEPTICISM → TRUTH</div>
+    <h1 class="text-4xl sm:text-5xl md:text-7xl font-black text-slate-900 leading-[1.1] md:leading-[1.05] mb-6">
+      "추론은 <span class="gradient-text">if + search</span>"<br>
+      <span class="text-slate-400">로 시작한 의심이</span><br>
+      <span class="gradient-text-blue">존재론</span> <span class="text-slate-400">에 닿기까지.</span>
+    </h1>
+    <p class="text-base md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed px-2">
+      온톨로지라는 단어가 거품인지 정당한지 — 끝까지 의심해서 도달한 지점.<br>
+      <strong class="text-slate-900">결론: 4개의 층이 있다.</strong>
+    </p>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- SECTION 01: 추론 해체                                 -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section data-page="why" class="bg-white rounded-3xl shadow-sm p-8 md:p-12">
+    <div class="text-center mb-10">
+      <div class="mono text-xs text-slate-500 tracking-[0.2em] mb-2">STAGE 01 — 의심의 시작</div>
+      <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-3">"추론"을 해체하면</h2>
+      <p class="text-slate-600">엄밀히 따지면 다음 세 가지로 환원된다.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-5 mb-8">
+      <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200">
+        <div class="mono text-xs text-slate-500 mb-2">01</div>
+        <h3 class="font-bold text-lg text-slate-900 mb-3">Forward Chaining</h3>
+        <p class="text-sm text-slate-600 mb-4 leading-relaxed">룰 발동 → 새 사실 도출 → 또 다른 룰 발동</p>
+        <div class="mono text-xs bg-slate-900 text-slate-100 rounded-lg p-3 leading-relaxed">
+          <span class="text-purple-400">if</span> A <span class="text-slate-500">then</span> B<br>
+          <span class="text-purple-400">if</span> B <span class="text-slate-500">then</span> C<br>
+          <span class="text-amber-400">⟹ A then C</span>
+        </div>
+      </div>
+      <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200">
+        <div class="mono text-xs text-slate-500 mb-2">02</div>
+        <h3 class="font-bold text-lg text-slate-900 mb-3">Backward Chaining</h3>
+        <p class="text-sm text-slate-600 mb-4 leading-relaxed">목표 → 그걸 만족시키는 룰 역추적</p>
+        <div class="mono text-xs bg-slate-900 text-slate-100 rounded-lg p-3 leading-relaxed">
+          goal: C<br>
+          <span class="text-slate-500">need</span> B<br>
+          <span class="text-slate-500">need</span> A<br>
+          <span class="text-amber-400">⟹ search path</span>
+        </div>
+      </div>
+      <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200">
+        <div class="mono text-xs text-slate-500 mb-2">03</div>
+        <h3 class="font-bold text-lg text-slate-900 mb-3">Subsumption</h3>
+        <p class="text-sm text-slate-600 mb-4 leading-relaxed">타입 계층 따라 속성 자동 상속</p>
+        <div class="mono text-xs bg-slate-900 text-slate-100 rounded-lg p-3 leading-relaxed">
+          요양원 is-a 의료시설<br>
+          의료시설 needs 구급차<br>
+          <span class="text-amber-400">⟹ 요양원 needs 구급차</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-gradient-to-r from-amber-50 to-red-50 border-2 border-amber-200 rounded-2xl p-6 text-center">
+      <div class="mono text-xs text-amber-700 tracking-widest mb-3">결국 셋 다</div>
+      <div class="text-2xl md:text-3xl font-black text-slate-900">
+        = 구조화된 <span class="text-red-600">조건문</span> + <span class="text-blue-600">검색</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- SECTION 02: 합성                                      -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section data-page="why" class="bg-slate-900 rounded-3xl p-8 md:p-12 text-white">
+    <div class="text-center mb-10">
+      <div class="mono text-xs text-amber-400 tracking-[0.2em] mb-2">STAGE 02 — 첫 차이</div>
+      <h2 class="text-3xl md:text-5xl font-black mb-3">합성(Composition)</h2>
+      <p class="text-slate-400 max-w-2xl mx-auto">조건문은 같지만, 누가 <strong class="text-white">조합</strong>을 작성하느냐가 다르다.</p>
+    </div>
+
+    <div class="bg-slate-800/50 rounded-xl p-5 mb-8 text-center">
+      <div class="mono text-xs text-slate-400 mb-2">화재 대응 시나리오 — 조합 공간</div>
+      <div class="mono text-base md:text-lg">
+        <span class="text-amber-300">건물 6종</span> ×
+        <span class="text-blue-300">층수 3등급</span> ×
+        <span class="text-green-300">위험물 4종</span> =
+        <span class="text-red-400 font-black text-2xl">72가지</span>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- LEFT -->
+      <div class="bg-red-950/40 border-2 border-red-800/50 rounded-2xl p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-9 h-9 bg-red-600 rounded-lg flex items-center justify-center font-black">A</div>
+          <div>
+            <div class="font-bold">if-else 라우팅</div>
+            <div class="mono text-xs text-red-300">72개 분기를 일일이 작성</div>
+          </div>
+        </div>
+        <div class="bg-slate-950 rounded-lg p-4 mb-4">
+          <div class="grid grid-cols-12 gap-1">
+            <!-- 72 cells -->
+            <script>document.write(Array(72).fill('<div class="grid-cell aspect-square bg-red-500/30 border border-red-500/50 rounded-sm"></div>').join(''));</script>
+          </div>
+          <div class="text-center mt-3 mono text-xs text-red-300">72개 — 모두 사람이 직접</div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="bg-blue-950/40 border-2 border-blue-800/50 rounded-2xl p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center font-black">B</div>
+          <div>
+            <div class="font-bold">룰 + 합성 엔진</div>
+            <div class="mono text-xs text-blue-300">13개 룰 — 시스템이 자동 합성</div>
+          </div>
+        </div>
+        <div class="bg-slate-950 rounded-lg p-4 mb-4 space-y-3">
+          <div>
+            <div class="mono text-xs text-amber-400 mb-1.5">건물 (6)</div>
+            <div class="flex gap-1">
+              <script>document.write(Array(6).fill('<div class="grid-cell flex-1 h-6 bg-amber-500/40 border border-amber-500/60 rounded"></div>').join(''));</script>
+            </div>
+          </div>
+          <div>
+            <div class="mono text-xs text-blue-400 mb-1.5">층수 (3)</div>
+            <div class="flex gap-1">
+              <script>document.write(Array(3).fill('<div class="grid-cell flex-1 h-6 bg-blue-500/40 border border-blue-500/60 rounded"></div>').join(''));</script>
+            </div>
+          </div>
+          <div>
+            <div class="mono text-xs text-green-400 mb-1.5">위험물 (4)</div>
+            <div class="flex gap-1">
+              <script>document.write(Array(4).fill('<div class="grid-cell flex-1 h-6 bg-green-500/40 border border-green-500/60 rounded"></div>').join(''));</script>
+            </div>
+          </div>
+          <div class="text-center pt-2 mono text-xs text-blue-300">
+            6 + 3 + 4 = <span class="text-2xl font-black text-white">13개</span>
+          </div>
+        </div>
+        <div class="text-center mb-2">
+          <div class="inline-block bg-blue-600/20 border border-blue-500/50 rounded-full px-4 py-1.5 pulse-glow">
+            <span class="mono text-xs text-blue-200">↓ 합성 엔진 → 72가지 자동 도출</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center">
+      <div class="text-xl md:text-2xl font-black">
+        <span class="text-red-400">72개 작성</span> vs <span class="text-blue-400">13개 작성 + 자동 합성</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- SECTION 03: 누가 쓰나                                  -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section data-page="why" class="bg-white rounded-3xl shadow-sm p-8 md:p-12">
+    <div class="text-center mb-8">
+      <div class="mono text-xs text-slate-500 tracking-[0.2em] mb-2">STAGE 03 — 두 번째 차이</div>
+      <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-3">룰을 <span class="gradient-text">누가</span> 쓸 수 있는가</h2>
+      <p class="text-slate-600">계산 능력은 같다. 변경 권한이 다르다.</p>
+    </div>
+
+    <div class="space-y-4">
+      <div class="bg-red-50 border border-red-200 rounded-2xl p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center text-white font-black text-sm">A</div>
+          <div class="font-bold text-slate-900">if-else 라우팅</div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 text-xs mono">
+          <span class="bg-white px-3 py-1.5 rounded border border-slate-200">소방서장</span>
+          <span class="text-slate-400">→</span>
+          <span class="bg-white px-3 py-1.5 rounded border border-slate-200">기획자</span>
+          <span class="text-slate-400">→</span>
+          <span class="bg-white px-3 py-1.5 rounded border border-slate-200">개발자</span>
+          <span class="text-slate-400">→</span>
+          <span class="bg-white px-3 py-1.5 rounded border border-slate-200">코드</span>
+          <span class="text-slate-400">→</span>
+          <span class="bg-white px-3 py-1.5 rounded border border-slate-200">QA</span>
+          <span class="text-slate-400">→</span>
+          <span class="bg-red-600 text-white px-3 py-1.5 rounded font-bold">1~2주</span>
+        </div>
+      </div>
+      <div class="bg-blue-50 border border-blue-200 rounded-2xl p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black text-sm">B</div>
+          <div class="font-bold text-slate-900">온톨로지 시스템</div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 text-xs mono">
+          <span class="bg-white px-3 py-1.5 rounded border border-slate-200">소방서장</span>
+          <span class="text-slate-400">→</span>
+          <span class="bg-white px-3 py-1.5 rounded border border-slate-200">룰 편집기에서 1줄 수정</span>
+          <span class="text-slate-400">→</span>
+          <span class="bg-blue-600 text-white px-3 py-1.5 rounded font-bold">즉시 (30분)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- SECTION 04: 인정 매트릭스                              -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section data-page="why" class="bg-slate-900 rounded-3xl p-8 md:p-12 text-white">
+    <div class="text-center mb-8">
+      <div class="mono text-xs text-amber-400 tracking-[0.2em] mb-2">STAGE 04 — 잠정 결론</div>
+      <h2 class="text-3xl md:text-4xl font-black mb-3">"당신 직관이 맞다"</h2>
+      <p class="text-slate-400">의심한 모든 지점에 정직하게 답하면 — 거의 다 맞다.</p>
+    </div>
+
+    <div class="space-y-3">
+      <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700 grid md:grid-cols-12 gap-3 items-center">
+        <div class="md:col-span-5 text-slate-300 text-sm">"조건문에 검색 낀 것 아닌가?"</div>
+        <div class="md:col-span-1 text-center"><span class="mono text-amber-400 font-bold text-sm">YES</span></div>
+        <div class="md:col-span-6 text-xs text-slate-400">맞다. 본질적으로 그것이다.</div>
+      </div>
+      <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700 grid md:grid-cols-12 gap-3 items-center">
+        <div class="md:col-span-5 text-slate-300 text-sm">"거창하게 왜 추론이라 부르나?"</div>
+        <div class="md:col-span-1 text-center"><span class="mono text-amber-400 font-bold text-sm">YES</span></div>
+        <div class="md:col-span-6 text-xs text-slate-400">부풀려진 표현이다. <em>"합성 자동화"</em>가 정확하다.</div>
+      </div>
+      <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700 grid md:grid-cols-12 gap-3 items-center">
+        <div class="md:col-span-5 text-slate-300 text-sm">"TypeDB도 그냥 시나리오 자동화 아닌가?"</div>
+        <div class="md:col-span-1 text-center"><span class="mono text-amber-400 font-bold text-sm">YES</span></div>
+        <div class="md:col-span-6 text-xs text-slate-400">맞다. 시나리오가 <strong class="text-white">코드 밖에</strong> 있을 뿐.</div>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-slate-500 text-sm">
+      여기서 끝났다면 — 온톨로지는 마케팅 라벨이라고 결론났을 것이다.<br>
+      <strong class="text-amber-400">하지만 한 가지가 더 있다.</strong>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- TRANSITION                                           -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section data-page="why" class="text-center py-6">
+    <div class="inline-block">
+      <div class="mono text-xs text-amber-600 tracking-[0.4em] mb-3">PLOT TWIST</div>
+      <div class="text-3xl md:text-5xl font-black text-slate-900 leading-tight mb-2">
+        그런데 한 가지가 더 있다.
+      </div>
+      <div class="text-slate-600 text-lg">평탄화하면서 떨어뜨린 결정적 층.</div>
+      <div class="mt-6 text-amber-600 text-3xl">↓</div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ★ SECTION 05: THE 4-LAYER STRUCTURE (CLIMAX)         -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section data-page="why" class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-8 md:p-12 text-white">
+    <div class="text-center mb-12">
+      <div class="mono text-xs text-amber-400 tracking-[0.3em] mb-3">★ STAGE 05 — THE REVEAL</div>
+      <h2 class="text-4xl md:text-6xl font-black mb-4 leading-tight">
+        사실 <span class="gradient-text">4개의 층</span>이 있다.
+      </h2>
+      <p class="text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        "온톨로지"라고 부르는 것은 합성 룰 그래프 + 의미 기반 + 그 위의 <strong class="text-amber-300">존재론적 엔지니어링</strong>까지 모두 포함한다.
+      </p>
+    </div>
+
+    <!-- 4 Layer stack -->
+    <div class="space-y-3 max-w-3xl mx-auto">
+      <!-- Layer 4: TOP -->
+      <div class="layer-card bg-gradient-to-r from-red-900/50 to-red-700/30 border-2 border-red-500/50 rounded-2xl p-6">
+        <div class="flex items-start gap-5">
+          <div class="mono text-5xl font-black text-red-400/30 leading-none">04</div>
+          <div class="flex-1">
+            <div class="font-bold text-2xl text-white mb-1">Ontological Engineering</div>
+            <div class="mono text-xs text-red-300 mb-3 tracking-wider">EPISTEMOLOGY · 인식론적 작업</div>
+            <div class="text-slate-300 leading-relaxed">
+              <strong class="text-white">"이 도메인에서 무엇이 존재하고, 어떻게 분류할 것인가"</strong>를 결정하는 작업.<br>
+              아리스토텔레스의 카테고리, 콰인의 존재론적 헌신과 형식적으로 같은 종류.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connector -->
+      <div class="text-center text-slate-600 text-2xl">↓</div>
+
+      <!-- Layer 3 -->
+      <div class="layer-card bg-gradient-to-r from-amber-900/50 to-amber-700/30 border-2 border-amber-500/50 rounded-2xl p-6">
+        <div class="flex items-start gap-5">
+          <div class="mono text-5xl font-black text-amber-400/30 leading-none">03</div>
+          <div class="flex-1">
+            <div class="font-bold text-2xl text-white mb-1">Composable Rule Graph</div>
+            <div class="mono text-xs text-amber-300 mb-3 tracking-wider">LOGIC · 의사결정 엔진</div>
+            <div class="text-slate-300 leading-relaxed">
+              <strong class="text-white">"무엇을 결정하는가"</strong>의 룰 합성 시스템.<br>
+              13개 원자 룰이 72개 시나리오로 자동 합성됨.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connector -->
+      <div class="text-center text-slate-600 text-2xl">↓</div>
+
+      <!-- Layer 2 -->
+      <div class="layer-card bg-gradient-to-r from-blue-900/50 to-blue-700/30 border-2 border-blue-500/50 rounded-2xl p-6">
+        <div class="flex items-start gap-5">
+          <div class="mono text-5xl font-black text-blue-400/30 leading-none">02</div>
+          <div class="flex-1">
+            <div class="font-bold text-2xl text-white mb-1">Shared Semantic Substrate</div>
+            <div class="mono text-xs text-blue-300 mb-3 tracking-wider">VOCABULARY · 공유 의미 기반</div>
+            <div class="text-slate-300 leading-relaxed">
+              <strong class="text-white">"무엇이 존재하는가"</strong>의 카탈로그.<br>
+              여러 시스템·부서·시간을 가로질러 같은 의미를 보장.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connector -->
+      <div class="text-center text-slate-600 text-2xl">↓</div>
+
+      <!-- Layer 1: BOTTOM -->
+      <div class="layer-card bg-gradient-to-r from-slate-700/50 to-slate-600/30 border-2 border-slate-500/50 rounded-2xl p-6">
+        <div class="flex items-start gap-5">
+          <div class="mono text-5xl font-black text-slate-400/30 leading-none">01</div>
+          <div class="flex-1">
+            <div class="font-bold text-2xl text-white mb-1">Data Sources</div>
+            <div class="mono text-xs text-slate-300 mb-3 tracking-wider">PROVENANCE · 데이터 출처</div>
+            <div class="text-slate-300 leading-relaxed">
+              <strong class="text-white">"어디서 오는가"</strong> — 센서, 행정 DB, 현장 보고.<br>
+              위 모든 층의 재료.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insight bar -->
+    <div class="mt-12 max-w-3xl mx-auto bg-amber-500/10 border border-amber-500/40 rounded-2xl p-6 text-center">
+      <div class="text-2xl md:text-3xl font-black mb-2">대부분의 사람은 <span class="text-amber-400">3층만</span> 본다.</div>
+      <p class="text-slate-300 leading-relaxed">
+        그래서 *"그냥 룰 엔진"* 으로 환원해버린다.<br>
+        <strong class="text-white">진짜 무게는 4층의 작업이 2층의 기반을 만들 때 생긴다.</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ★ SECTION 06: ONTOLOGICAL ENGINEERING WORK           -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section data-page="why" class="bg-white rounded-3xl shadow-sm p-8 md:p-12">
+    <div class="text-center mb-10">
+      <div class="mono text-xs text-slate-500 tracking-[0.2em] mb-2">★ STAGE 06 — 진짜 작업</div>
+      <h2 class="text-3xl md:text-5xl font-black text-slate-900 mb-3">
+        "한옥마을 추가" 한 줄에<br>담긴 <span class="gradient-text">존재론</span>
+      </h2>
+      <p class="text-slate-600 max-w-2xl mx-auto">
+        단순한 룰 한 줄 추가가 아니다.<br>다음과 같은 <strong>존재론적 판단</strong>들이 필요하다.
+      </p>
+    </div>
+
+    <!-- 5 ontological decisions -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+      <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 hover:border-amber-300 transition">
+        <div class="mono text-xs text-amber-600 mb-2 tracking-wider">DECISION 01</div>
+        <div class="font-bold text-slate-900 mb-2 text-lg">카테고리</div>
+        <div class="text-sm text-slate-600 leading-relaxed">한옥마을은 <em>건물</em>인가 <em>지역</em>인가? 제3의 무엇인가?</div>
+      </div>
+      <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 hover:border-amber-300 transition">
+        <div class="mono text-xs text-amber-600 mb-2 tracking-wider">DECISION 02</div>
+        <div class="font-bold text-slate-900 mb-2 text-lg">상위 추상</div>
+        <div class="text-sm text-slate-600 leading-relaxed">문화재 + 주거 + 군집 — 어떤 카테고리에 묶을 것인가?</div>
+      </div>
+      <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 hover:border-amber-300 transition">
+        <div class="mono text-xs text-amber-600 mb-2 tracking-wider">DECISION 03</div>
+        <div class="font-bold text-slate-900 mb-2 text-lg">본질 vs 우연</div>
+        <div class="text-sm text-slate-600 leading-relaxed">무엇이 한옥마을을 한옥마을이게 하는가? 한 채만 남으면?</div>
+      </div>
+      <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 hover:border-amber-300 transition">
+        <div class="mono text-xs text-amber-600 mb-2 tracking-wider">DECISION 04</div>
+        <div class="font-bold text-slate-900 mb-2 text-lg">동일성 기준</div>
+        <div class="text-sm text-slate-600 leading-relaxed">절반 개축 후에도 같은 한옥마을인가? 소유주 변경 후에는?</div>
+      </div>
+      <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 hover:border-amber-300 transition">
+        <div class="mono text-xs text-amber-600 mb-2 tracking-wider">DECISION 05</div>
+        <div class="font-bold text-slate-900 mb-2 text-lg">부분-전체 관계</div>
+        <div class="text-sm text-slate-600 leading-relaxed">한옥 한 채는 한옥마을의 <em>부분</em>인가 <em>인스턴스</em>인가?</div>
+      </div>
+      <div class="bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl p-5 border-2 border-amber-300 flex items-center justify-center">
+        <div class="text-center">
+          <div class="text-5xl font-black text-amber-700">5+</div>
+          <div class="text-sm text-amber-800 font-bold mt-2">존재론적 결정</div>
+          <div class="text-xs text-amber-700 mt-1">단 한 카테고리 추가에</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Philosophy connection -->
+    <div class="bg-slate-900 rounded-2xl p-6 md:p-8 text-white">
+      <div class="text-center mb-6">
+        <div class="mono text-xs text-slate-400 tracking-widest mb-1">SAME WORK, DIFFERENT METHOD</div>
+        <div class="text-xl font-bold">같은 종류의 작업, 다른 방법.</div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-slate-800/50 rounded-xl p-5">
+          <div class="mono text-xs text-amber-400 mb-2 tracking-wider">PHILOSOPHY · BC 350 ~</div>
+          <div class="font-bold text-lg mb-3">아리스토텔레스 → 콰인</div>
+          <ul class="text-slate-300 text-sm space-y-1.5">
+            <li>• "무엇이 존재하는가"의 카테고리</li>
+            <li>• 본질 vs 우연</li>
+            <li>• 보편자 vs 개별자</li>
+            <li>• 동일성 기준</li>
+            <li>• 부분-전체 (mereology)</li>
+          </ul>
+          <div class="mt-4 pt-4 border-t border-slate-700 text-xs text-slate-500 italic">방법: 사색 · 논증 · 개념 분석</div>
+        </div>
+        <div class="bg-slate-800/50 rounded-xl p-5">
+          <div class="mono text-xs text-blue-400 mb-2 tracking-wider">CS ONTOLOGY · 1990 ~</div>
+          <div class="font-bold text-lg mb-3">Gruber → Palantir</div>
+          <ul class="text-slate-300 text-sm space-y-1.5">
+            <li>• 도메인 카테고리 명세</li>
+            <li>• 정의 속성 vs 파생 속성</li>
+            <li>• 타입 vs 인스턴스</li>
+            <li>• 엔티티 해상도</li>
+            <li>• 부분-전체 관계 모델링</li>
+          </ul>
+          <div class="mt-4 pt-4 border-t border-slate-700 text-xs text-slate-500 italic">방법: 도메인 인터뷰 · 형식 명세 · 시스템 검증</div>
+        </div>
+      </div>
+      <div class="mt-6 pt-6 border-t border-slate-700 text-center">
+        <div class="text-amber-300 font-bold text-lg">CS가 단어를 차용한 게 아니다 — 같은 종류의 작업이 두 분야에서 일어나는 것이다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ★ SECTION 07: SCENARIO WALKTHROUGH (Page 2)          -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section data-page="how" class="bg-white rounded-3xl shadow-sm p-8 md:p-12">
+    <div class="text-center mb-10">
+      <div class="mono text-xs text-slate-500 tracking-[0.2em] mb-2">★ STAGE 07 — 진짜 작동 모습</div>
+      <h2 class="text-3xl md:text-5xl font-black text-slate-900 mb-3">
+        <span class="gradient-text">무안 한옥마을</span>에 화재 임계치가 넘는 순간
+      </h2>
+      <p class="text-slate-600 max-w-2xl mx-auto leading-relaxed">
+        룰 데이터가 어떻게 <strong>설정돼 있고</strong> →
+        어떻게 <strong>작동하고</strong> →
+        시스템 상태가 어떻게 <strong>변하는가</strong>.
+      </p>
+    </div>
+
+    <!-- Scenario header -->
+    <div class="bg-slate-900 rounded-2xl p-6 text-white mb-10">
+      <div class="grid md:grid-cols-3 gap-4 text-sm">
+        <div>
+          <div class="mono text-xs text-amber-300 mb-1 tracking-wider">대상 건물</div>
+          <div class="font-bold text-lg">무안 한옥마을 #B-3021</div>
+          <div class="text-xs text-slate-400">전남 무안군 / 17세대 / TraditionalCluster</div>
+        </div>
+        <div>
+          <div class="mono text-xs text-red-300 mb-1 tracking-wider">현재 화재위험도</div>
+          <div class="font-bold text-3xl text-red-400">0.85</div>
+          <div class="text-xs text-slate-400">임계치 0.70 — <span class="text-red-400">초과</span></div>
+        </div>
+        <div>
+          <div class="mono text-xs text-green-300 mb-1 tracking-wider">관할</div>
+          <div class="font-bold text-lg">무안소방서</div>
+          <div class="text-xs text-slate-400">FS-MUAN-01 / 차량 12대 가용</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-10">
+
+      <!-- ══ STEP 1: CONFIG ══ -->
+      <div>
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black">1</div>
+          <div>
+            <div class="text-xs mono text-blue-600 tracking-wider">CONFIG · 설정</div>
+            <h3 class="text-2xl font-black text-slate-900">룰 데이터는 이렇게 쓰여 있다</h3>
+          </div>
+        </div>
+        <p class="text-slate-600 mb-5">코드가 아니라 <strong>데이터</strong>. 도메인 전문가가 직접 작성·수정 가능.</p>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-slate-900 rounded-xl p-5 text-white">
+            <div class="flex items-center justify-between mb-3">
+              <div class="font-bold text-blue-300">RULE-001 · 화재 트리거</div>
+              <div class="mono text-xs bg-blue-900/50 px-2 py-1 rounded">활성</div>
+            </div>
+            <div class="mono text-xs leading-relaxed">
+when: <span class="text-amber-300">Building.fireRisk &gt; 0.70</span><br>
+then: emit_trigger(severity=HIGH)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;create Incident(building, time)
+            </div>
+          </div>
+          <div class="bg-slate-900 rounded-xl p-5 text-white">
+            <div class="flex items-center justify-between mb-3">
+              <div class="font-bold text-amber-300">RULE-002 · 한옥마을 자원 매칭</div>
+              <div class="mono text-xs bg-amber-900/50 px-2 py-1 rounded">활성</div>
+            </div>
+            <div class="mono text-xs leading-relaxed">
+when: type == <span class="text-amber-300">TraditionalCluster</span><br>
+match: requires = [<span class="text-green-300">폼차×2</span>, <span class="text-green-300">전통건축팀</span>]<br>
+exclude: 화학소방차 <span class="text-slate-500"># 목재 손상</span>
+            </div>
+          </div>
+          <div class="bg-slate-900 rounded-xl p-5 text-white">
+            <div class="flex items-center justify-between mb-3">
+              <div class="font-bold text-orange-300">RULE-003 · 인접 건물 알림</div>
+              <div class="mono text-xs bg-orange-900/50 px-2 py-1 rounded">활성</div>
+            </div>
+            <div class="mono text-xs leading-relaxed">
+when: severity == HIGH<br>
+collect: nearby = adjacentTo<br>
+&nbsp;&nbsp;&nbsp;&nbsp;where distance &lt; 100m<br>
+then: notify(nearby, "선제대피 권고")
+            </div>
+          </div>
+          <div class="bg-slate-900 rounded-xl p-5 text-white">
+            <div class="flex items-center justify-between mb-3">
+              <div class="font-bold text-purple-300">RULE-004 · 통보 체인</div>
+              <div class="mono text-xs bg-purple-900/50 px-2 py-1 rounded">활성</div>
+            </div>
+            <div class="mono text-xs leading-relaxed">
+when: type == TraditionalCluster<br>
+notify: [<span class="text-amber-300">관할소방서</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-amber-300">문화재청</span>, <span class="text-amber-300">보존회장</span>]
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-slate-700 leading-relaxed">
+          <strong class="text-blue-700">설정의 핵심:</strong> 4개 룰은 모두 <em>타입과 관계</em>에 대해 쓰여 있다.
+          <code class="mono bg-white px-1.5 py-0.5 rounded text-xs">#B-3021</code> 처럼 인스턴스를 직접 가리키지 않는다 →
+          다른 한옥마을이 추가돼도 룰 그대로 작동.
+        </div>
+      </div>
+
+      <!-- ══ STEP 2: TRIGGER ══ -->
+      <div>
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center text-white font-black">2</div>
+          <div>
+            <div class="text-xs mono text-red-600 tracking-wider">TRIGGER · 임계치 초과 순간</div>
+            <h3 class="text-2xl font-black text-slate-900">15:14 — 임계치를 넘는다</h3>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 rounded-2xl p-6">
+          <div class="grid grid-cols-5 gap-1.5 sm:gap-3 mb-4">
+            <div class="bg-white rounded-lg p-1.5 sm:p-3 border border-slate-200 text-center">
+              <div class="mono text-[10px] sm:text-xs text-slate-500">14:00</div>
+              <div class="text-base sm:text-2xl font-black text-green-600">0.32</div>
+              <div class="text-[10px] sm:text-xs text-slate-500">정상</div>
+            </div>
+            <div class="bg-white rounded-lg p-1.5 sm:p-3 border border-slate-200 text-center">
+              <div class="mono text-[10px] sm:text-xs text-slate-500">14:30</div>
+              <div class="text-base sm:text-2xl font-black text-yellow-600">0.51</div>
+              <div class="text-[10px] sm:text-xs text-slate-500">관찰</div>
+            </div>
+            <div class="bg-white rounded-lg p-1.5 sm:p-3 border border-amber-300 text-center">
+              <div class="mono text-[10px] sm:text-xs text-slate-500">15:00</div>
+              <div class="text-base sm:text-2xl font-black text-amber-600">0.65</div>
+              <div class="text-[10px] sm:text-xs text-amber-600">경계</div>
+            </div>
+            <div class="bg-red-100 rounded-lg p-1.5 sm:p-3 border-2 border-red-500 text-center alert-pulse pulse-glow">
+              <div class="mono text-[10px] sm:text-xs text-red-600 font-bold">15:14</div>
+              <div class="text-base sm:text-2xl font-black text-red-600">0.85</div>
+              <div class="text-[10px] sm:text-xs text-red-700 font-bold">⚠ 트리거</div>
+            </div>
+            <div class="bg-white rounded-lg p-1.5 sm:p-3 border border-slate-200 text-center opacity-50">
+              <div class="mono text-[10px] sm:text-xs text-slate-500">→</div>
+              <div class="text-base sm:text-2xl font-black text-slate-400">?</div>
+              <div class="text-[10px] sm:text-xs text-slate-400">대응</div>
+            </div>
+          </div>
+          <div class="text-center bg-red-50 border border-red-300 rounded-lg p-3 text-sm">
+            <strong class="text-red-700 mono">15:14:23</strong> — RULE-001 발동:
+            <span class="mono">Building[#B-3021].fireRisk = 0.85 &gt; 0.70</span> <span class="text-green-600 font-bold">✓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ STEP 3: EXECUTION ══ -->
+      <div>
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-white font-black">3</div>
+          <div>
+            <div class="text-xs mono text-amber-600 tracking-wider">EXECUTION · 룰 작동 흐름</div>
+            <h3 class="text-2xl font-black text-slate-900">200ms — 룰 4개가 자동 합성된다</h3>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 rounded-2xl p-6 space-y-3">
+          <div class="bg-white rounded-lg p-4 border-l-4 border-red-500 flex items-start gap-3">
+            <div class="mono text-xs font-bold text-red-500 whitespace-nowrap">15:14:23.001</div>
+            <div class="flex-1">
+              <div class="font-bold text-slate-900 text-sm">RULE-001 평가 → 트리거 발생</div>
+              <div class="text-xs text-slate-600 mt-1 mono">Building[#B-3021].fireRisk(0.85) &gt; 0.70 → emit(severity=HIGH) → Incident #INC-882 생성</div>
+            </div>
+          </div>
+          <div class="text-center text-slate-400 text-lg">↓</div>
+          <div class="bg-white rounded-lg p-4 border-l-4 border-blue-500 flex items-start gap-3">
+            <div class="mono text-xs font-bold text-blue-500 whitespace-nowrap">15:14:23.045</div>
+            <div class="flex-1">
+              <div class="font-bold text-slate-900 text-sm">건물 정보 그래프 순회</div>
+              <div class="text-xs text-slate-600 mt-1 mono">type=TraditionalCluster · housesResidents=[일반,노약자×2] · adjacentTo=[#B-3019, #B-3022, #B-3025]</div>
+            </div>
+          </div>
+          <div class="text-center text-slate-400 text-lg">↓</div>
+          <div class="bg-white rounded-lg p-4 border-l-4 border-amber-500 flex items-start gap-3">
+            <div class="mono text-xs font-bold text-amber-500 whitespace-nowrap">15:14:23.078</div>
+            <div class="flex-1">
+              <div class="font-bold text-slate-900 text-sm">RULE-002 매칭 → 자원 합성</div>
+              <div class="text-xs text-slate-600 mt-1 mono">required = [폼차×2, 전통건축팀, 구급차×1(노약자룰), 지휘차] · exclude=[화학소방차]</div>
+            </div>
+          </div>
+          <div class="text-center text-slate-400 text-lg">↓</div>
+          <div class="bg-white rounded-lg p-4 border-l-4 border-orange-500 flex items-start gap-3">
+            <div class="mono text-xs font-bold text-orange-500 whitespace-nowrap">15:14:23.112</div>
+            <div class="flex-1">
+              <div class="font-bold text-slate-900 text-sm">RULE-003 매칭 → 인접 건물 알림</div>
+              <div class="text-xs text-slate-600 mt-1 mono">nearby=[#B-3019(45m), #B-3022(67m), #B-3025(89m)] → 선제대피 권고 발송</div>
+            </div>
+          </div>
+          <div class="text-center text-slate-400 text-lg">↓</div>
+          <div class="bg-white rounded-lg p-4 border-l-4 border-purple-500 flex items-start gap-3">
+            <div class="mono text-xs font-bold text-purple-500 whitespace-nowrap">15:14:23.156</div>
+            <div class="flex-1">
+              <div class="font-bold text-slate-900 text-sm">RULE-004 매칭 → 통보 체인</div>
+              <div class="text-xs text-slate-600 mt-1 mono">notify → 무안소방서 · 문화재청(전남지소) · 무안한옥마을 보존회장</div>
+            </div>
+          </div>
+          <div class="text-center text-slate-400 text-lg">↓</div>
+          <div class="bg-white rounded-lg p-4 border-l-4 border-green-500 flex items-start gap-3">
+            <div class="mono text-xs font-bold text-green-500 whitespace-nowrap">15:14:23.201</div>
+            <div class="flex-1">
+              <div class="font-bold text-slate-900 text-sm">자원 디스패치 (closest_available)</div>
+              <div class="text-xs text-slate-600 mt-1 mono">VEH-117(폼차, 4분), VEH-203(폼차, 6분), TEAM-T1(전통건축, 8분), AMB-09(2분), CMD-01(5분)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 text-center bg-amber-50 border border-amber-300 rounded-lg p-4 text-sm leading-relaxed">
+          <strong class="text-amber-700">총 200ms.</strong>
+          4개 룰이 자동 합성되어 <strong>5개 자원 디스패치</strong> + <strong>3개 인접 건물 알림</strong> + <strong>3개 외부 기관 통보</strong>까지 실행.
+        </div>
+      </div>
+
+      <!-- ══ STEP 4: STATUS ══ -->
+      <div>
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center text-white font-black">4</div>
+          <div>
+            <div class="text-xs mono text-green-600 tracking-wider">STATUS · 시스템 상태 변화</div>
+            <h3 class="text-2xl font-black text-slate-900">한 트리거 후 — 시스템이 이렇게 변한다</h3>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-5 mb-6">
+          <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200">
+            <div class="mono text-xs text-slate-500 mb-3 tracking-wider">15:14:22 · BEFORE</div>
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between items-center">
+                <span class="text-slate-600">Building #B-3021 status</span>
+                <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-bold">NORMAL</span>
+              </div>
+              <div class="flex justify-between"><span class="text-slate-600">활성 사건</span><span class="font-bold">0건</span></div>
+              <div class="flex justify-between"><span class="text-slate-600">디스패치된 자원</span><span class="font-bold">0대</span></div>
+              <div class="flex justify-between"><span class="text-slate-600">인접 건물 알림</span><span class="font-bold">없음</span></div>
+              <div class="flex justify-between"><span class="text-slate-600">외부 통보</span><span class="font-bold">없음</span></div>
+            </div>
+          </div>
+          <div class="bg-red-50 rounded-2xl p-6 border-2 border-red-300">
+            <div class="mono text-xs text-red-600 mb-3 tracking-wider font-bold">15:14:23 · AFTER · 200ms</div>
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between items-center">
+                <span class="text-slate-600">Building #B-3021 status</span>
+                <span class="bg-red-600 text-white px-2 py-0.5 rounded text-xs font-bold alert-pulse">CRITICAL</span>
+              </div>
+              <div class="flex justify-between"><span class="text-slate-600">활성 사건</span><span class="font-bold text-red-700">1건 (#INC-882)</span></div>
+              <div class="flex justify-between"><span class="text-slate-600">디스패치된 자원</span><span class="font-bold text-red-700">5대</span></div>
+              <div class="flex justify-between"><span class="text-slate-600">인접 건물 알림</span><span class="font-bold text-orange-700">3건</span></div>
+              <div class="flex justify-between"><span class="text-slate-600">외부 통보</span><span class="font-bold text-purple-700">3건</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+          <div class="bg-slate-100 px-5 py-3 mono text-xs text-slate-700 font-bold tracking-wider">활성 자원 디스패치 — 실시간 상태판</div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-slate-50 text-xs">
+                <tr>
+                  <th class="text-left p-3 text-slate-600">자원 ID</th>
+                  <th class="text-left p-3 text-slate-600">유형</th>
+                  <th class="text-left p-3 text-slate-600">출발</th>
+                  <th class="text-left p-3 text-slate-600">예상 도착</th>
+                  <th class="text-left p-3 text-slate-600">상태</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                <tr><td class="p-3 mono text-xs">VEH-117</td><td class="p-3">폼차</td><td class="p-3 mono text-xs">15:14:24</td><td class="p-3 mono text-xs">15:18:30</td><td class="p-3"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs font-bold">EN ROUTE</span></td></tr>
+                <tr><td class="p-3 mono text-xs">VEH-203</td><td class="p-3">폼차</td><td class="p-3 mono text-xs">15:14:24</td><td class="p-3 mono text-xs">15:20:15</td><td class="p-3"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs font-bold">EN ROUTE</span></td></tr>
+                <tr><td class="p-3 mono text-xs">TEAM-T1</td><td class="p-3">전통건축팀</td><td class="p-3 mono text-xs">15:14:24</td><td class="p-3 mono text-xs">15:22:00</td><td class="p-3"><span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-xs font-bold">DISPATCHING</span></td></tr>
+                <tr><td class="p-3 mono text-xs">AMB-09</td><td class="p-3">구급차</td><td class="p-3 mono text-xs">15:14:24</td><td class="p-3 mono text-xs">15:16:50</td><td class="p-3"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs font-bold">EN ROUTE</span></td></tr>
+                <tr><td class="p-3 mono text-xs">CMD-01</td><td class="p-3">지휘차</td><td class="p-3 mono text-xs">15:14:24</td><td class="p-3 mono text-xs">15:19:10</td><td class="p-3"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs font-bold">EN ROUTE</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Closing -->
+    <div class="mt-12 bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-8 text-white text-center">
+      <div class="mono text-xs text-amber-400 tracking-widest mb-3">한 줄 요약</div>
+      <div class="text-xl md:text-2xl font-bold leading-relaxed">
+        <span class="text-blue-300">4개의 룰 데이터</span>가
+        0.85 임계치 초과 한 번으로<br>
+        <span class="text-amber-300">5대 자원 디스패치 + 6개 알림</span>을 200ms 안에 자동 생성한다.<br><br>
+        <span class="text-slate-400 text-base">코드 한 줄 수정 없이. 도메인 전문가가 룰만 편집하면 끝.</span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ★ SECTION 08: FINAL POSITION                         -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section data-page="why" class="bg-gradient-to-br from-amber-50 via-white to-blue-50 rounded-3xl p-8 md:p-12 border-2 border-amber-200">
+    <div class="text-center mb-10">
+      <div class="mono text-xs text-slate-500 tracking-[0.2em] mb-2">★ STAGE 08 — 최종 포지션</div>
+      <h2 class="text-3xl md:text-5xl font-black text-slate-900 mb-3">이름의 무게가 <span class="gradient-text">정당한 이유</span></h2>
+    </div>
+
+    <!-- The progression -->
+    <div class="max-w-3xl mx-auto space-y-4 mb-10">
+      <div class="bg-white rounded-xl p-5 border border-slate-200 flex items-start gap-4">
+        <div class="mono text-xs font-bold text-slate-400 mt-1 whitespace-nowrap">1차</div>
+        <div class="text-slate-500 line-through">"온톨로지는 거품 1.5배. 그냥 if + search"</div>
+      </div>
+      <div class="bg-white rounded-xl p-5 border border-slate-200 flex items-start gap-4">
+        <div class="mono text-xs font-bold text-slate-400 mt-1 whitespace-nowrap">2차</div>
+        <div class="text-slate-500 line-through">"의미 기반까지 인정하면 1.0배 정확"</div>
+      </div>
+      <div class="bg-gradient-to-r from-amber-100 to-orange-100 rounded-xl p-6 border-2 border-amber-400 flex items-start gap-4 shadow-lg">
+        <div class="mono text-xs font-bold text-amber-700 mt-1 whitespace-nowrap">최종</div>
+        <div class="text-slate-900 font-semibold leading-relaxed">
+          "온톨로지 시스템은 그 자체로 <strong class="text-amber-700">존재론적 엔지니어링의 산물</strong>이다.<br>
+          이름이 차용된 게 아니라, 같은 종류의 작업이라서 같은 이름이 붙었다."
+        </div>
+      </div>
+    </div>
+
+    <!-- The pitch -->
+    <div class="max-w-3xl mx-auto bg-slate-900 rounded-2xl p-6 md:p-8 text-white shadow-2xl">
+      <div class="mono text-xs text-amber-400 tracking-widest mb-4">평가자에게 줄 한 마디</div>
+      <div class="text-base md:text-xl leading-[1.8]">
+        "우리가 하는 건 단순한 룰 엔진 구축이 아닙니다.<br><br>
+        <span class="text-blue-300">전라남도 화재 도메인의 존재론적 카테고리</span>를 결정하고,<br>
+        <span class="text-blue-300">그 위에 의미 기반</span>을 깔고,<br>
+        <span class="text-blue-300">그 위에 합성 가능한 룰</span>을 얹는 작업입니다.<br><br>
+        <span class="text-amber-300 font-bold">'온톨로지'라는 단어는 마케팅이 아니라,<br>
+        이 작업이 정말로 존재론(ontology)이기 때문에 붙은 이름입니다."</span>
+      </div>
+    </div>
+
+    <!-- Closing -->
+    <div class="mt-10 text-center">
+      <div class="mono text-xs text-slate-500 tracking-widest mb-2">JOURNEY COMPLETE</div>
+      <div class="text-slate-700 max-w-xl mx-auto leading-relaxed">
+        거품을 의심한 사람만이 거품 너머의 진짜를 본다.<br>
+        <strong class="text-slate-900">처음부터 받아들인 사람은 깊이를 못 본다.</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- CTA: PAGE 1 → PAGE 2                                 -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section data-page="why" class="text-center py-4">
+    <div class="mono text-xs text-slate-500 tracking-widest mb-3">NEXT</div>
+    <a href="#how" class="inline-flex items-center gap-3 bg-slate-900 hover:bg-slate-800 text-white px-6 sm:px-8 py-4 rounded-2xl font-bold text-base sm:text-lg transition shadow-lg hover:shadow-xl">
+      <span>어떻게 작동하나 — 무안 한옥마을 사례</span>
+      <span class="text-amber-400">→</span>
+    </a>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- CTA: PAGE 2 → PAGE 1                                 -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section data-page="how" class="text-center py-4">
+    <div class="mono text-xs text-slate-500 tracking-widest mb-3">PREV</div>
+    <a href="#why" class="inline-flex items-center gap-3 bg-white hover:bg-slate-50 border-2 border-slate-200 text-slate-900 px-6 sm:px-8 py-4 rounded-2xl font-bold text-base sm:text-lg transition shadow-sm hover:shadow-md">
+      <span class="text-amber-600">←</span>
+      <span>왜 온톨로지인가 — 4층 구조</span>
+    </a>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- FOOTER (always visible)                              -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section class="text-center py-6 text-sm text-slate-500 border-t border-slate-200">
+    RuleData · 온톨로지 4층 구조의 정직한 해체 ·
+    <a href="https://github.com/JessyLimitless/ruledata" class="hover:text-slate-900 transition">GitHub</a>
+  </section>
+
+</div>
+
+<script>
+(function() {
+  const VALID_ROUTES = ['why', 'how'];
+  function showPage(name) {
+    if (!VALID_ROUTES.includes(name)) name = 'why';
+    document.querySelectorAll('[data-page]').forEach(function(el) {
+      el.classList.toggle('is-active', el.dataset.page === name);
+    });
+    document.querySelectorAll('[data-route]').forEach(function(el) {
+      el.classList.toggle('active', el.dataset.route === name);
+    });
+    document.title = (name === 'how')
+      ? 'RuleData — 어떻게 작동하나'
+      : 'RuleData — 왜 온톨로지인가';
+  }
+  function route() {
+    const name = (location.hash || '#why').replace('#', '').toLowerCase();
+    showPage(name);
+    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+  }
+  window.addEventListener('hashchange', route);
+  document.addEventListener('DOMContentLoaded', route);
+  // Run immediately if DOM already parsed
+  if (document.readyState !== 'loading') route();
+})();
+</script>
+
+</body>
+</html>

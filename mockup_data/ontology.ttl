@@ -1,0 +1,301 @@
+# ═══════════════════════════════════════════════════════════════════
+# ontology.ttl — 화재 대응 도메인 OWL 온톨로지
+#
+# 이 파일이 *묶기(bundling)의 본체*입니다.
+# - 어떤 *클래스*가 있고
+# - 어떤 *포함관계(subClassOf)*로 묶여 있으며
+# - 어떤 *속성(property)*으로 연결되는지
+# 를 모두 선언적으로 적어둔 곳.
+#
+# Reasoner가 이 파일을 읽고, instances.ttl의 사실들에 대해
+# 자동으로 추론을 수행합니다.
+# ═══════════════════════════════════════════════════════════════════
+
+@prefix :     <http://patos.example/ontology#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+
+# ─── Ontology meta ──────────────────────────────────────────────────
+
+<http://patos.example/ontology> a owl:Ontology ;
+    rdfs:label "PATOS 화재 대응 온톨로지"@ko ;
+    rdfs:comment "무안 한옥마을 화재 대응 시나리오를 위한 OWL 온톨로지. ruledata #how 시나리오 호환." ;
+    owl:versionInfo "0.1" .
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 1. 클래스 계층 — 묶기의 본체
+# ═══════════════════════════════════════════════════════════════════
+
+# ─── 최상위: Asset ──────────────────────────────────────────────────
+
+:Asset a owl:Class ;
+    rdfs:label "Asset"@en, "자산"@ko ;
+    rdfs:comment "추적·관리 대상이 되는 모든 것의 최상위 분류" .
+
+# ─── Building 계층 ──────────────────────────────────────────────────
+
+:Building a owl:Class ;
+    rdfs:subClassOf :Asset ;
+    rdfs:label "Building"@en, "건물"@ko .
+
+# 전통건축물 (RULE-002, RULE-004의 적용 대상)
+:TraditionalClusterMember a owl:Class ;
+    rdfs:subClassOf :Building ;
+    rdfs:label "Traditional Cluster Member"@en, "전통건축물"@ko ;
+    rdfs:comment "전통한옥마을·종가·사찰 등 보존가치 있는 전통건축물. RULE-002 자원 매칭, RULE-004 외부 통보의 트리거." .
+
+# 한옥
+:Hanok a owl:Class ;
+    rdfs:subClassOf :TraditionalClusterMember ;
+    rdfs:label "Hanok"@en, "한옥"@ko ;
+    rdfs:comment "전통 한국 가옥. 일반목구조 + 한식기와가 통상." .
+
+# 한옥의 변형들 — 미래 확장 시범
+:한옥카페 a owl:Class ;
+    rdfs:subClassOf :Hanok ;
+    rdfs:label "Hanok Cafe"@en, "한옥카페"@ko ;
+    rdfs:comment "한옥 구조에 카페 영업이 결합된 형태. :Hanok ⊑ :TraditionalClusterMember 자동 상속 → RULE-002·004 자동 적용." .
+
+:Banga a owl:Class ;
+    rdfs:subClassOf :TraditionalClusterMember ;
+    rdfs:label "Banga"@en, "종가"@ko ;
+    rdfs:comment "양반가 본가. 한옥의 일종이지만 별도 분류 가능." .
+
+:Sawon a owl:Class ;
+    rdfs:subClassOf :TraditionalClusterMember ;
+    rdfs:label "Sawon"@en, "사찰"@ko .
+
+# ─── 일반 주거 ──────────────────────────────────────────────────────
+
+:ResidentialBuilding a owl:Class ;
+    rdfs:subClassOf :Building ;
+    rdfs:label "Residential Building"@en, "주거건물"@ko .
+
+:SingleFamily a owl:Class ;
+    rdfs:subClassOf :ResidentialBuilding ;
+    rdfs:label "Single Family"@en, "단독주택"@ko .
+
+:Apartment a owl:Class ;
+    rdfs:subClassOf :ResidentialBuilding ;
+    rdfs:label "Apartment"@en, "공동주택"@ko .
+
+:MultiFamilyHouse a owl:Class ;
+    rdfs:subClassOf :ResidentialBuilding ;
+    rdfs:label "Multi-family House"@en, "다세대주택"@ko .
+
+# ─── 공공·상업 ──────────────────────────────────────────────────────
+
+:PublicBuilding a owl:Class ;
+    rdfs:subClassOf :Building ;
+    rdfs:label "Public Building"@en, "공공건물"@ko .
+
+:School a owl:Class ;
+    rdfs:subClassOf :PublicBuilding ;
+    rdfs:label "School"@en, "학교"@ko .
+
+:CommercialBuilding a owl:Class ;
+    rdfs:subClassOf :Building ;
+    rdfs:label "Commercial"@en, "상업건물"@ko .
+
+# ─── 분리(Disjoint) — 같은 인스턴스가 양쪽에 속할 수 없음 ──────────
+
+:TraditionalClusterMember owl:disjointWith :ResidentialBuilding .
+:TraditionalClusterMember owl:disjointWith :CommercialBuilding .
+# (학습용 단순화 — 실무에선 한옥카페처럼 *겹치는* 케이스 모델링 필요)
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 2. 클러스터(군집) ─ Building과는 별개 entity
+# ═══════════════════════════════════════════════════════════════════
+
+:TraditionalCluster a owl:Class ;
+    rdfs:subClassOf :Asset ;
+    rdfs:label "Traditional Cluster"@en, "전통건축물 군집"@ko ;
+    rdfs:comment "전통건축물이 모인 보존지구·마을 단위. CL-01 = 무안 몽탄 전통한옥마을." .
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 3. 자원(Resource) 클래스 ─ RULE-002 매칭 대상
+# ═══════════════════════════════════════════════════════════════════
+
+:Resource a owl:Class .
+
+:Vehicle a owl:Class ;
+    rdfs:subClassOf :Resource .
+
+:FoamTruck a owl:Class ;
+    rdfs:subClassOf :Vehicle ;
+    rdfs:label "Foam Truck"@en, "폼차"@ko .
+
+:TankTruck a owl:Class ;
+    rdfs:subClassOf :Vehicle ;
+    rdfs:label "Tank Truck"@en, "탱크차"@ko .
+
+:Ambulance a owl:Class ;
+    rdfs:subClassOf :Vehicle ;
+    rdfs:label "Ambulance"@en, "구급차"@ko .
+
+:CommandCar a owl:Class ;
+    rdfs:subClassOf :Vehicle ;
+    rdfs:label "Command Car"@en, "지휘차"@ko .
+
+:ChemicalTruck a owl:Class ;
+    rdfs:subClassOf :Vehicle ;
+    rdfs:label "Chemical Truck"@en, "화학소방차"@ko ;
+    rdfs:comment "RULE-002의 *exclude* 대상 — 한옥 화재에 사용 시 목재 손상." .
+
+# 자원 충돌 — 같은 자원이 둘이 될 수 없음
+:FoamTruck owl:disjointWith :ChemicalTruck .
+
+:Team a owl:Class ;
+    rdfs:subClassOf :Resource .
+
+:TraditionalBuildingTeam a owl:Class ;
+    rdfs:subClassOf :Team ;
+    rdfs:label "Traditional Building Team"@en, "전통건축팀"@ko .
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 4. 기관(Agency) 클래스 ─ RULE-004 통보 대상
+# ═══════════════════════════════════════════════════════════════════
+
+:Agency a owl:Class .
+
+:FireDepartment a owl:Class ;
+    rdfs:subClassOf :Agency ;
+    rdfs:label "Fire Department"@en, "소방관서"@ko .
+
+:CentralAuthority a owl:Class ;
+    rdfs:subClassOf :Agency ;
+    rdfs:label "Central Authority"@en, "중앙기관"@ko .
+
+:LocalGovernment a owl:Class ;
+    rdfs:subClassOf :Agency ;
+    rdfs:label "Local Government"@en, "지자체"@ko .
+
+:NGO a owl:Class ;
+    rdfs:subClassOf :Agency ;
+    rdfs:label "NGO"@en, "민간단체"@ko .
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 5. 사건·관찰 클래스
+# ═══════════════════════════════════════════════════════════════════
+
+:Incident a owl:Class ;
+    rdfs:label "Incident"@en, "사건"@ko .
+
+:Observation a owl:Class ;
+    rdfs:label "Observation"@en, "관찰"@ko ;
+    rdfs:comment "특정 시점의 위험도·기상·센서 측정값 기록. 시계열로 누적." .
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 6. 속성(Properties) — 관계 묶기
+# ═══════════════════════════════════════════════════════════════════
+
+# ─── 멤버십 (Building ↔ Cluster) ────────────────────────────────────
+
+:memberOf a owl:ObjectProperty ;
+    rdfs:domain :Asset ;
+    rdfs:range :TraditionalCluster ;
+    rdfs:label "memberOf"@en, "소속"@ko .
+
+:hasMember a owl:ObjectProperty ;
+    owl:inverseOf :memberOf ;       # 한 방향만 적어도 자동 양방향
+    rdfs:domain :TraditionalCluster ;
+    rdfs:range :Asset .
+
+# ─── 인접 (Building ↔ Building, 대칭) ──────────────────────────────
+
+:adjacentTo a owl:ObjectProperty , owl:SymmetricProperty ;
+    rdfs:domain :Building ;
+    rdfs:range :Building ;
+    rdfs:label "adjacent to"@en, "인접"@ko ;
+    rdfs:comment "건물간 인접 관계. SymmetricProperty로 선언 → 한 방향만 적어도 reasoner가 역방향 자동 추가." .
+
+# ─── 구조·재료 ──────────────────────────────────────────────────────
+
+:hasStructure a owl:ObjectProperty ;
+    rdfs:domain :Building ;
+    rdfs:label "has structure"@en, "구조"@ko ;
+    rdfs:comment ":hasStructure 가 있으면 :Building (rdfs:domain)으로 자동 분류됨." .
+
+# ─── 위험도 ─────────────────────────────────────────────────────────
+
+:hasFireRisk a owl:DatatypeProperty ;
+    rdfs:domain :Building ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "fire risk"@en, "화재위험도"@ko .
+
+# ─── 시간·식별 ──────────────────────────────────────────────────────
+
+:builtYear a owl:DatatypeProperty ;
+    rdfs:domain :Building ;
+    rdfs:range xsd:gYear ;
+    rdfs:label "built year"@en, "준공연도"@ko .
+
+# ─── 사건 관계 ──────────────────────────────────────────────────────
+
+:affects a owl:ObjectProperty ;
+    rdfs:domain :Incident ;
+    rdfs:range :Building .
+
+:triggeredBy a owl:ObjectProperty ;
+    rdfs:domain :Incident ;
+    rdfs:range :Observation .
+
+:observedFor a owl:ObjectProperty ;
+    rdfs:domain :Observation ;
+    rdfs:range :Building .
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 7. 명칭 변경 처리 — 2024 정부 조직 개편
+#
+# 인스턴스 :Agency/AG-02의 rdfs:label만 "국가유산청"으로 변경하고
+# 옛 명칭은 skos:altLabel로 보존. URI는 그대로.
+#
+# 다른 시스템과의 매핑은 owl:sameAs로 (instances.ttl에서 적용).
+# ═══════════════════════════════════════════════════════════════════
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 끝.
+#
+# 이 파일이 정의하는 *묶기 구조*:
+#
+#   :Asset
+#   ├── :Building
+#   │   ├── :TraditionalClusterMember (RULE-002, 004 트리거)
+#   │   │   ├── :Hanok
+#   │   │   │   └── :한옥카페   ← 새 타입은 여기 한 줄 추가만
+#   │   │   ├── :Banga
+#   │   │   └── :Sawon
+#   │   ├── :ResidentialBuilding
+#   │   │   ├── :SingleFamily
+#   │   │   ├── :Apartment
+#   │   │   └── :MultiFamilyHouse
+#   │   ├── :PublicBuilding
+#   │   │   └── :School
+#   │   └── :CommercialBuilding
+#   └── :TraditionalCluster
+#
+#   :Resource
+#   ├── :Vehicle (FoamTruck, TankTruck, Ambulance, CommandCar, ChemicalTruck)
+#   └── :Team (TraditionalBuildingTeam)
+#
+#   :Agency
+#   ├── :FireDepartment
+#   ├── :CentralAuthority
+#   ├── :LocalGovernment
+#   └── :NGO
+#
+# 다음으로 mapping_rules.yaml에서 CSV 컬럼이 이 구조로
+# *어떻게 매핑되는지* 보세요.
+# ═══════════════════════════════════════════════════════════════════

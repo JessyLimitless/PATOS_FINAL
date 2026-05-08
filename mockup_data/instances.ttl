@@ -1,0 +1,249 @@
+# ═══════════════════════════════════════════════════════════════════
+# instances.ttl
+#
+# CSV 데이터가 mapping_rules.yaml 거쳐 RDF로 변환된 *결과*
+#
+# 두 부분으로 구성:
+#   A. ASSERTED — CSV에서 매핑된 사실 (사람이 적은 것)
+#   B. INFERRED — Reasoner가 ontology.ttl 위에서 자동 도출
+#
+# 실제 운영에선 INFERRED는 query 시점에 자동 적용되고
+# 파일에 저장 안 됩니다. 여기선 *학습용*으로 명시.
+# ═══════════════════════════════════════════════════════════════════
+
+@prefix :     <http://patos.example/ontology#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+
+# ═══════════════════════════════════════════════════════════════════
+# A. ASSERTED FACTS — buildings.csv 등이 매핑된 결과
+# ═══════════════════════════════════════════════════════════════════
+
+# ─── A1. Building 인스턴스 (buildings.csv) ─────────────────────────
+# 매핑 출처: M1 (mapping_rules.yaml)
+# 핵심: sub_type 컬럼값 → 구체 클래스 결정
+
+# buildings.csv 행 1 — sub_type=한옥
+:Building/B-3021 a :Hanok ;                                   # ← M1 type_assertion
+    rdfs:label "한옥마을 21호 (김씨고가)" ;
+    :builtYear "1923"^^xsd:gYear ;
+    :hasStructure :StructureCode/일반목구조 ;
+    :hasRoof :RoofCode/한식기와 ;
+    :totalArea "158.4"^^xsd:decimal ;
+    :floorCount "1"^^xsd:integer ;
+    :hasFireRisk "0.85"^^xsd:decimal ;
+    :memberOf :Cluster/CL-01 ;
+    :ownerRole "보존회 위탁운영" ;
+    prov:wasDerivedFrom :Source/buildings.csv .
+
+# buildings.csv 행 2 — sub_type=한옥
+:Building/B-3019 a :Hanok ;
+    rdfs:label "한옥마을 19호 (이씨가옥)" ;
+    :builtYear "1935"^^xsd:gYear ;
+    :hasStructure :StructureCode/일반목구조 ;
+    :hasFireRisk "0.61"^^xsd:decimal ;
+    :memberOf :Cluster/CL-01 .
+
+# buildings.csv 행 3 — sub_type=한옥
+:Building/B-3022 a :Hanok ;
+    rdfs:label "한옥마을 22호 (박씨가옥)" ;
+    :builtYear "1942"^^xsd:gYear ;
+    :hasStructure :StructureCode/일반목구조 ;
+    :hasFireRisk "0.58"^^xsd:decimal ;
+    :memberOf :Cluster/CL-01 .
+
+# buildings.csv 행 10 — sub_type=단독주택 (비전통, 비교용)
+:Building/B-1015 a :SingleFamily ;                            # ← 다른 클래스로 매핑
+    rdfs:label "일로 단독주택" ;
+    :builtYear "1998"^^xsd:gYear ;
+    :hasStructure :StructureCode/철근콘크리트구조 ;
+    :hasFireRisk "0.18"^^xsd:decimal .
+
+# buildings.csv 행 12 — sub_type=교육연구시설
+:Building/B-1502 a :School ;
+    rdfs:label "무안초등학교 본관" ;
+    :builtYear "1972"^^xsd:gYear ;
+    :hasStructure :StructureCode/철근콘크리트구조 ;
+    :hasFireRisk "0.31"^^xsd:decimal .
+
+
+# ─── A2. Adjacency 트리플 (adjacency.csv) ──────────────────────────
+# 매핑 출처: M2 — pattern: triple_per_row
+# 단순 형태 (reified 생략)
+
+:Building/B-3021 :adjacentTo :Building/B-3019 .
+:Building/B-3021 :adjacentTo :Building/B-3022 .
+:Building/B-3021 :adjacentTo :Building/B-3025 .
+:Building/B-3021 :adjacentTo :Building/B-3018 .
+:Building/B-3021 :adjacentTo :Building/B-3027 .
+:Building/B-3019 :adjacentTo :Building/B-3022 .
+:Building/B-3022 :adjacentTo :Building/B-3025 .
+
+# 거리 정보를 살리려면 reified 형태:
+:Adjacency/B3021-B3019 a :Adjacency ;
+    :from :Building/B-3021 ;
+    :to :Building/B-3019 ;
+    :distance "42"^^xsd:decimal ;
+    :viaType :ViaType/건물간직선 .
+
+
+# ─── A3. Cluster 인스턴스 (traditional_clusters.csv) ──────────────
+# 매핑 출처: M3
+
+:Cluster/CL-01 a :TraditionalCluster ;
+    rdfs:label "무안 몽탄 전통한옥마을" ;
+    :memberCount "12"^^xsd:integer ;
+    :preservedSince "1965"^^xsd:gYear ;
+    :protectionLevel "등록문화재 후보군" ;
+    :contactRole "보존회장" ;
+    :contactName "이○○" ;
+    :contactPhone "061-454-XXXX" ;
+    :reportsTo :Agency/AG-02 .
+
+
+# ─── A4. Agency 인스턴스 (agencies.csv) ────────────────────────────
+# 매핑 출처: M4
+# *명칭 변경 시범*: AG-02 = 국가유산청 (구 문화재청)
+
+:Agency/AG-01 a :FireDepartment ;
+    rdfs:label "무안소방서" ;
+    :contactRole "소방서장" ;
+    :phone "061-454-XXXX" .
+
+:Agency/AG-02 a :CentralAuthority ;
+    rdfs:label "국가유산청" ;                # ← 현재 명칭
+    skos:altLabel "문화재청" ;                # ← 옛 명칭 보존 (M4 special_handling)
+    :phone "02-3140-XXXX" .
+
+:Agency/AG-03 a :NGO ;
+    rdfs:label "몽탄 전통한옥마을 보존회" ;
+    :contactRole "보존회장" .
+
+
+# ─── A5. Resource 인스턴스 (resources.csv) ────────────────────────
+# 매핑 출처: M5
+
+:Resource/VEH-117 a :FoamTruck ;
+    :homeStation :Station/ST-101 ;
+    :status :Status/available .
+
+:Resource/VEH-203 a :FoamTruck ;
+    :homeStation :Station/ST-103 ;
+    :status :Status/available .
+
+:Resource/AMB-09 a :Ambulance ;
+    :homeStation :Station/ST-101 .
+
+:Resource/CMD-01 a :CommandCar ;
+    :homeStation :Station/ST-101 .
+
+:Resource/TEAM-T1 a :TraditionalBuildingTeam ;
+    :homeStation :Station/ST-201 .
+
+
+# ─── A6. Incident 인스턴스 (incidents.csv) ────────────────────────
+# 매핑 출처: M6
+
+:Incident/INC-882 a :Incident ;
+    :affects :Building/B-3021 ;
+    :startedAt "2024-03-15T15:14:23+09:00"^^xsd:dateTime ;
+    :severity :Severity/HIGH ;
+    :status :Status/ACTIVE ;
+    :firedRule :Rule/RULE-001 ,
+               :Rule/RULE-002 ,
+               :Rule/RULE-003 ,
+               :Rule/RULE-004 .
+
+
+# ═══════════════════════════════════════════════════════════════════
+# B. INFERRED FACTS — Reasoner가 ontology.ttl 위에서 자동 도출
+#
+# 실제론 query 시점에 자동 적용되고 파일에 저장 안 됨.
+# 여기선 *학습용*으로 명시.
+#
+# 사람이 적은 사실은 *훨씬 적음*. 컴퓨터가 채워주는 게 *훨씬 많음*.
+# 이게 OWL 묶기의 *돈값*.
+# ═══════════════════════════════════════════════════════════════════
+
+# ─── B1. subClassOf 전파 (R1 — 가장 많음) ──────────────────────────
+# :Hanok ⊑ :TraditionalClusterMember ⊑ :Building ⊑ :Asset
+
+:Building/B-3021 a :TraditionalClusterMember .  # via :Hanok ⊑ :TraditionalClusterMember
+:Building/B-3021 a :Building .                  # via 전이
+:Building/B-3021 a :Asset .                     # via 전이
+
+:Building/B-3019 a :TraditionalClusterMember .
+:Building/B-3019 a :Building .
+:Building/B-3019 a :Asset .
+
+:Building/B-3022 a :TraditionalClusterMember .
+:Building/B-3022 a :Building .
+:Building/B-3022 a :Asset .
+
+:Building/B-1015 a :ResidentialBuilding .       # via :SingleFamily ⊑ :ResidentialBuilding
+:Building/B-1015 a :Building .
+:Building/B-1015 a :Asset .
+
+:Building/B-1502 a :PublicBuilding .            # via :School ⊑ :PublicBuilding
+:Building/B-1502 a :Building .
+:Building/B-1502 a :Asset .
+
+# ─── B2. SymmetricProperty (R5) ─────────────────────────────────
+# :adjacentTo a owl:SymmetricProperty
+# 한 방향만 적었는데 reasoner가 역방향 자동 추가:
+
+:Building/B-3019 :adjacentTo :Building/B-3021 .
+:Building/B-3022 :adjacentTo :Building/B-3021 .
+:Building/B-3025 :adjacentTo :Building/B-3021 .
+:Building/B-3018 :adjacentTo :Building/B-3021 .
+:Building/B-3027 :adjacentTo :Building/B-3021 .
+:Building/B-3022 :adjacentTo :Building/B-3019 .
+:Building/B-3025 :adjacentTo :Building/B-3022 .
+
+# ─── B3. inverseOf (R4) ─────────────────────────────────────────
+# :memberOf owl:inverseOf :hasMember
+
+:Cluster/CL-01 :hasMember :Building/B-3021 .
+:Cluster/CL-01 :hasMember :Building/B-3019 .
+:Cluster/CL-01 :hasMember :Building/B-3022 .
+
+# ─── B4. domain 추론 (R3) ───────────────────────────────────────
+# :hasStructure rdfs:domain :Building
+# (이미 모든 Building은 a :Building이라 새로 추론할 게 없음 — 검증 효과)
+
+# ─── B5. owl:disjointWith — 모순 검출 ──────────────────────────
+# 만약 누가 실수로 ":Building/B-3021 a :ResidentialBuilding" 추가하면
+# :TraditionalClusterMember owl:disjointWith :ResidentialBuilding 으로
+# Reasoner가 *모순* 검출 → 데이터 검증 실패 → 입력 거부.
+
+
+# ═══════════════════════════════════════════════════════════════════
+# C. 룰 평가 — INFERRED를 활용
+#
+# RULE-002의 조건: ?building a :TraditionalClusterMember
+#
+# - 사람이 적은 ASSERTED엔 :B-3021 a :Hanok 만 있음
+# - 하지만 INFERRED로 :B-3021 a :TraditionalClusterMember 도출됨
+# - 따라서 RULE-002 조건 매치 성공 → 폼차2 + 전통건축팀 매칭
+#
+# = 룰이 클래스 *이름*을 매번 일일이 적지 않아도
+# = 클래스 *계층*을 따라 자동으로 매칭됨
+# = 묶기와 매핑의 *진짜 가치*
+# ═══════════════════════════════════════════════════════════════════
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 개수 정리 (학습 포인트)
+# ═══════════════════════════════════════════════════════════════════
+#
+# 사람이 적은 사실 (CSV 행 → ASSERTED 트리플): ~30개 (위 발췌만)
+# Reasoner가 추론한 사실 (INFERRED): ~25개 (B1~B3)
+#
+# 사람:컴퓨터 ≈ 6:5 정도. 데이터가 커질수록 컴퓨터 비중이 커짐.
+# 본인이 owl_reasoner_demo.html에서 본 7→14 비율의 실데이터 버전.
+# ═══════════════════════════════════════════════════════════════════

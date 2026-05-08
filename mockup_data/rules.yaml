@@ -1,0 +1,81 @@
+# rules.yaml — 무안 한옥마을 화재 대응 룰 (declarative form)
+# 출처: ruledata.cloud5.socialbrain.co.kr/#how 의 4개 룰
+# 형식: 도메인 전문가가 *직접 읽고 수정* 가능한 선언형 — 코드가 아님
+
+version: "1.0"
+domain: "fire_response.muan_traditional"
+last_updated: "2024-03-15"
+authority: "전남소방본부 + 국가유산청 협의안"
+
+rules:
+
+  - id: RULE-001
+    name: "건물 화재위험 임계 초과 트리거"
+    when:
+      target: Building
+      condition: "fireRisk > 0.70"
+    then:
+      - emit_trigger:
+          severity: HIGH
+      - create:
+          type: Incident
+          attributes:
+            building: "$target"
+            time: "$now"
+            severity: HIGH
+    metadata:
+      rationale: "건축물대장·기상·센서 신호의 합성 위험도가 임계 초과 시 즉시 트리거"
+      threshold_calibration: "과거 무안 화재 사례 87건 분석 결과 0.70에서 sensitivity 0.91 / specificity 0.78 달성"
+      revisit_after: "분기당 1회 재보정"
+
+  - id: RULE-002
+    name: "전통건축물 클러스터 자원 매칭"
+    when:
+      target: Incident
+      condition: "target.building.type == TraditionalCluster"
+    match:
+      requires:
+        - { type: 폼차, count: 2 }
+        - { type: 전통건축팀, count: 1 }
+      exclude:
+        - { type: 화학소방차, reason: "한옥 목재 손상 위험" }
+    metadata:
+      rationale: "한옥 화재는 일반 화재와 진압 방식이 다름 — 화학소방차는 목재·문화재 손상 야기"
+      authority_basis: "전남소방본부 전통건축물 진압 지침 (2022)"
+      capability_note: "전통건축팀은 평시 1팀만 운용 → 단일 사건 대응 외 백업 부재 (위험)"
+
+  - id: RULE-003
+    name: "인접 건물 선제 경보"
+    when:
+      target: Incident
+      condition: "target.severity == HIGH"
+    collect:
+      from: "target.building.adjacentTo"
+      where: "distance < 100"
+      result_var: "nearby"
+    then:
+      - notify:
+          recipients: "$nearby"
+          message: "선제대피 권고"
+          channel: "SMS+APP"
+    metadata:
+      rationale: "한옥은 처마·지붕 인접하여 100m 내 비화 위험 높음"
+      distance_calibration: "100m는 일반 건물 기준이지만 한옥군집은 50m 권장 — 향후 RULE-003-Heritage로 분기 예정"
+      observed_failures: "2022-05 INC-456 case: 80m 떨어진 #B-3022 미통보로 자체 대피 지연"
+
+  - id: RULE-004
+    name: "전통건축물 외부 기관 통보"
+    when:
+      target: Incident
+      condition: "target.building.type == TraditionalCluster"
+    then:
+      - notify:
+          recipients:
+            - "관할소방서 (target.building.jurisdiction)"
+            - "국가유산청"           # 2024년 문화재청에서 개편됨
+            - "보존회장 (target.building.cluster.contact)"
+          channel: "API+SMS+이메일"
+    metadata:
+      rationale: "전통건축물 화재는 *문화재 가치 손실*이 동반되어 다부처 즉시 통보 필요"
+      legal_basis: "문화재보호법 제24조 (긴급 통보 의무)"
+      naming_history: "이전 룰셋(2023)엔 '문화재청'이었음 → 2024년 개편 반영"

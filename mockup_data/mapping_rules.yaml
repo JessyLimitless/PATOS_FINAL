@@ -1,0 +1,300 @@
+# ═══════════════════════════════════════════════════════════════════
+# mapping_rules.yaml
+#
+# CSV 데이터 → RDF (ontology.ttl) 의 *매핑 규칙*
+#
+# 이게 *매핑 과정의 본체*입니다.
+# 사람이 읽고 수정할 수 있는 *선언형* DSL — 코드가 아님.
+# 도메인 전문가가 직접 편집 가능.
+#
+# 이 yaml을 R2RML(W3C 표준)로 변환하는 사례는 README 참조.
+# ═══════════════════════════════════════════════════════════════════
+
+version: "0.1"
+ontology: "ontology.ttl"
+
+namespace:
+  default: "http://patos.example/ontology#"
+  rdf:     "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  rdfs:    "http://www.w3.org/2000/01/rdf-schema#"
+  owl:     "http://www.w3.org/2002/07/owl#"
+  xsd:     "http://www.w3.org/2001/XMLSchema#"
+  skos:    "http://www.w3.org/2004/02/skos/core#"
+
+# ───────────────────────────────────────────────────────────────────
+# 매핑 규칙 — CSV 한 행 → RDF triple 묶음
+# ───────────────────────────────────────────────────────────────────
+
+mappings:
+
+  # ─── M1: buildings.csv → :Building (sub_type → 클래스 결정) ───
+  - id: M1
+    name: "건물 매핑"
+    source: buildings.csv
+
+    subject:
+      template: ":Building/{bldg_id_clean}"
+      transformations:
+        bldg_id_clean: "strip_prefix(bldg_id, '#')"   # '#B-3021' → 'B-3021'
+
+    # *핵심*: sub_type 컬럼 값 → ontology 클래스 결정
+    # 이게 묶기와 매핑이 만나는 지점.
+    type_assertion:
+      from_column: sub_type
+      lookup:
+        한옥:        ":Hanok"
+        한옥카페:    ":한옥카페"     # ← 새 타입 추가는 여기 한 줄 + ontology.ttl 한 줄
+        종가:        ":Banga"
+        사찰:        ":Sawon"
+        단독주택:    ":SingleFamily"
+        공동주택:    ":Apartment"
+        다세대주택:  ":MultiFamilyHouse"
+        교육연구시설: ":School"
+      default: ":Building"   # 매핑 없으면 일반 Building
+      note: |
+        :Hanok ⊑ :TraditionalClusterMember 이므로
+        한옥은 자동으로 RULE-002, RULE-004의 :TraditionalClusterMember 조건을 만족.
+        룰 수정 0줄.
+
+    properties:
+
+      - column: name
+        predicate: rdfs:label
+        type: literal
+
+      - column: year
+        predicate: ":builtYear"
+        type: literal
+        datatype: xsd:gYear
+
+      - column: structure
+        predicate: ":hasStructure"
+        type: uri
+        template: ":StructureCode/{value}"
+        # 코드값을 URI로 정규화 — 오타·번역 표류 방지
+
+      - column: roof
+        predicate: ":hasRoof"
+        type: uri
+        template: ":RoofCode/{value}"
+
+      - column: total_area
+        predicate: ":totalArea"
+        type: literal
+        datatype: xsd:decimal
+        unit: "m2"
+
+      - column: floor_count
+        predicate: ":floorCount"
+        type: literal
+        datatype: xsd:integer
+
+      - column: fire_risk_current
+        predicate: ":hasFireRisk"
+        type: literal
+        datatype: xsd:decimal
+
+      - column: cluster_id
+        predicate: ":memberOf"
+        type: uri
+        template: ":Cluster/{value}"
+        if_empty: skip
+
+      - column: location_addr
+        predicate: ":address"
+        type: parsed_address
+        # "전남 무안군 몽탄면 한옥마을길 21"
+        # → :sido :Region/전라남도 ; :sigungu :Region/무안군 ; ...
+        parser: "korean_address_v1"
+
+      - column: owner_role
+        predicate: ":ownerRole"
+        type: literal
+
+    null_handling:
+      empty_cell: skip_triple    # 트리플 자체 생성 안 함 (Open World)
+      literal_NULL: skip_triple
+      literal_미상: ":Unknown"   # "미상"은 *조사됐지만 식별 불가* → :Unknown 인스턴스
+
+    provenance:
+      attribute_to: ":Source/buildings.csv"
+      timestamp: "now()"
+
+
+  # ─── M2: adjacency.csv → :adjacentTo 트리플 ─────────────────────
+  - id: M2
+    name: "건물 인접 관계"
+    source: adjacency.csv
+    pattern: triple_per_row   # 행 자체가 triple 하나
+
+    subject:
+      template: ":Building/{from_bldg_clean}"
+      transformations:
+        from_bldg_clean: "strip_prefix(from_bldg, '#')"
+
+    predicate: ":adjacentTo"
+
+    object:
+      template: ":Building/{to_bldg_clean}"
+      transformations:
+        to_bldg_clean: "strip_prefix(to_bldg, '#')"
+
+    # 추가 속성을 reified 형태로 (거리·경로 정보 보존)
+    reify_with:
+      class: ":Adjacency"
+      additional_properties:
+        - { column: distance_m, predicate: ":distance", datatype: xsd:decimal }
+        - { column: via_type,   predicate: ":viaType",  type: uri, template: ":ViaType/{value}" }
+
+    note: |
+      :adjacentTo가 owl:SymmetricProperty로 선언됨 (ontology.ttl).
+      → 한 방향만 적어도 reasoner가 역방향 자동 추가.
+      → 입력 부담 절반 + RULE-003 양방향 자동 작동.
+
+
+  # ─── M3: traditional_clusters.csv → :TraditionalCluster ──────
+  - id: M3
+    name: "전통 클러스터"
+    source: traditional_clusters.csv
+
+    subject:
+      template: ":Cluster/{cluster_id}"
+
+    type_assertion: ":TraditionalCluster"
+
+    properties:
+      - { column: name,            predicate: rdfs:label,        type: literal }
+      - { column: location,        predicate: ":locationDesc",    type: literal }
+      - { column: member_count,    predicate: ":memberCount",     type: literal, datatype: xsd:integer }
+      - { column: preserved_since, predicate: ":preservedSince",  type: literal, datatype: xsd:gYear }
+      - { column: protection_level, predicate: ":protectionLevel", type: literal }
+      - { column: contact_role,    predicate: ":contactRole",     type: literal }
+      - { column: contact_name,    predicate: ":contactName",     type: literal }
+      - { column: contact_phone,   predicate: ":contactPhone",    type: literal }
+
+      # heritage_authority가 *이름*인데, agencies.csv의 :Agency entity로 연결
+      - column: heritage_authority
+        predicate: ":reportsTo"
+        type: uri
+        lookup_in: agencies.csv
+        lookup_match: name           # 이름으로 매칭
+        lookup_subject: agency_id    # 매칭된 행의 agency_id를 URI로
+        template: ":Agency/{value}"
+
+
+  # ─── M4: agencies.csv → :Agency (type → subclass) ─────────────
+  - id: M4
+    name: "외부 기관"
+    source: agencies.csv
+
+    subject:
+      template: ":Agency/{agency_id}"
+
+    type_assertion:
+      from_column: type
+      lookup:
+        소방관서:    ":FireDepartment"
+        중앙기관:    ":CentralAuthority"
+        지자체:      ":LocalGovernment"
+        민간단체:    ":NGO"
+      default: ":Agency"
+
+    properties:
+      - { column: name,           predicate: rdfs:label,           type: literal }
+      - { column: contact_role,   predicate: ":contactRole",       type: literal }
+      - { column: contact_name,   predicate: ":contactName",       type: literal }
+      - { column: phone,          predicate: ":phone",             type: literal }
+      - { column: email,          predicate: ":email",             type: literal }
+      - { column: notification_channel, predicate: ":notifyChannel", type: literal }
+      - { column: response_protocol,    predicate: ":responseProtocol", type: literal }
+      - { column: note,           predicate: rdfs:comment,         type: literal }
+
+    # *명칭 변경 시범* — note 필드가 이전 명칭을 담고 있을 때
+    special_handling:
+      - if: "note matches '문화재청에서 개편'"
+        then:
+          add_triple:
+            predicate: skos:altLabel
+            value: "문화재청"      # 옛 명칭을 altLabel로 보존
+          comment: |
+            URI :Agency/AG-02는 변경 없음.
+            rdfs:label이 "국가유산청"으로 바뀌어도
+            skos:altLabel "문화재청"으로 옛 검색·옛 데이터 매칭 유지.
+            → 명칭과 의미가 분리됨.
+
+
+  # ─── M5: resources.csv → :Resource (type → subclass) ─────────
+  - id: M5
+    name: "자원(차량·팀)"
+    source: resources.csv
+
+    subject:
+      template: ":Resource/{resource_id}"
+
+    type_assertion:
+      from_column: type
+      lookup:
+        폼차:        ":FoamTruck"
+        탱크차:      ":TankTruck"
+        구급차:      ":Ambulance"
+        지휘차:      ":CommandCar"
+        화학소방차:  ":ChemicalTruck"
+        전통건축팀:  ":TraditionalBuildingTeam"
+      default: ":Resource"
+
+    properties:
+      - { column: home_station,  predicate: ":homeStation",  type: uri, template: ":Station/{value}" }
+      - { column: deployed_at,   predicate: ":deployedAt",   type: literal }
+      - { column: status,        predicate: ":status",       type: uri, template: ":Status/{value}" }
+      - { column: note,          predicate: rdfs:comment,    type: literal }
+
+    skip_columns:
+      - eta_to_b3021_min   # *derived*이라 매핑 안 함 (current_location → query 시 계산)
+
+
+  # ─── M6: incidents.csv → :Incident ─────────────────────────────
+  - id: M6
+    name: "사건"
+    source: incidents.csv
+
+    subject:
+      template: ":Incident/{incident_id}"
+    type_assertion: ":Incident"
+
+    properties:
+      - column: building_id
+        predicate: ":affects"
+        type: uri
+        template: ":Building/{value_clean}"
+        transformations:
+          value_clean: "strip_prefix(value, '#')"
+
+      - { column: started_at,  predicate: ":startedAt", type: literal, datatype: xsd:dateTime }
+      - { column: severity,    predicate: ":severity",  type: uri, template: ":Severity/{value}" }
+      - { column: status,      predicate: ":status",    type: uri, template: ":Status/{value}" }
+      - { column: root_cause,  predicate: ":rootCause", type: literal }
+
+      - column: rules_fired
+        predicate: ":firedRule"
+        type: multi_value
+        separator: "|"
+        each_as: uri
+        template: ":Rule/{value}"
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 한옥카페 같은 *새 타입* 추가 시 변경 비용
+# ═══════════════════════════════════════════════════════════════════
+#
+# 1. ontology.ttl 한 줄:
+#    :한옥카페 rdfs:subClassOf :Hanok .
+#
+# 2. mapping_rules.yaml 한 줄 (M1.type_assertion.lookup):
+#    한옥카페: ":한옥카페"
+#
+# 3. buildings.csv 새 행 추가 (sub_type=한옥카페)
+#
+# → rules.yaml 수정 0줄. RULE-002, RULE-004 자동 적용.
+# → 이게 OWL 묶기·매핑의 돈값.
+#
+# ═══════════════════════════════════════════════════════════════════

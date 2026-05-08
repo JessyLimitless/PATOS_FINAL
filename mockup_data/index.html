@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#4338ca">
+<title>PATOS Learning · 무안 한옥마을 온톨로지 데모</title>
+<meta name="description" content="OWL 묶기·CSV→RDF 매핑·자동 추론·룰 엔진 — 화재 대응 시나리오로 배우는 온톨로지 학습 데모. ruledata #how 호환.">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  html { scroll-behavior: smooth; }
+  .tap { min-height: 44px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal { animation: fadeUp 0.5s ease-out both; }
+
+  @keyframes pulseGlow {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.65; }
+  }
+  .pulse-glow { animation: pulseGlow 4s ease-in-out infinite; }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #fef3c7 0%, #fbcfe8 50%, #ddd6fe 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  pre, code { white-space: pre-wrap; word-break: break-word; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<!-- ════════════════════════ HERO ════════════════════════ -->
+<header class="relative bg-gradient-to-br from-violet-700 via-indigo-700 to-emerald-700 text-white overflow-hidden">
+  <div class="absolute top-0 right-0 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl pulse-glow"></div>
+  <div class="absolute bottom-0 left-0 w-72 h-72 bg-emerald-400/20 rounded-full blur-3xl pulse-glow" style="animation-delay:1.5s"></div>
+
+  <div class="relative max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-24">
+    <div class="text-3xl sm:text-4xl mb-3">🦉 ⚖️ 🔥</div>
+
+    <h1 class="text-4xl sm:text-6xl font-black tracking-tight gradient-text reveal">
+      PATOS Learning
+    </h1>
+
+    <p class="mt-3 text-base sm:text-lg text-violet-50 reveal" style="animation-delay:0.1s">
+      무안 한옥마을 화재 대응 온톨로지 학습 데모
+    </p>
+
+    <p class="mt-1.5 text-xs sm:text-sm text-violet-200/80 max-w-2xl reveal" style="animation-delay:0.2s">
+      OWL 묶기 · CSV→RDF 매핑 · 자동 추론 · 룰 엔진 — 엔지니어 학습자용
+    </p>
+
+    <div class="mt-7 sm:mt-10 flex flex-wrap gap-3 reveal" style="animation-delay:0.3s">
+      <a href="mapping_diagram.html" class="tap bg-white/95 hover:bg-white text-violet-800 font-bold px-4 sm:px-5 py-3 rounded-xl text-sm sm:text-base inline-flex items-center gap-2 shadow-lg transition">
+        🗺️ 매핑 설계도
+      </a>
+      <a href="owl_reasoner_demo.html" class="tap bg-white/15 hover:bg-white/25 backdrop-blur text-white font-bold px-4 sm:px-5 py-3 rounded-xl text-sm sm:text-base inline-flex items-center gap-2 transition border border-white/20">
+        🦉 OWL 추론
+      </a>
+      <a href="change_comparison.html" class="tap bg-white/15 hover:bg-white/25 backdrop-blur text-white font-bold px-4 sm:px-5 py-3 rounded-xl text-sm sm:text-base inline-flex items-center gap-2 transition border border-white/20">
+        ⚖️ 변화 비교
+      </a>
+    </div>
+
+    <div class="mt-8 sm:mt-12 text-xs text-violet-200/70 reveal" style="animation-delay:0.4s leading-relaxed">
+      기준 시나리오: <a href="https://ruledata.cloud5.socialbrain.co.kr/#how" class="underline hover:text-white">ruledata #how</a> · 무안 한옥마을 #B-3021 · 트리거 0.85 · 5 dispatches + 6 notifications
+    </div>
+  </div>
+</header>
+
+<!-- ════════════════════ INTERACTIVE DEMOS ════════════════════ -->
+<section class="px-5 sm:px-8 py-10 sm:py-16">
+  <div class="max-w-5xl mx-auto">
+    <div class="mb-8">
+      <div class="text-xs font-bold mono text-violet-700 mb-2 tracking-wider">DEMOS</div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">대화형 데모 3종</h2>
+      <p class="text-sm text-slate-500 mt-1">탭하면 브라우저에서 즉시 작동합니다</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+
+      <a href="mapping_diagram.html" class="group block bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-violet-300 transition-all p-5 sm:p-6 tap">
+        <div class="w-12 h-12 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-xl flex items-center justify-center text-2xl mb-4 shadow-lg shadow-violet-200">🗺️</div>
+        <h3 class="font-bold text-slate-900 text-lg group-hover:text-violet-700 transition">매핑 설계도</h3>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">Raw CSV → Entity → Rule → Action 4단 추적. 좌측 매크로 클러스터 + 우측 마이크로 패널.</p>
+        <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-violet-600 mono group-hover:text-violet-800 flex items-center gap-1">
+          <span>mapping_diagram.html</span> <span>→</span>
+        </div>
+      </a>
+
+      <a href="owl_reasoner_demo.html" class="group block bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all p-5 sm:p-6 tap">
+        <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center text-2xl mb-4 shadow-lg shadow-emerald-200">🦉</div>
+        <h3 class="font-bold text-slate-900 text-lg group-hover:text-emerald-700 transition">OWL 자동 추론</h3>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">7개 사실로 시작 → ▶ RUN 누르면 컴퓨터가 14개 새 사실 자동 도출. forward-chaining 5룰 시연.</p>
+        <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-emerald-600 mono group-hover:text-emerald-800 flex items-center gap-1">
+          <span>owl_reasoner_demo.html</span> <span>→</span>
+        </div>
+      </a>
+
+      <a href="change_comparison.html" class="group block bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-amber-300 transition-all p-5 sm:p-6 tap">
+        <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center text-2xl mb-4 shadow-lg shadow-amber-200">⚖️</div>
+        <h3 class="font-bold text-slate-900 text-lg group-hover:text-amber-700 transition">변화 비교</h3>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">시나리오 방식 vs OWL 추론 방식. 한옥카페 추가·기관명 개편 두 시나리오로 비용 차이 시연.</p>
+        <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-amber-600 mono group-hover:text-amber-800 flex items-center gap-1">
+          <span>change_comparison.html</span> <span>→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ DATA PIPELINE ════════════════════ -->
+<section class="bg-gradient-to-b from-slate-100 to-white px-5 sm:px-8 py-10 sm:py-16">
+  <div class="max-w-5xl mx-auto">
+    <div class="mb-8">
+      <div class="text-xs font-bold mono text-blue-700 mb-2 tracking-wider">PIPELINE</div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">데이터 파이프라인</h2>
+      <p class="text-sm text-slate-500 mt-1">묶기·매핑·결과의 3단 구조</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
+
+      <div class="bg-white rounded-2xl p-5 border border-blue-200 shadow-sm">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-blue-100 text-blue-700 text-xs font-bold mono px-2 py-1 rounded-full">STEP 1</span>
+          <span class="text-xs text-slate-500">CSV 데이터</span>
+        </div>
+        <h3 class="font-bold text-slate-900 mb-2">Raw 데이터</h3>
+        <p class="text-xs text-slate-600 mb-3 leading-relaxed">실제 공공데이터 형식의 평평한 CSV. 무안 한옥마을 시나리오 호환.</p>
+        <ul class="space-y-1 mono text-[11px] text-slate-700">
+          <li class="bg-slate-50 px-2 py-1 rounded">buildings.csv (12행)</li>
+          <li class="bg-slate-50 px-2 py-1 rounded">adjacency.csv (12행)</li>
+          <li class="bg-slate-50 px-2 py-1 rounded">resources.csv (8행)</li>
+          <li class="bg-slate-50 px-2 py-1 rounded">incidents · agencies · ...</li>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border border-violet-200 shadow-sm relative">
+        <div class="hidden lg:block absolute -left-3 top-1/2 -translate-y-1/2 text-2xl text-slate-300 z-10 bg-slate-100 rounded-full w-6 h-6 flex items-center justify-center">→</div>
+        <div class="lg:hidden text-center text-xl text-slate-300 -mt-2 mb-1">↓</div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-violet-100 text-violet-700 text-xs font-bold mono px-2 py-1 rounded-full">STEP 2</span>
+          <span class="text-xs text-slate-500">매핑 + 묶기</span>
+        </div>
+        <h3 class="font-bold text-slate-900 mb-2">Ontology + Mapping</h3>
+        <p class="text-xs text-slate-600 mb-3 leading-relaxed">OWL 클래스 계층(<em>묶기</em>) + CSV→RDF 매핑 규칙(<em>매핑</em>).</p>
+        <ul class="space-y-1 mono text-[11px] text-slate-700">
+          <li class="bg-violet-50 px-2 py-1 rounded">ontology.ttl (OWL/RDFS)</li>
+          <li class="bg-violet-50 px-2 py-1 rounded">mapping_rules.yaml</li>
+          <li class="bg-violet-50 px-2 py-1 rounded">rules.yaml (4개 룰)</li>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border border-emerald-200 shadow-sm relative">
+        <div class="hidden lg:block absolute -left-3 top-1/2 -translate-y-1/2 text-2xl text-slate-300 z-10 bg-slate-100 rounded-full w-6 h-6 flex items-center justify-center">→</div>
+        <div class="lg:hidden text-center text-xl text-slate-300 -mt-2 mb-1">↓</div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-emerald-100 text-emerald-700 text-xs font-bold mono px-2 py-1 rounded-full">STEP 3</span>
+          <span class="text-xs text-slate-500">결과 + 추론</span>
+        </div>
+        <h3 class="font-bold text-slate-900 mb-2">RDF Triples</h3>
+        <p class="text-xs text-slate-600 mb-3 leading-relaxed">매핑된 사실(ASSERTED) + Reasoner 자동 추론(INFERRED).</p>
+        <ul class="space-y-1 mono text-[11px] text-slate-700">
+          <li class="bg-emerald-50 px-2 py-1 rounded">instances.ttl (~30 ASSERTED)</li>
+          <li class="bg-emerald-50 px-2 py-1 rounded">+ ~25 INFERRED 자동 도출</li>
+          <li class="bg-emerald-50 px-2 py-1 rounded">→ 룰 엔진이 활용</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="mt-6 bg-violet-50 border border-violet-200 rounded-2xl p-4 sm:p-5">
+      <div class="text-sm font-bold text-violet-900 mb-1">💡 핵심</div>
+      <div class="text-xs sm:text-sm text-violet-800 leading-relaxed">
+        사람이 적은 사실 ~30개 → Reasoner가 ~25개 자동 추가. 사람:컴퓨터 ≈ 6:5. 데이터가 커질수록 컴퓨터 비중 ↑. 새 건물 타입(한옥카페) 추가? <code class="mono bg-white px-1 rounded">ontology.ttl 한 줄 + mapping_rules.yaml 한 줄</code> = 끝. 룰은 <strong>영원히 그대로</strong>.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════ FILE INDEX ════════════════════ -->
+<section class="px-5 sm:px-8 py-10 sm:py-16">
+  <div class="max-w-5xl mx-auto">
+    <div class="mb-8">
+      <div class="text-xs font-bold mono text-slate-700 mb-2 tracking-wider">FILES</div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">전체 파일</h2>
+      <p class="text-sm text-slate-500 mt-1">데이터·온톨로지·시각화·문서</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+      <div class="bg-white rounded-2xl p-5 border border-slate-200">
+        <h3 class="font-bold text-slate-900 mb-3 text-sm flex items-center gap-2">
+          <span class="bg-blue-100 text-blue-700 text-[10px] font-bold mono px-2 py-0.5 rounded">DATA</span>
+          CSV 데이터셋
+        </h3>
+        <ul class="space-y-1.5 mono text-xs text-slate-600">
+          <li class="flex items-center gap-2"><span class="text-blue-400">·</span><a href="buildings.csv" class="hover:text-blue-600 hover:underline">buildings.csv</a></li>
+          <li class="flex items-center gap-2"><span class="text-blue-400">·</span><a href="adjacency.csv" class="hover:text-blue-600 hover:underline">adjacency.csv</a></li>
+          <li class="flex items-center gap-2"><span class="text-blue-400">·</span><a href="fire_risk_observations.csv" class="hover:text-blue-600 hover:underline">fire_risk_observations.csv</a></li>
+          <li class="flex items-center gap-2"><span class="text-blue-400">·</span><a href="traditional_clusters.csv" class="hover:text-blue-600 hover:underline">traditional_clusters.csv</a></li>
+          <li class="flex items-center gap-2"><span class="text-blue-400">·</span><a href="fire_stations.csv" class="hover:text-blue-600 hover:underline">fire_stations.csv</a></li>
+          <li class="flex items-center gap-2"><span class="text-blue-400">·</span><a href="resources.csv" class="hover:text-blue-600 hover:underline">resources.csv</a></li>
+          <li class="flex items-center gap-2"><span class="text-blue-400">·</span><a href="incidents.csv" class="hover:text-blue-600 hover:underline">incidents.csv</a></li>
+          <li class="flex items-center gap-2"><span class="text-blue-400">·</span><a href="agencies.csv" class="hover:text-blue-600 hover:underline">agencies.csv</a></li>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border border-slate-200">
+        <h3 class="font-bold text-slate-900 mb-3 text-sm flex items-center gap-2">
+          <span class="bg-violet-100 text-violet-700 text-[10px] font-bold mono px-2 py-0.5 rounded">ONTOLOGY</span>
+          묶기·매핑·룰
+        </h3>
+        <ul class="space-y-1.5 mono text-xs text-slate-600">
+          <li class="flex items-center gap-2"><span class="text-violet-400">·</span><a href="ontology.ttl" class="hover:text-violet-600 hover:underline">ontology.ttl</a> <span class="text-slate-400 not-mono">— OWL 클래스 계층</span></li>
+          <li class="flex items-center gap-2"><span class="text-violet-400">·</span><a href="mapping_rules.yaml" class="hover:text-violet-600 hover:underline">mapping_rules.yaml</a> <span class="text-slate-400 not-mono">— CSV→RDF 매핑</span></li>
+          <li class="flex items-center gap-2"><span class="text-violet-400">·</span><a href="instances.ttl" class="hover:text-violet-600 hover:underline">instances.ttl</a> <span class="text-slate-400 not-mono">— 변환 결과</span></li>
+          <li class="flex items-center gap-2"><span class="text-violet-400">·</span><a href="rules.yaml" class="hover:text-violet-600 hover:underline">rules.yaml</a> <span class="text-slate-400 not-mono">— RULE-001~004</span></li>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border border-slate-200">
+        <h3 class="font-bold text-slate-900 mb-3 text-sm flex items-center gap-2">
+          <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold mono px-2 py-0.5 rounded">VIEW</span>
+          대화형 시각화
+        </h3>
+        <ul class="space-y-1.5 mono text-xs text-slate-600">
+          <li class="flex items-center gap-2"><span class="text-emerald-400">·</span><a href="mapping_diagram.html" class="hover:text-emerald-600 hover:underline">mapping_diagram.html</a></li>
+          <li class="flex items-center gap-2"><span class="text-emerald-400">·</span><a href="owl_reasoner_demo.html" class="hover:text-emerald-600 hover:underline">owl_reasoner_demo.html</a></li>
+          <li class="flex items-center gap-2"><span class="text-emerald-400">·</span><a href="change_comparison.html" class="hover:text-emerald-600 hover:underline">change_comparison.html</a></li>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border border-slate-200">
+        <h3 class="font-bold text-slate-900 mb-3 text-sm flex items-center gap-2">
+          <span class="bg-amber-100 text-amber-700 text-[10px] font-bold mono px-2 py-0.5 rounded">DOC</span>
+          문서·가이드
+        </h3>
+        <ul class="space-y-1.5 mono text-xs text-slate-600">
+          <li class="flex items-center gap-2"><span class="text-amber-400">·</span><a href="README.md" class="hover:text-amber-600 hover:underline">README.md</a> <span class="text-slate-400 not-mono">— 전체 가이드</span></li>
+          <li class="flex items-center gap-2"><span class="text-amber-400">·</span><a href="abstraction_steps.md" class="hover:text-amber-600 hover:underline">abstraction_steps.md</a> <span class="text-slate-400 not-mono">— 9단계 추상화</span></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ ABOUT ════════════════════ -->
+<section class="bg-slate-900 text-slate-300 px-5 sm:px-8 py-10 sm:py-16">
+  <div class="max-w-5xl mx-auto">
+    <div class="mb-6">
+      <div class="text-xs font-bold mono text-emerald-400 mb-2 tracking-wider">ABOUT</div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-white">이 데모는 무엇인가</h2>
+    </div>
+
+    <div class="space-y-4 text-sm sm:text-base leading-relaxed text-slate-300 max-w-3xl">
+      <p>
+        엔지니어 학습자가 <strong class="text-white">실제 데이터셋 위에서 온톨로지를 어떻게 설계하고 구성하는지</strong> 따라할 수 있도록 만든 학습 데모입니다. 무안 한옥마을 화재 대응 시나리오를 anchor로 사용합니다.
+      </p>
+      <p>
+        <strong class="text-white">묶기 (bundling)</strong>는 OWL 클래스 계층으로 표현됩니다 — Hanok ⊑ TraditionalClusterMember ⊑ Building. <strong class="text-white">매핑 (mapping)</strong>은 declarative yaml로 분리됩니다 — CSV 컬럼이 어느 ontology property로 가는지 사람이 읽을 수 있게.
+      </p>
+      <p>
+        <strong class="text-white">자동 추론 (reasoning)</strong>은 forward-chaining으로 시연됩니다 — 사람이 적은 7개 사실에서 컴퓨터가 14개 새 사실을 끌어냅니다. <strong class="text-white">시나리오 vs 추론</strong>의 비용 차이도 두 케이스(한옥카페 추가, 기관명 개편)로 보여줍니다.
+      </p>
+      <p class="text-xs text-slate-400 pt-4 border-t border-slate-800">
+        기준 시나리오는 <a href="https://ruledata.cloud5.socialbrain.co.kr/#how" class="text-emerald-400 hover:underline">ruledata #how</a>의 무안 한옥마을 #B-3021 (트리거 0.85, 5 dispatches + 6 notifications)와 1:1 호환.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer class="bg-slate-950 text-slate-500 px-5 sm:px-8 py-8 text-xs">
+  <div class="max-w-5xl mx-auto flex flex-col sm:flex-row sm:justify-between gap-4">
+    <div>
+      <div class="font-bold text-slate-400">PATOS Learning</div>
+      <div class="mt-1">학습 목적 데모 · plausible mock 데이터</div>
+    </div>
+    <div class="flex flex-col sm:items-end gap-1">
+      <a href="https://github.com/JessyLimitless/PATOS_FINAL" class="text-slate-400 hover:text-white">github.com/JessyLimitless/PATOS_FINAL</a>
+      <span class="text-slate-600">실명·실주소·실연락처 사용 금지</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

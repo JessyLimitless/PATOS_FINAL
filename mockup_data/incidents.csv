@@ -1,0 +1,5 @@
+incident_id,building_id,started_at,severity,status,root_cause,affected_count,rules_fired,closed_at
+INC-882,#B-3021,2024-03-15T15:14:23+09:00,HIGH,ACTIVE,smoke_alert+high_risk,,RULE-001|RULE-002|RULE-003|RULE-004,
+INC-321,#B-1015,2023-11-22T02:15:00+09:00,MEDIUM,CLOSED,electrical_fault,1injured,RULE-001,2023-11-22T05:30:00+09:00
+INC-456,#B-3019,2022-05-04T13:45:00+09:00,LOW,CLOSED,false_alert_resolved,,,2022-05-04T14:00:00+09:00
+INC-577,#B-3030,2023-08-12T19:20:00+09:00,MEDIUM,CLOSED,kitchen_fire,0,RULE-001|RULE-003,2023-08-12T20:45:00+09:00

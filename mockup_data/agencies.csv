@@ -1,0 +1,5 @@
+agency_id,name,type,contact_role,contact_name,phone,email,notification_channel,response_protocol,note
+AG-01,무안소방서,소방관서,소방서장,홍○○,061-454-XXXX,muan-fd@example.gov.kr,SMS+API,immediate_dispatch,
+AG-02,국가유산청,중앙기관,재난대응담당관,,02-3140-XXXX,heritage-emergency@example.gov.kr,SMS+이메일+API,30min_within_response,2024년 문화재청에서 개편
+AG-03,몽탄 전통한옥마을 보존회,민간단체,보존회장,이○○,061-XXX-XXXX,monttan-preserve@example.org,SMS+전화,15min_callback,
+AG-04,무안군청 안전총괄과,지자체,재난대응담당,,061-450-XXXX,muan-safety@example.gov.kr,API,60min_status_share,

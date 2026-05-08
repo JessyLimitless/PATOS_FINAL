@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>OWL 자동 추론 시연 — 무안 한옥마을</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { font-family: Inter, sans-serif; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeIn 0.4s ease-out both; }
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 0 rgba(34, 197, 94, 0); }
+    50% { box-shadow: 0 0 18px rgba(34, 197, 94, 0.45); }
+  }
+  .glow { animation: glow 1.2s ease-out 1; }
+  .triple { padding: 3px 0; }
+</style>
+</head>
+<body class="bg-slate-100 min-h-screen p-4 md:p-6">
+
+<div class="max-w-6xl mx-auto">
+
+<!-- Header -->
+<header class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-5">
+  <div class="flex items-center gap-4">
+    <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-xl flex items-center justify-center text-white text-2xl">🦉</div>
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800">OWL 자동 추론 시연</h1>
+      <p class="text-sm text-slate-500 mt-0.5">사람이 *규칙*과 *사실*을 적으면 → 컴퓨터가 새 사실을 자동으로 끌어냅니다</p>
+    </div>
+  </div>
+  <div class="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900">
+    👇 아래 두 박스(ONTOLOGY · ASSERTED)는 사람이 적은 입력입니다. <strong>"▶ RUN REASONER"</strong> 버튼을 누르면, 입력에서 *논리적으로 따라나오는* 새 사실들이 INFERRED 박스에 자동으로 채워집니다.
+  </div>
+</header>
+
+<!-- Inputs -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+
+  <!-- Ontology -->
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-bold text-slate-700 flex items-center gap-2">
+        <span class="bg-violet-100 text-violet-700 text-xs px-2 py-1 rounded-full mono font-bold">ONTOLOGY</span>
+        <span class="text-sm">OWL 규칙 — 카테고리·관계의 *법*</span>
+      </h2>
+      <span class="text-xs text-slate-400">사람이 적음</span>
+    </div>
+    <div id="ontology-display" class="space-y-1 mono text-xs"></div>
+    <div class="mt-3 pt-3 border-t border-slate-100 text-xs text-slate-500">
+      <span class="mono">⊑</span> = subClassOf · <span class="mono">≡⁻¹</span> = inverseOf · <span class="mono">a</span> = rdf:type
+    </div>
+  </div>
+
+  <!-- Asserted -->
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-bold text-slate-700 flex items-center gap-2">
+        <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full mono font-bold">ASSERTED</span>
+        <span class="text-sm">실제 데이터 사실</span>
+      </h2>
+      <span class="text-xs text-slate-400">사람이 적음</span>
+    </div>
+    <div id="asserted-display" class="space-y-1 mono text-xs"></div>
+    <div class="mt-3 pt-3 border-t border-slate-100 text-xs text-slate-500">
+      예시: 한옥 3채 + 일반 건물 1채. 입력은 *최소한*만.
+    </div>
+  </div>
+
+</div>
+
+<!-- Run button -->
+<div class="text-center mb-5">
+  <button id="run-btn" onclick="runReasoning()" class="bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold px-8 py-3 rounded-xl shadow-lg transition-all hover:shadow-xl">
+    ▶ RUN REASONER
+  </button>
+  <button id="reset-btn" onclick="resetReasoning()" class="ml-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-4 py-3 rounded-xl">
+    ↻ Reset
+  </button>
+</div>
+
+<!-- Inferred -->
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-5">
+  <div class="flex items-center justify-between mb-3">
+    <h2 class="font-bold text-slate-700 flex items-center gap-2">
+      <span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded-full mono font-bold">INFERRED</span>
+      <span class="text-sm">컴퓨터가 자동 도출한 새 사실</span>
+    </h2>
+    <span class="text-xs text-slate-400" id="inferred-count">아직 안 돌림</span>
+  </div>
+  <div id="inferred-display" class="space-y-2">
+    <div class="text-sm text-slate-400 italic">"▶ RUN REASONER" 버튼을 눌러보세요.</div>
+  </div>
+</div>
+
+<!-- Trace -->
+<div class="bg-slate-900 rounded-2xl shadow-sm p-5 mb-5" id="trace-section" style="display:none">
+  <h2 class="font-bold text-slate-300 mb-3 flex items-center gap-2">
+    <span class="bg-slate-700 text-slate-300 text-xs px-2 py-1 rounded-full mono font-bold">TRACE</span>
+    <span class="text-sm">반복(iteration)별 적용된 룰</span>
+  </h2>
+  <div id="trace-display" class="space-y-3 mono text-xs"></div>
+</div>
+
+<!-- Rules legend -->
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-5">
+  <h2 class="font-bold text-slate-700 text-sm mb-3">이 시연이 적용하는 5가지 추론 룰</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+    <div class="bg-emerald-50 rounded-lg p-3 border border-emerald-200">
+      <div class="font-bold text-emerald-800 mono mb-1">R1: subClassOf 전파</div>
+      <div class="text-slate-600">x가 A의 인스턴스, A ⊑ B → x는 B의 인스턴스</div>
+      <div class="text-[10px] text-slate-500 mt-1 italic">"민수는 한옥의 인스턴스, 한옥 ⊑ 건물 → 민수는 건물"</div>
+    </div>
+    <div class="bg-amber-50 rounded-lg p-3 border border-amber-200">
+      <div class="font-bold text-amber-800 mono mb-1">R3: domain 추론</div>
+      <div class="text-slate-600">x의 P 속성 값이 y, P.domain = D → x는 D의 인스턴스</div>
+      <div class="text-[10px] text-slate-500 mt-1 italic">"X가 hasStructure가 있고 hasStructure는 Building에서만 → X는 Building"</div>
+    </div>
+    <div class="bg-blue-50 rounded-lg p-3 border border-blue-200">
+      <div class="font-bold text-blue-800 mono mb-1">R4: inverseOf</div>
+      <div class="text-slate-600">P ≡⁻¹ Q, x P y → y Q x</div>
+      <div class="text-[10px] text-slate-500 mt-1 italic">"민수가 학교에 다닌다 ↔ 학교에 민수가 다닌다"</div>
+    </div>
+    <div class="bg-pink-50 rounded-lg p-3 border border-pink-200">
+      <div class="font-bold text-pink-800 mono mb-1">R5: 대칭성(Symmetric)</div>
+      <div class="text-slate-600">P가 대칭, x P y → y P x</div>
+      <div class="text-[10px] text-slate-500 mt-1 italic">"A가 B 옆이면 B도 A 옆이다"</div>
+    </div>
+    <div class="bg-slate-100 rounded-lg p-3 border border-slate-200 md:col-span-2">
+      <div class="font-bold text-slate-700 mono mb-1">반복(Fixpoint)</div>
+      <div class="text-slate-600">위 룰들을 반복 적용. 더 이상 새 사실이 나오지 않으면 *수렴*. 단순한 알고리즘이지만, 큰 ontology에서도 *모든 함의*를 빠뜨리지 않고 도출.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer note -->
+<div class="text-xs text-slate-500 text-center px-4 pb-6 leading-relaxed">
+  이 시연은 OWL의 핵심 5룰만 forward-chaining으로 구현한 *축소판*입니다.<br>
+  실제 OWL DL reasoner (HermiT · Pellet · ELK)는 owl:sameAs, owl:disjointWith, cardinality 제약 등 훨씬 많은 추론을 지원하고, 모순(unsatisfiable class) 자동 검출까지 합니다.<br>
+  하지만 *동작 원리는 동일* — "사람이 규칙 적으면 컴퓨터가 따라온다."
+</div>
+
+</div>
+
+<script>
+// === Initial data ===
+const ontology = [
+  ['Hanok',                     'subClassOf', 'TraditionalClusterMember'],
+  ['TraditionalClusterMember',  'subClassOf', 'Building'],
+  ['Building',                  'subClassOf', 'Asset'],
+  ['hasStructure',              'domain',     'Building'],
+  ['memberOf',                  'inverseOf',  'hasMember'],
+  ['hasMember',                 'inverseOf',  'memberOf'],
+  ['adjacentTo',                'rdf:type',   'SymmetricProperty']
+];
+
+const asserted = [
+  ['B-3021', 'rdf:type',     'Hanok'],
+  ['B-3019', 'rdf:type',     'Hanok'],
+  ['B-3022', 'rdf:type',     'Hanok'],
+  ['B-3021', 'memberOf',     'CL-01'],
+  ['B-3021', 'adjacentTo',   'B-3019'],
+  ['B-3019', 'adjacentTo',   'B-3022'],
+  ['B-1015', 'hasStructure', 'ConcreteFrame']
+];
+
+function escHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function predSym(p) {
+  if (p === 'subClassOf') return '<span class="text-violet-600 font-bold">⊑</span>';
+  if (p === 'inverseOf')  return '<span class="text-violet-600 font-bold">≡⁻¹</span>';
+  if (p === 'rdf:type')   return '<span class="text-violet-600 font-bold">a</span>';
+  if (p === 'domain')     return '<span class="text-violet-600">.domain</span>';
+  return '<span class="text-violet-600">:' + escHtml(p) + '</span>';
+}
+
+function init() {
+  const ontDiv = document.getElementById('ontology-display');
+  ontDiv.innerHTML = ontology.map(([s,p,o]) => {
+    return `<div class="triple text-slate-700"><span class="font-semibold text-violet-700">:${escHtml(s)}</span> ${predSym(p)} <span class="font-semibold text-violet-700">:${escHtml(o)}</span></div>`;
+  }).join('');
+
+  const assertedDiv = document.getElementById('asserted-display');
+  assertedDiv.innerHTML = asserted.map(([s,p,o]) => {
+    let pSym = p === 'rdf:type' ? '<span class="text-blue-600 font-bold">a</span>' : `<span class="text-blue-600">:${escHtml(p)}</span>`;
+    return `<div class="triple text-slate-700"><span class="font-semibold text-blue-700">:${escHtml(s)}</span> ${pSym} <span class="font-semibold text-blue-700">:${escHtml(o)}</span></div>`;
+  }).join('');
+}
+
+function hasFact(arr, f) {
+  return arr.some(x => x[0] === f[0] && x[1] === f[1] && x[2] === f[2]);
+}
+
+function runReasoning() {
+  const ont = ontology.map(t => [...t]);
+  let allFacts = asserted.map(t => [...t]);
+  const inferred = [];
+  const traceData = [];
+  let iter = 0;
+  let changed = true;
+
+  while (changed && iter < 20) {
+    iter++;
+    changed = false;
+    const iterInferences = [];
+
+    // R1: rdf:type + subClassOf → rdf:type
+    for (const fact of [...allFacts]) {
+      if (fact[1] !== 'rdf:type') continue;
+      const [x, , a] = fact;
+      for (const ax of ont) {
+        if (ax[1] === 'subClassOf' && ax[0] === a) {
+          const newF = [x, 'rdf:type', ax[2]];
+          if (!hasFact(allFacts, newF)) {
+            allFacts.push(newF);
+            inferred.push({ f: newF, rule: 'R1' });
+            iterInferences.push({ rule: 'R1', text: `:${x} a :${ax[2]}    ←    :${x} a :${a} ∧ :${a} ⊑ :${ax[2]}` });
+            changed = true;
+          }
+        }
+      }
+    }
+
+    // R3: property + domain → rdf:type
+    for (const fact of [...allFacts]) {
+      const [x, p, y] = fact;
+      if (p === 'rdf:type') continue;
+      for (const ax of ont) {
+        if (ax[1] === 'domain' && ax[0] === p) {
+          const newF = [x, 'rdf:type', ax[2]];
+          if (!hasFact(allFacts, newF)) {
+            allFacts.push(newF);
+            inferred.push({ f: newF, rule: 'R3' });
+            iterInferences.push({ rule: 'R3', text: `:${x} a :${ax[2]}    ←    :${x} :${p} :${y} ∧ :${p}.domain = :${ax[2]}` });
+            changed = true;
+          }
+        }
+      }
+    }
+
+    // R4: inverseOf
+    for (const fact of [...allFacts]) {
+      const [x, p, y] = fact;
+      if (p === 'rdf:type') continue;
+      for (const ax of ont) {
+        if (ax[1] === 'inverseOf' && ax[0] === p) {
+          const newF = [y, ax[2], x];
+          if (!hasFact(allFacts, newF)) {
+            allFacts.push(newF);
+            inferred.push({ f: newF, rule: 'R4' });
+            iterInferences.push({ rule: 'R4', text: `:${y} :${ax[2]} :${x}    ←    :${x} :${p} :${y} ∧ :${p} ≡⁻¹ :${ax[2]}` });
+            changed = true;
+          }
+        }
+      }
+    }
+
+    // R5: SymmetricProperty
+    for (const fact of [...allFacts]) {
+      const [x, p, y] = fact;
+      if (p === 'rdf:type') continue;
+      const isSym = ont.find(a => a[0] === p && a[1] === 'rdf:type' && a[2] === 'SymmetricProperty');
+      if (isSym) {
+        const newF = [y, p, x];
+        if (!hasFact(allFacts, newF)) {
+          allFacts.push(newF);
+          inferred.push({ f: newF, rule: 'R5' });
+          iterInferences.push({ rule: 'R5', text: `:${y} :${p} :${x}    ←    :${x} :${p} :${y} ∧ :${p} symmetric` });
+          changed = true;
+        }
+      }
+    }
+
+    if (iterInferences.length > 0) {
+      traceData.push({ iter, inferences: iterInferences });
+    }
+  }
+
+  // Render inferred
+  const ruleColors = {
+    R1: 'bg-emerald-100 text-emerald-800',
+    R3: 'bg-amber-100 text-amber-800',
+    R4: 'bg-blue-100 text-blue-800',
+    R5: 'bg-pink-100 text-pink-800'
+  };
+  const ruleLabels = {
+    R1: 'R1 subClassOf',
+    R3: 'R3 domain',
+    R4: 'R4 inverseOf',
+    R5: 'R5 symmetric'
+  };
+
+  const infDiv = document.getElementById('inferred-display');
+  if (inferred.length === 0) {
+    infDiv.innerHTML = '<div class="text-sm text-slate-500">새로 추론된 사실이 없습니다.</div>';
+  } else {
+    infDiv.innerHTML = inferred.map((item, idx) => {
+      const [s, p, o] = item.f;
+      const pSym = p === 'rdf:type' ? '<span class="text-emerald-600 font-bold">a</span>' : `<span class="text-emerald-600">:${escHtml(p)}</span>`;
+      return `<div class="fade-in glow flex items-center gap-3 p-3 bg-emerald-50 rounded-lg border border-emerald-200" style="animation-delay:${idx * 80}ms">
+        <span class="text-xl flex-shrink-0">✨</span>
+        <div class="mono text-xs flex-1">
+          <span class="font-bold text-emerald-800">:${escHtml(s)}</span>
+          ${pSym}
+          <span class="font-bold text-emerald-800">:${escHtml(o)}</span>
+        </div>
+        <span class="text-[10px] mono px-2 py-0.5 rounded-full ${ruleColors[item.rule]} font-bold flex-shrink-0">${ruleLabels[item.rule]}</span>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('inferred-count').textContent = `${inferred.length}개 새 사실 도출 · ${iter}회 반복 후 수렴`;
+
+  // Render trace
+  const traceDiv = document.getElementById('trace-display');
+  document.getElementById('trace-section').style.display = 'block';
+  const ruleTrColors = {
+    R1: 'text-emerald-300',
+    R3: 'text-amber-300',
+    R4: 'text-blue-300',
+    R5: 'text-pink-300'
+  };
+  traceDiv.innerHTML = traceData.map(t => {
+    return `<div class="space-y-1">
+      <div class="text-amber-400 font-bold">▸ Iteration ${t.iter}  <span class="text-slate-500 font-normal">(${t.inferences.length}개 새 사실)</span></div>
+      ${t.inferences.map(inf => `<div class="pl-4 ${ruleTrColors[inf.rule]}">  <span class="text-slate-500">[${inf.rule}]</span>  ${escHtml(inf.text).replace(/⊑|≡⁻¹|∧/g, m => `<span class="text-violet-400">${m}</span>`)}</div>`).join('')}
+    </div>`;
+  }).join('') + `<div class="text-slate-400 mt-3 italic pl-4">// Iteration ${iter}: 새 사실 없음 → 수렴 (fixpoint)</div>`;
+}
+
+function resetReasoning() {
+  document.getElementById('inferred-display').innerHTML = '<div class="text-sm text-slate-400 italic">"▶ RUN REASONER" 버튼을 눌러보세요.</div>';
+  document.getElementById('trace-section').style.display = 'none';
+  document.getElementById('inferred-count').textContent = '아직 안 돌림';
+}
+
+init();
+</script>
+
+</body>
+</html>
