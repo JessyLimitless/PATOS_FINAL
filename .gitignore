@@ -1,0 +1,13 @@
+# 백업·드래프트
+*.bak
+mockup_data/_drafts/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 에디터
+.vscode/
+.idea/
+*.swp

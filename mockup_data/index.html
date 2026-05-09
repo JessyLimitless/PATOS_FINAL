@@ -88,13 +88,56 @@
   </div>
 </header>
 
+<!-- ════════════════════ ROUTE PICKER ════════════════════ -->
+<section class="px-5 sm:px-8 py-8 sm:py-10 bg-white border-b border-slate-200">
+  <div class="max-w-5xl mx-auto">
+    <div class="mb-5">
+      <div class="text-xs font-bold mono text-slate-500 mb-2 tracking-wider">START HERE</div>
+      <h2 class="text-xl sm:text-2xl font-bold text-slate-900">처음 오셨나요? 두 갈래 중 골라주세요</h2>
+      <p class="text-sm text-slate-500 mt-1">배경에 따라 진입로가 다릅니다 — 둘 다 같은 결론으로 도착해요</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <a href="learning_journey.html#ch1" class="group block bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 hover:border-amber-400 hover:shadow-lg rounded-2xl p-5 sm:p-6 transition tap">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-amber-500 text-white text-[11px] font-bold mono px-2 py-1 rounded-full">⚡ 5분</span>
+          <span class="text-xs text-amber-800 font-semibold">비엔지니어 · 처음 듣는 분</span>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900 mb-1.5 group-hover:text-amber-700 transition">개념부터 천천히</h3>
+        <p class="text-sm text-slate-700 leading-relaxed">
+          "RDF가 뭔가 → 왜 OWL을 쓰나 → 어떻게 다른가 → LLM이 대체할까" 4단계만. 코드·파일 없이 글만 읽어도 OK.
+        </p>
+        <div class="mt-3 pt-3 border-t border-amber-200/60 text-xs text-amber-700 group-hover:text-amber-900 flex items-center justify-between">
+          <span>학습 여정 → 빠른 코스</span>
+          <span>→</span>
+        </div>
+      </a>
+
+      <a href="#demos" class="group block bg-gradient-to-br from-violet-50 to-indigo-50 border border-violet-200 hover:border-violet-400 hover:shadow-lg rounded-2xl p-5 sm:p-6 transition tap">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-violet-600 text-white text-[11px] font-bold mono px-2 py-1 rounded-full">🛠 동작</span>
+          <span class="text-xs text-violet-800 font-semibold">엔지니어 · 코드부터 보고 싶은 분</span>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900 mb-1.5 group-hover:text-violet-700 transition">데모 3종 + raw 파일</h3>
+        <p class="text-sm text-slate-700 leading-relaxed">
+          매핑·추론·변화 비교를 직접 돌려보고, <code class="mono bg-white/70 px-1 rounded text-[11px]">.ttl</code>·<code class="mono bg-white/70 px-1 rounded text-[11px]">.yaml</code>·<code class="mono bg-white/70 px-1 rounded text-[11px]">.csv</code>로 내려가세요.
+        </p>
+        <div class="mt-3 pt-3 border-t border-violet-200/60 text-xs text-violet-700 group-hover:text-violet-900 flex items-center justify-between">
+          <span>대화형 데모 3종</span>
+          <span>↓</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- ════════════════════ LEARNING JOURNEY (FEATURED) ════════════════════ -->
 <section class="px-5 sm:px-8 py-10 sm:py-16">
   <div class="max-w-5xl mx-auto">
     <div class="mb-6">
       <div class="text-xs font-bold mono text-indigo-700 mb-2 tracking-wider">📖 LEARNING JOURNEY</div>
       <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">학습 여정 본체</h2>
-      <p class="text-sm text-slate-500 mt-1">우리가 함께 쌓은 11개의 깨달음 — 데모를 보기 전에 먼저 읽어주세요</p>
+      <p class="text-sm text-slate-500 mt-1">12단계 정독 — 시간 부족하면 위 5분 코스로</p>
     </div>
 
     <a href="learning_journey.html" class="group block bg-gradient-to-br from-indigo-700 via-violet-700 to-rose-600 text-white rounded-2xl shadow-xl hover:shadow-2xl transition p-6 sm:p-8 tap relative overflow-hidden">
@@ -104,9 +147,9 @@
         <div class="flex items-start gap-4">
           <div class="w-12 h-12 sm:w-14 sm:h-14 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center text-2xl sm:text-3xl flex-shrink-0">📖</div>
           <div class="flex-1 min-w-0">
-            <h3 class="text-xl sm:text-2xl font-bold mb-2">학습 여정 (11단계)</h3>
+            <h3 class="text-xl sm:text-2xl font-bold mb-2">학습 여정 (12단계)</h3>
             <p class="text-sm sm:text-base text-violet-100 leading-relaxed mb-4">
-              RDF → OWL → 왜 쓰나 → 시나리오 vs 추론 → 묶기 3종 → 뉴로심볼릭 → 현존재 차원 → 4가지 설계 원칙 → 본 데모 한계 → LLM이 대체할까? → 마무리
+              RDF → OWL → 왜 쓰나 → 시나리오 vs 추론 → 묶기 3종 → 뉴로심볼릭 → 현존재 차원 → 4가지 설계 원칙 → 본 데모 한계 → LLM이 대체할까? → <strong class="text-white">조건식과 다른가</strong> → 마무리
             </p>
             <div class="flex flex-wrap gap-2 text-[11px] sm:text-xs">
               <span class="bg-white/15 px-2 py-1 rounded-full">RDF 기초</span>
@@ -115,6 +158,7 @@
               <span class="bg-white/15 px-2 py-1 rounded-full">현존재 정직</span>
               <span class="bg-white/15 px-2 py-1 rounded-full">뉴로심볼릭</span>
               <span class="bg-white/15 px-2 py-1 rounded-full">LLM vs OWL</span>
+              <span class="bg-rose-500/30 px-2 py-1 rounded-full">조건식 vs OWL</span>
             </div>
           </div>
         </div>
@@ -127,8 +171,71 @@
   </div>
 </section>
 
+<!-- ════════════════════ ESSAYS ════════════════════ -->
+<section class="px-5 sm:px-8 py-10 sm:py-14 bg-stone-50 border-y border-stone-200">
+  <div class="max-w-5xl mx-auto">
+    <div class="mb-6">
+      <div class="text-xs font-bold mono text-stone-700 mb-2 tracking-wider">📝 ESSAYS</div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">학습 여정의 두 글</h2>
+      <p class="text-sm text-slate-500 mt-1">12단계의 결론을 두 가지 톤으로 — 학구적 정리, 인문학 칼럼</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+
+      <a href="essay.html" class="group block bg-white rounded-2xl border-2 border-indigo-200 hover:border-indigo-400 hover:shadow-xl transition p-5 sm:p-7 tap">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-indigo-100 text-indigo-700 text-[11px] font-bold mono px-2 py-1 rounded">📚 ESSAY</span>
+          <span class="text-xs text-slate-500">학구적 정리 · 약 8분</span>
+        </div>
+        <h3 class="text-lg sm:text-xl font-bold text-slate-900 group-hover:text-indigo-700 transition mb-2">
+          온톨로지는 도메인의 명제다
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
+          학습자가 5턴에 도달한 곳 — Frege·Russell·Newell·Bengio의 KR 학계 50년치 합의를 어떻게 자연스럽게 재발견했는가.
+        </p>
+        <div class="flex flex-wrap gap-1.5">
+          <span class="bg-indigo-50 text-indigo-700 text-[10px] mono px-2 py-0.5 rounded">명제 정의</span>
+          <span class="bg-indigo-50 text-indigo-700 text-[10px] mono px-2 py-0.5 rounded">Newell 1982</span>
+          <span class="bg-indigo-50 text-indigo-700 text-[10px] mono px-2 py-0.5 rounded">초지능 4-layer</span>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-indigo-600 mono group-hover:text-indigo-800 flex items-center justify-between">
+          <span>essay.html</span>
+          <span>→</span>
+        </div>
+      </a>
+
+      <a href="column.html" class="group block bg-stone-900 text-white rounded-2xl hover:shadow-2xl transition p-5 sm:p-7 tap relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl"></div>
+        <div class="relative">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="bg-amber-400 text-stone-900 text-[11px] font-bold mono px-2 py-1 rounded">📰 SHORT STORY</span>
+            <span class="text-xs text-stone-400">1인칭 스토리 · 약 10분</span>
+          </div>
+          <h3 class="text-lg sm:text-xl font-bold text-white group-hover:text-amber-300 transition mb-2" style="font-family: 'Noto Serif KR', serif;">
+            두 가지 의문
+          </h3>
+          <p class="text-xs sm:text-sm text-stone-300 leading-relaxed mb-3 italic">
+            "결국 온톨로지도 조건문 아닌가요?"<br>
+            세미나의 한 의문에서 시작해 — *추론*이라 부르는 작동의 실체, *존재론*이라는 무거운 이름의 자리, 그리고 합의의 종류까지 따라간 한 주일의 기록.
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="bg-stone-800 text-amber-300 text-[10px] mono px-2 py-0.5 rounded">조건문 vs 명제</span>
+            <span class="bg-stone-800 text-amber-300 text-[10px] mono px-2 py-0.5 rounded">추론의 실체</span>
+            <span class="bg-stone-800 text-amber-300 text-[10px] mono px-2 py-0.5 rounded">혼합 종 합의</span>
+          </div>
+          <div class="mt-4 pt-3 border-t border-stone-700 text-xs text-amber-300 mono flex items-center justify-between">
+            <span>column.html</span>
+            <span>→</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
 <!-- ════════════════════ INTERACTIVE DEMOS ════════════════════ -->
-<section class="px-5 sm:px-8 py-10 sm:py-16 bg-white border-y border-slate-200">
+<section id="demos" class="px-5 sm:px-8 py-10 sm:py-16 bg-white border-y border-slate-200 scroll-mt-4">
   <div class="max-w-5xl mx-auto">
     <div class="mb-8">
       <div class="text-xs font-bold mono text-violet-700 mb-2 tracking-wider">DEMOS</div>
@@ -243,9 +350,12 @@
 <section class="px-5 sm:px-8 py-10 sm:py-16">
   <div class="max-w-5xl mx-auto">
     <div class="mb-8">
-      <div class="text-xs font-bold mono text-slate-700 mb-2 tracking-wider">FILES</div>
+      <div class="flex flex-wrap items-center gap-2 mb-2">
+        <span class="text-xs font-bold mono text-slate-700 tracking-wider">FILES</span>
+        <span class="bg-violet-100 text-violet-700 text-[10px] font-bold mono px-2 py-0.5 rounded">🛠 ENGINEER</span>
+      </div>
       <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">전체 파일</h2>
-      <p class="text-sm text-slate-500 mt-1">데이터·온톨로지·시각화·문서</p>
+      <p class="text-sm text-slate-500 mt-1">CSV·TTL·YAML 원본 — 텍스트 형식이라 브라우저에서 raw로 열립니다. 처음이라면 위쪽 데모 3종 먼저.</p>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -286,7 +396,7 @@
           대화형 시각화
         </h3>
         <ul class="space-y-1.5 mono text-xs text-slate-600">
-          <li class="flex items-center gap-2"><span class="text-indigo-400">·</span><a href="learning_journey.html" class="hover:text-indigo-600 hover:underline font-semibold text-indigo-700">learning_journey.html</a> <span class="text-slate-400 not-mono">— 11단계 본체</span></li>
+          <li class="flex items-center gap-2"><span class="text-indigo-400">·</span><a href="learning_journey.html" class="hover:text-indigo-600 hover:underline font-semibold text-indigo-700">learning_journey.html</a> <span class="text-slate-400 not-mono">— 12단계 본체</span></li>
           <li class="flex items-center gap-2"><span class="text-emerald-400">·</span><a href="mapping_diagram.html" class="hover:text-emerald-600 hover:underline">mapping_diagram.html</a></li>
           <li class="flex items-center gap-2"><span class="text-emerald-400">·</span><a href="owl_reasoner_demo.html" class="hover:text-emerald-600 hover:underline">owl_reasoner_demo.html</a></li>
           <li class="flex items-center gap-2"><span class="text-emerald-400">·</span><a href="change_comparison.html" class="hover:text-emerald-600 hover:underline">change_comparison.html</a></li>

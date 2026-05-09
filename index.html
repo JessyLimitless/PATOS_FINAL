@@ -38,6 +38,47 @@
 </head>
 <body class="flex h-screen overflow-hidden bg-slate-100">
 
+<!-- ═ LEARNING DEMO CALLOUT (dismissible) ═ -->
+<div id="learning-callout" class="hidden fixed bottom-4 right-4 z-[60] max-w-sm fade-in">
+  <div class="bg-gradient-to-br from-indigo-700 via-violet-700 to-rose-600 text-white rounded-2xl shadow-2xl p-4 sm:p-5 relative">
+    <button onclick="dismissLearningCallout()" aria-label="닫기"
+            class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-white/80 hover:text-white transition">
+      <i data-lucide="x" class="w-3.5 h-3.5"></i>
+    </button>
+    <div class="flex items-start gap-3 pr-6">
+      <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0 text-xl">📖</div>
+      <div class="flex-1 min-w-0">
+        <div class="text-[11px] font-bold mono text-violet-200 mb-0.5">NEW · 학습 데모</div>
+        <div class="text-sm font-bold mb-1">이 화면은 PATOS 대시보드</div>
+        <div class="text-xs text-violet-100 leading-relaxed mb-3">
+          온톨로지 학습이 목적이라면 → <strong class="text-white">학습 hub</strong>로 가세요. 5분 빠른 코스도 있어요.
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <a href="mockup_data/index.html" class="bg-white text-violet-800 hover:bg-violet-50 text-xs font-bold px-3 py-1.5 rounded-lg inline-flex items-center gap-1 transition">
+            학습 hub →
+          </a>
+          <button onclick="dismissLearningCallout()" class="bg-white/15 hover:bg-white/25 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition">
+            대시보드 둘러보기
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  (function() {
+    if (sessionStorage.getItem('patos-learning-callout-dismissed') !== '1') {
+      var el = document.getElementById('learning-callout');
+      if (el) el.classList.remove('hidden');
+    }
+  })();
+  function dismissLearningCallout() {
+    sessionStorage.setItem('patos-learning-callout-dismissed', '1');
+    var el = document.getElementById('learning-callout');
+    if (el) el.classList.add('hidden');
+  }
+</script>
+
 <!-- ═ SIDEBAR OVERLAY ═ -->
 <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
 

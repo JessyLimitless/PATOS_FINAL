@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1c1917">
+<title>두 가지 의문 — 그런데 왜 하필 존재론이라 불렀을까 · PATOS Learning</title>
+<meta name="description" content="결국 온톨로지도 조건문에 불과한 것이 아닌가, 그리고 — 왜 그것을 굳이 '존재론'이라 명명했을까. 두 의문에서 시작해 한 점으로 모이는 한 주일의 기록.">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    font-family: 'Noto Serif KR', serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 2.0;
+    color: #1c1917;
+    background: #fafaf9;
+  }
+  .mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+  html { scroll-behavior: smooth; }
+
+  .story-body p {
+    margin-bottom: 1.5em;
+    font-size: 1.08rem;
+  }
+  .story-body p:first-of-type {
+    font-size: 1.13rem;
+    color: #44403c;
+  }
+  .story-body p:first-of-type::first-letter {
+    font-size: 3.6rem;
+    float: left;
+    line-height: 0.95;
+    margin-right: 0.12em;
+    margin-top: 0.08em;
+    font-weight: 900;
+    color: #b91c1c;
+  }
+  .story-body em {
+    color: #b91c1c;
+    font-style: italic;
+    font-weight: 500;
+  }
+  .story-body strong {
+    color: #1c1917;
+    font-weight: 700;
+  }
+  .story-body code {
+    font-family: 'JetBrains Mono', monospace;
+    background: #fef3c7;
+    padding: 0.1em 0.45em;
+    border-radius: 4px;
+    font-size: 0.86em;
+    color: #92400e;
+    font-weight: 500;
+  }
+  .scene-break {
+    text-align: center;
+    margin: 2.6em 0;
+    color: #d6d3d1;
+    letter-spacing: 0.6em;
+    font-size: 1em;
+  }
+  .two-questions {
+    margin: 1.5em 0;
+    padding: 1.5em;
+    background: #fef9c3;
+    border-left: 4px solid #ca8a04;
+    border-radius: 6px;
+  }
+  .two-questions .q {
+    font-size: 1.05rem;
+    color: #713f12;
+    line-height: 1.7;
+    margin: 0.5em 0;
+    font-weight: 500;
+  }
+  .two-questions .q-num {
+    color: #ca8a04;
+    font-weight: 700;
+    margin-right: 0.4em;
+  }
+  .pull-quote {
+    font-size: 1.45rem;
+    line-height: 1.55;
+    text-align: center;
+    color: #b91c1c;
+    font-weight: 700;
+    margin: 2.6em -1em;
+    padding: 1.4em 0;
+    border-top: 3px double #b91c1c;
+    border-bottom: 3px double #b91c1c;
+  }
+  .closing-three {
+    margin: 2.6em -1em;
+    padding: 1.8em 1.5em;
+    background: #1c1917;
+    color: #fafaf9;
+    text-align: center;
+    border-radius: 8px;
+  }
+  .closing-three .line {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0.4em 0;
+    line-height: 1.5;
+  }
+  .closing-three .line span.label {
+    color: #fbbf24;
+    font-weight: 700;
+  }
+  .byline {
+    color: #57534e;
+    font-style: italic;
+    font-size: 0.98rem;
+    margin-bottom: 2em;
+    padding-bottom: 1em;
+    border-bottom: 1px solid #e7e5e4;
+    line-height: 1.85;
+  }
+  @media (max-width: 640px) {
+    .story-body p { font-size: 1rem; }
+    .story-body p:first-of-type { font-size: 1.05rem; }
+    .pull-quote { font-size: 1.15rem; margin: 2em 0; }
+    .closing-three .line { font-size: 1.05rem; }
+    .two-questions .q { font-size: 0.98rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="relative bg-stone-900 text-white">
+  <div class="max-w-3xl mx-auto px-6 sm:px-10 py-14 sm:py-20">
+    <a href="index.html" class="text-xs text-stone-400 hover:text-white inline-flex items-center gap-1 mb-10 mono tracking-wider">← HUB</a>
+    <div class="text-[11px] font-bold mono text-amber-400 mb-5 tracking-[0.3em]">SHORT STORY · PATOS LEARNING</div>
+    <h1 class="text-3xl sm:text-5xl font-bold tracking-tight mb-4 leading-[1.2]" style="font-family: 'Noto Serif KR', serif;">
+      두 가지 의문
+    </h1>
+    <p class="text-base sm:text-xl text-stone-300 italic mt-5 leading-relaxed">
+      그런데 왜 그것을 존재론이라, 그리고 추론이라 불렀을까
+    </p>
+    <div class="mt-10 flex items-center gap-4 text-xs text-stone-400 mono">
+      <span>약 10분 정독</span>
+      <span class="text-stone-600">·</span>
+      <span>인사이트 스토리텔링</span>
+    </div>
+  </div>
+</header>
+
+<!-- STORY BODY -->
+<article class="story-body max-w-2xl mx-auto px-6 sm:px-10 py-14 sm:py-20">
+
+  <div class="byline">
+    세미나 마지막 슬라이드에서 누군가 손을 들었다. <em>"결국 온톨로지도 조건문 아닌가요?"</em> 발표자는 잠시 멈췄다. 강의실은 짧게 술렁였고, 나는 노트에 두 줄을 적었다. 그 두 줄이 한 주일을 따라다녔다.
+  </div>
+
+<div class="two-questions">
+  <div class="q"><span class="q-num">①</span> 정말 그저 조건문일 뿐인가?</div>
+  <div class="q"><span class="q-num">②</span> 단순 클래스 상속을 어찌 <em>추론</em>이라 부르는가?</div>
+  <div class="q"><span class="q-num">③</span> 그리고 — 그것을 왜 형이상학자들의 이름인 <em>존재론</em>으로 부르는가?</div>
+</div>
+
+<p>
+첫 의문은 자연스러웠다. <code>:한옥카페 rdfs:subClassOf :Hanok .</code> 한 줄을 적는 일은, 결국 컴퓨터에게 "한옥카페가 들어오면 한옥처럼 처리해라" 시키는 일 아닌가. if-else의 변형 같았다. 그러나 두 번째가 따라붙으면서 첫 번째가 흔들렸다. 사람들은 그 작동을 <em>추론</em>이라 불렀다. 인간이 책상에서 종이를 마주하고 사유하는 일에 붙는, 무거운 단어. 단순 상속을 어찌 그 이름으로 부르는가. 그리고 한 발 더 들여다보니, 컴퓨터과학자들은 그 작업 전체에 <em>존재론</em>이라는 — 형이상학자들이 만든 또 한 번 무거운 이름을 — 가져다 붙였다. 단순 분류라면 schema나 taxonomy면 충분할 텐데. 두 단어를 가벼이 가져온 게 아닐 것이다.
+</p>
+
+<div class="scene-break">· · ·</div>
+
+<p>
+책상 위엔 룰엔진 코드가 펼쳐져 있었다. 그날 오전 한옥마을에 한옥카페가 새로 한 동 등록됐다는 보고가 와 있었다. grep을 돌렸다. "한옥"이 들어간 if문이 일곱 군데. 일곱 군데를 다 손봤지만 손가락 끝에 남은 건 만족이 아니라 — 한 군데를 빠뜨렸을지 모른다는 무게였다.
+</p>
+
+<p>
+매번 새 종류가 생길 때마다 일곱 군데를 뒤져야 한다면, 나는 그동안 무엇을 컴퓨터에게 가르쳐 온 것인가. 룰을 적는 일은 컴퓨터가 *어떻게 행동할지*를 미리 다 알아두는 일이었다. 한옥카페가 등장하기 전에, 그게 무엇이고 어떻게 처리해야 할지 *내가 먼저* 알고 있어야 했다. 그러나 한옥카페는 매번 등장한다. 세계는 매번 조금씩 새로워진다. 룰엔진은 *변하지 않는 세계*를 가정해야 작동했다. 변하는 세계 앞에서 매뉴얼은 매번 부서졌다.
+</p>
+
+<p>
+그러자 OWL의 그 한 줄이 다른 의미로 보였다. <code>:한옥카페 rdfs:subClassOf :Hanok .</code> 처음엔 컴퓨터에게 *시키는 일*로 보였다. 그러나 다시 보니 — 그 줄은 시키는 글이 아니었다. 세계가 어떻게 생겨먹었는지에 대한 *진술*이었다. 한옥카페가 한옥의 일종이다. 행동의 명령이 아니라, *세상에 그런 것이 있다*는 보고였다.
+</p>
+
+<p>
+이상한 일이었다. 컴퓨터에게 행동을 직접 시키지 않고, 세상에 무엇이 있는지를 알려준다. 그런데 인간이 매일 그렇게 살고 있었다. 우리는 매뉴얼을 외워 사는 사람이 아니다. *무엇이 있는지에 대한 합의*를 가지고 산다. 한옥은 한옥이다, 학교는 학교다, 병원은 병원이다. 그 합의 위에서 모든 행동이 자연스럽게 따라온다. 새 변종이 나타나도 합의는 깨지지 않는다. 합의가 그것을 *이미 포함하고 있기 때문에*. 그래서 첫 의문에 답이 나왔다. 온톨로지는 조건문이 아니다. 행동의 명령이 아니라 — 무엇이 있다는 보고다.
+</p>
+
+<p>
+그러나 답이라기엔 너무 빨랐다. 답이 나오자마자, 더 깊은 자리에서 다음 의문이 천천히 솟아오르고 있었다.
+</p>
+
+<div class="scene-break">· · ·</div>
+
+<p>
+답이 나오자마자 두 번째가 솟았다. 그날 밤, ttl 파일에 단 네 줄을 적고 reasoner를 돌렸다. <em>한옥카페는 한옥의 일종이다. 한옥은 전통건축물의 일종이다. 전통건축물은 건물의 일종이다. B-3021은 한옥카페다.</em> 그게 전부였다.
+</p>
+
+<p>
+화면에 결론이 펼쳐졌다. B-3021은 한옥카페이고, 한옥이고, 전통건축물이고, 건물이고, 자산이다. 인접 건물 관계는 한 방향만 적었는데도 양방향으로 연결됐고, 적용 가능한 룰 여섯 개가 자동으로 잡혔다. *내가 적지 않은 결론*들이었다.
+</p>
+
+<p>
+매직처럼 보일 수도 있었다. 그러나 형식 논리를 조금이라도 들여다본 사람에게 그건 매직이 아니다. transitive subClassOf의 가장 단순한 함축 도출 — 한옥카페가 한옥이고 한옥이 전통건축물이라면 한옥카페는 전통건축물이다 — 그게 전부다. reasoner가 한 일은 그 도출을 *지치지 않고, 모든 경로 끝까지* 수행한 것뿐이다.
+</p>
+
+<p>
+그러니 놀라움은 결과 자체가 아니라 — 명제 네 줄이 그토록 많은 것을 *함축*하고 있었다는 데 있었다. 명제 하나는 작아 보인다. 그러나 그 안에 잠긴 결론은 작지 않다. 우리가 데이터베이스에 쌓은 명제의 수가 N이라면, reasoner가 끌어낼 수 있는 함축은 그보다 훨씬 크다. *우리가 적어둔 것*과 *우리가 적어둔 것에서 따라오는 것*은 다른 크기의 집합이다. 적은 것은 적게 적었지만, 그 적은 것에서 따라오는 것은 적지 않다는 것 — 그게 그날 밤의 진짜 발견이었다.
+</p>
+
+<p>
+그제야 나는, 잠시 잘못된 자리에서 놀라고 있었다는 것을 알았다. 놀라야 할 것은 화면을 채운 결론의 양이 아니었다. 적은 것이 그토록 많은 것을 *안에 담고 있었다*는 사실이었다.
+</p>
+
+<p>
+그제야 *추론구조*라는 말의 실체가 보였다. OWL과 TypeDB 같은 시스템 — 둘은 같지 않다. OWL은 Description Logic 계열의 표현이고, TypeDB의 TypeQL은 의도적으로 다른 타입 시스템을 택했다. 하지만 핵심은 공유한다. 데이터를 그저 표에 저장하지 않는다는 것. 데이터의 *타입*을 — 어떤 것이 어떤 것의 일종인지, 어떤 속성을 가지는지, 어떤 관계가 어떻게 작동하는지를 — 함께 저장한다. 데이터가 들어가는 자리 위에 *타입의 무대*가 따로 있다. "추론구조를 입력해 놓는다"는 말은 사실 — *그 무대 위에 명제를 한 줄씩 쌓는 일*이었다. 컴퓨터에게 *추론할 능력*을 심는 게 아니다. 추론에 필요한 명제들을 미리 다 적어두는 일이다. 적어둔 명제들이 모여 작은 *세계*를 이루고, reasoner는 그 안에서 함축을 끝까지 끌어낸다.
+</p>
+
+<p>
+그러므로 컴퓨터가 우리를 위해 판단해주는 일은 일어나지 않는다. <strong>우리가 미리 판단의 구조를 명제로 적어두었고, 컴퓨터는 그 구조를 따라가 함축을 끌어낸 것뿐</strong>이다. 추론이라는 단어가 그 일에 얹힌 이유는 — 형식 논리의 정의에 따라 그것이 추론의 *형태*를 갖추고 있었기 때문이다. 단서가 따라붙는다. <em>형식이 같다는 것과 같은 일이라는 것은 다른 문제다.</em> 기계적 함축 도출과 인간이 책상에서 하는 사유가 정말 *같은 종류의 일*인가는 — Searle의 중국어방(1980) 이래 46년째 결착이 안 난 질문이다. 이 글은 그 질문을 풀지 못한다. 다만 외부에 적어둔 진술의 집합 안에서 *형식적으로* 추론의 작동이 일어난다는 것 — 그것까지는 단언할 수 있다. 우리가 매일 ttl 한 줄을, 또는 TQL 룰 한 줄을 적을 때마다, 우리는 적어도 그 *형식적 무대*를 한 칸씩 넓히고 있다.
+</p>
+
+<div class="scene-break">· · ·</div>
+
+<p>
+그러나 그 형식이 어디서 왔는가를 한 번 따져볼 필요가 있다. 무거운 단어들은 보통 무거운 계보를 끌고 온다.
+</p>
+
+<p>
+ttl 파일에 우리가 적는 가장 흔한 두 가지 — *어떤 것이 어떤 것의 일종이다* (subClassOf), 그리고 *어떤 것이 어떤 속성을 가진다* (hasProperty) — 이 둘은 새로운 발명이 아니다. 아리스토텔레스가 <em>카테고리</em>에서 정리한 두 축, *실체와 속성*, 그리고 그 실체들 사이의 *유와 종*이 그것의 가장 먼 조상이다. 3세기에 포르피리오스가 그린 <em>포르피리오스의 나무</em> — 가장 일반적인 실체에서 가장 구체적인 종으로 내려가는 위계 — 는 사실상 오늘 우리가 ttl에 그리는 클래스 트리의 첫 시각화였다. 그 사이에 스콜라 논리, 19세기 말 Frege의 술어 논리(주어-술어 구조를 *함수와 인자*로 재서술한 사건), Russell과 Whitehead의 <em>Principia</em>, 그리고 1980년대 Brachman의 KL-ONE에서 시작된 Description Logic이라는 마디들이 놓여 있다. 줄기는 끊어지지 않았다. <strong>유, 종, 실체, 속성, 관계 — 이 다섯 단어는 2400년 전과 오늘이 거의 같은 무게로 쓰인다.</strong>
+</p>
+
+<p>
+그러니까 OWL의 한 줄에 얹힌 것은 가벼운 빌림이 아니었다. 컴퓨터과학자들은 한 단어를 가져온 게 아니라 — *한 가계*를 가져왔다. 추론이라는 단어 위에 술어 논리 100년이 얹혀 있고, 존재론이라는 단어 위에 형이상학 2400년이 얹혀 있다. 단어는 가벼울 수 있지만, 단어가 끌고 오는 형식적 인프라는 가볍지 않다.
+</p>
+
+<div class="scene-break">· · ·</div>
+
+<p>
+그제야 두 단어 중 하나의 무게는 풀렸다. 그러나 또 하나가 남아 있었다. <em>존재론</em>. 명제 네 줄을 적어두면 컴퓨터가 그 안에서 함축을 끝까지 끌어낸다는 그 *작동*은 알았다. 그러나 *내가 적어둔 그 진술들* 자체는 어떤 종류의 글이길래 형이상학자들의 이름이 붙었는가. 진술에도 종류가 있다. 보고도, 의견도, 묘사도 진술이다. 왜 하필 존재론.
+</p>
+
+<p>
+존재론은 ὄν("있는 것")과 λόγος("이론")을 합한 그리스어다. 단어 자체는 17세기에 라틴어로 만들어졌지만, 학문의 출처는 그보다 멀다 — 아리스토텔레스의 <em>형이상학</em>에서 시작한 질문, *"있는 것을 있는 것으로서 다루는 학문"*. 사과는 있다. 책상은 있다. 그런데 — *한옥카페*는 있는가.
+</p>
+
+<p>
+이 질문이 묘하게 흔들리는 이유는, 답이 *그렇다*도 *아니다*도 아니기 때문이다. 한옥카페는 어제까지 없었다. 누군가가 처음 한옥에 카페를 차렸을 때 그 사람은 *기존에 없던 것을 만들었다*. 그리고 사람들이 그것을 *한옥카페*라 부르기 시작한 그 자리에서 — 한옥카페는 비로소 *있게 되었다*. 이름이 붙는 그 순간이, 존재가 시작되는 순간이었다.
+</p>
+
+<p>
+여기서 한 번 멈추어야 한다. 내가 지금 말하고 있는 *"존재가 시작된다"*는 — 솔직히 말하면 — 아리스토텔레스가 묻던 그 존재가 아니다. 그가 묻던 것은 *있는 것을 있는 것으로서* 다루는 일이었고, 그것은 자연 종(種), 발견되는 무엇에 가까웠다. 한옥카페가 명명을 통해 *있게 된다*는 사유는 훨씬 후대의 것이다 — John Searle이 1995년 <em>The Construction of Social Reality</em>에서 정리한 *제도적 사실*에 가깝다. 돈, 결혼, 대학, 그리고 한옥카페. 이런 것들은 *집단적 지향성* — 우리가 그것을 그렇게 함께 다루기로 한 약속 — 에 의해서만 존재한다. <strong>같은 "존재론"이라는 단어 아래에 서로 다른 두 동물이 살고 있다.</strong>
+</p>
+
+<p>
+그런데 한 발 더 가보면, 두 동물 사이의 경계는 그리 깨끗하지 않다. *한옥카페*는 분명 사회적이다. 그러나 *한옥*은? 한옥에는 물리적 사실이 있다 — 목조, 기와, 한식 구조. 이 사실들은 우리가 그것을 한옥이라 부르건 부르지 않건 그 자리에 있다. 그러나 *어디서부터가 한옥인가* — 어떤 비율로 목조이면 한옥인가, 양옥 지붕을 한식으로 바꾼 집은 한옥인가, 콘크리트로 지은 한옥 양식 신축 건물은 한옥인가 — 이 질문에는 물리만으로 답할 수 없다. 정부의 한옥 지원 조례, 건축학자들의 합의, 거주자들의 자기 인식이 함께 답을 만든다. <strong>한옥은 자연 종도 사회적 종도 아니라 — 그 사이의 <em>혼합 종</em>이다.</strong>
+</p>
+
+<p>
+사실 우리가 ttl에 적는 거의 모든 것이 그런 혼합 종이다. 자산도, 사고도, 환자도, 거래도. 순수한 자연 종(전자, 금)은 우리가 굳이 ttl에 적지 않는다 — 물리학이 방정식으로 적는다. 순수한 사회적 종(돈의 단위, 결혼의 법적 지위)도 우리가 거의 적지 않는다 — 법전이 적는다. 우리가 ttl에 적는 것은 정확히 그 사이 — *물리적 사실과 사회적 합의가 함께 결정하는* 것들이다. 그러니까 ontology 작업의 진짜 자리는 자연 종도 사회적 종도 아닌, *혼합 종에 대한 합의를 명시하는 일*이었다. 거기서 합의의 무게가 가장 크다.
+</p>
+
+<p>
+이 자리에 도달하자, 일주일 동안 따라다닌 두 단어가 — *추론*과 *존재론*이 — 처음으로 같은 무게로 손에 잡혔다.
+</p>
+
+<p>
+그래서 그 단어의 진짜 의미가 그제야 보였다. 온톨로지를 적는 일은 분류가 아니라, 무엇이 있다고 합의하는 일이었다. "한옥카페는 한옥의 일종이다"라고 적는 순간, 우리는 분류 표에 한 칸을 채우는 게 아니다. *한옥카페라는 것이 우리 세계에 존재한다고 인정하고, 한옥이라 부르는 합의 안에 그것을 포함시킨다*. 그건 분류가 아니라 — 존재의 합의였다. 그래서 schema가 아니라 ontology였다.
+</p>
+
+<div class="pull-quote">
+온톨로지는 분류가 아니라,<br>
+무엇이 있다고 합의하는 일이다.
+</div>
+
+<div class="scene-break">· · ·</div>
+
+<p>
+세 의문이 한 점에서 만났다. 온톨로지는 조건문이 아니다. 행동을 적지 않고, 세계에 무엇이 있는지를 적는다. 분류라기보다 존재의 합의이고, 그 합의에서 함축된 결론을 끝까지 끌어내는 일이 추론이다. 그래서 schema가 아니라 ontology였고, if-else가 아니라 reasoning이었다.
+</p>
+
+<p>
+그 글이 적고 있는 것을 한 단어로 좁히면, 그 단어는 <strong>합의</strong>다. 다만 합의에도 종류가 있다 — 네 가지를 분별해두는 게 정직하다.
+</p>
+
+<p>
+<em>인식적 합의</em>는 우리가 같은 사실을 함께 본다는 합의다. 천체의 운동에 대한 합의 같은 것. <em>사회적·규약적 합의</em>는 우리가 그것을 그렇게 부르기로 한다는 합의다. 한옥카페를 한옥의 일종으로 다루기로 한 합의 같은 것. <em>권위적 선언</em>은 도메인 전문가나 위원회가 정하는 것이다 — 의료의 SNOMED CT 코드 한 줄이 그렇게 결정된다. 그리고 <em>수학적 진술</em>은, 합의에 의존하지 않는다. 증명에 의존한다.
+</p>
+
+<p>
+실제 온톨로지 작업에서 일어나는 합의는 — 솔직히 말하면 — 인식적 합의보다 사회적·권위적 쪽에 훨씬 가깝다. 도메인 전문가가 한 줄을 적으면 다수는 그 한 줄을 따른다. 이걸 "같은 세계를 본다"는 시적 표현으로 묶기보다, *우리는 그것을 그렇게 다루기로 했다*는 사회적 합의로 부르는 게 더 정확하다.
+</p>
+
+<div class="scene-break">· · ·</div>
+
+<p>
+학계가 이 모든 사유에 한 목소리로 동의하지는 않는다. 공학 진영의 다수설은 컴퓨터과학의 ontology를 철학적 존재론과 *분리*해서 봐야 한다는 입장이다. Tom Gruber가 1993년에 그 자리를 세웠다. 그는 진정한 존재가 무엇인지 묻지 않았다. 그저 *도메인 전문가들이 합의 가능한 어휘를 명세하는 일*. 형이상학은 무겁게 들고 오지 말고 단어만 빌려 쓰자는 입장이었다. 반대편엔 *형식 온톨로지* 학파(BFO, DOLCE)가 있다. 의료 SNOMED CT 같은 거대 시스템에서 *형이상학적 정합성*이 빠지면 도메인이 흔들린다는 입장. 같은 단어 아래 두 진영이 갈라진다.
+</p>
+
+<p>
+분리설은 부분적으로 맞다. 우리는 ttl을 적을 때 한옥카페가 *진정으로* 무엇인지 따지지 않는다. *우리가 한옥카페라고 부르는 것을 한옥의 일종으로 처리하자*는 합의에 도달하면 시스템은 잘 돌아간다. 형이상학자들의 무거운 질문은 비껴가도 된다. 그래서 공학 진영 다수가 분리하라 한다. 공학은 공학으로, 철학은 철학으로.
+</p>
+
+<p>
+그러나 — Gruber의 이 분리 자체가 이미 하나의 철학적 입장이라는 것을 짚어둘 필요가 있다. *나는 형이상학에 개입하지 않겠다, 그저 어휘를 명세할 뿐이다* — 이 선언은 형이상학적으로 중립이 아니다. <em>형이상학적 질문은 도메인 안에서 해소되지 않으며, 도메인은 그것 없이도 작동한다</em>는 적극적인 주장이다. 이건 1950년 Carnap이 <em>Empiricism, Semantics, and Ontology</em>에서 정리한 입장과 사실상 같은 자리에 선다. 카르납은 *내적 질문*과 *외적 질문*을 갈랐다. 내적 질문 — 우리 언어 프레임 안에서 X가 있는가 — 은 답할 수 있다. 외적 질문 — 그 프레임 자체가 실재와 맞는가 — 은 카르납이 보기에 의사 질문이었다. <strong>Gruber는 이 카르납적 입장을 — 명시하지는 않았지만 — 정확히 반복하고 있다.</strong> 그러니 Gruber식 분리는 *철학으로부터의 탈출*이 아니다. *특정 종류의 철학을 채택한 결과*다. 그가 들고 오지 않으려 한 그 형이상학은, 그가 분리를 선언한 그 순간 *대체 형이상학*이라는 형태로 이미 도착해 있었다.
+</p>
+
+<p>
+그래서 한 주일을 따라간 끝에, 나는 그 분리가 *깨끗하지 않다*는 결론에 닿았다. 합의 자체가 그 분리를 흐트러뜨린다. 공학은 *효율*을 묻지만, 합의는 *우리가 같은 세계에 산다*는 것을 확인하는 일이다. 효율은 한 사람이 시스템을 돌리는 데 충분하지만, 합의는 둘 이상의 사람이 *같은 명제를 보고 같은 답을 한다*는 것을 요구한다.
+</p>
+
+<p>
+거기서 schema와 ontology를 가르는 진짜 선이 보인다. <strong>schema는 <em>단일한 정의자</em>만으로 작동할 수 있다.</strong> 한 사람이 적은 schema도 시스템을 굴린다. <strong>ontology는 그렇지 않다.</strong> ontology가 ontology이려면 *그 명제가 둘 이상에게 같은 의미로 다루어진다*는 것이 필요하다. 한 사람이 혼자 적은 ttl 파일이 ontology가 되는 순간은, 그것을 다른 사람이 *같은 의미로 읽고 따를 때*다. 그 전까지는 — 그저 한 사람의 schema일 뿐이다.
+</p>
+
+<div class="scene-break">· · ·</div>
+
+<p>
+그러자 셋의 자리가 명확해졌다.
+</p>
+
+<p>
+룰엔진의 매뉴얼은 *행동의 절차*를 적는다.<br>
+시스템 프롬프트는 *행동의 지시*를 적는다.<br>
+온톨로지는 — *세계에 무엇이 있는지를 적는다*.
+</p>
+
+<p>
+셋이 같은 외부 파일에 같은 형식으로 들어가지만, 셋은 서로 다른 종류의 글이다. 매뉴얼과 명령은 *행동에 관한 글*이고, 온톨로지는 *존재에 관한 글*이다. 행동에 관한 글은 사람마다 따를 수도 안 따를 수도 있다. 존재에 관한 글은 — 합의되거나 반박되거나, 그 둘 중 하나다. 진리값은 거기서 생긴다. 우리가 같은 세계를 보고 있는지를, 같은 존재에 동의하는지를 확인하는 단위가 진리값이다.
+</p>
+
+<div class="closing-three">
+  <div class="line"><span class="label">규칙</span>은 매뉴얼 같은 것</div>
+  <div class="line"><span class="label">프롬프트</span>는 명령어</div>
+  <div class="line"><span class="label">온톨로지</span>는 명제 — 무엇이 있다는 합의</div>
+</div>
+
+<div class="scene-break">· · ·</div>
+
+<p>
+세미나의 그 손 든 사람은, 어쩌면 답을 구하는 게 아니었을지 모른다. 답이 어디까지 내려갈 수 있는지를 시험하는 질문이었던 것 같다. 표면에 머무는 사람은 *if-else의 압축*이라 답할 것이고, 한 단계 내려간 사람은 *명제와 조건문은 다르다*고 답할 것이다. 끝까지 내려간 사람만이 — *그래서 그것을 존재론이라 부르는 것입니다*라고 답할 것이다.
+</p>
+
+<p>
+다음 세미나가 있다면, 그 자리에 나도 손을 들어볼 수 있을지 모른다. 머뭇거리던 그 침묵을 향해 — 아직 잠정적인 — 답을 내밀어볼 수는 있을 것이다.<br>
+<em>"이건 조건문이 아닙니다. 명제에서 함축을 끝까지 끌어내는 일 — 그게 추론입니다. 그 명제는, 적어도 우리가 다루는 <strong>혼합 종</strong>에 관해서는, 무엇이 있다고 우리가 함께 다루기로 한 합의입니다 — 그래서 존재론입니다. 두 단어 모두, 가벼이 빌린 이름이 아니었습니다."</em><br>
+답이 충분해서가 아닐 것이다. 답을 시작할 자리가 거기일 것이기 때문이다.
+</p>
+
+<p>
+나는 노트를 덮었다. 책상 위 커피는 식은 지 오래였다. 일주일을 따라다닌 두 의문이 — 한 점에 닿아 멈춘 봄날의 새벽이었다.
+</p>
+
+</article>
+
+<!-- FOOTER -->
+<footer class="bg-stone-900 text-stone-500 px-6 sm:px-10 py-12 text-xs">
+  <div class="max-w-2xl mx-auto">
+    <div class="flex flex-col sm:flex-row sm:justify-between gap-4 mb-8">
+      <div>
+        <div class="font-bold text-stone-300 mono tracking-wider">PATOS LEARNING · SHORT STORY</div>
+        <div class="mt-2 italic">두 가지 의문 — 그런데 왜 하필 존재론이라 불렀을까</div>
+      </div>
+      <div class="flex flex-col sm:items-end gap-1.5">
+        <a href="index.html" class="text-stone-400 hover:text-white">← Hub</a>
+        <a href="essay.html" class="text-stone-400 hover:text-white">학구적 에세이</a>
+        <a href="learning_journey.html" class="text-stone-400 hover:text-white">학습 여정 12단계</a>
+      </div>
+    </div>
+    <div class="border-t border-stone-800 pt-5 leading-relaxed space-y-3">
+      <div>
+        <strong class="text-stone-400">기반 사고 (계보)</strong> · 아리스토텔레스 <em>Categories</em>·<em>Metaphysics</em> (BC 4세기, 유와 종, 실체와 속성, "being qua being") → 포르피리오스의 나무 (3세기) → 스콜라 논리 → Frege <em>Begriffsschrift</em> (1879, 술어 논리) → Russell &amp; Whitehead <em>Principia Mathematica</em> (1910–13) → Brachman <em>KL-ONE</em> (1985, Description Logic의 시작) → 오늘의 OWL.
+      </div>
+      <div>
+        <strong class="text-stone-400">기반 사고 (입장)</strong> · Lorhard 1606 / Goclenius 1613 — 라틴어 <em>ontologia</em>의 첫 등장 / Carnap 1950 <em>Empiricism, Semantics, and Ontology</em> — 내적/외적 질문의 분별, 본문의 Gruber 분리설을 비판적으로 받친 자리 / Tom Gruber 1993 원문 <em>"an explicit specification of a conceptualization"</em>; <em>"shared"</em>는 1995년 후속에서 추가 — 본문의 "합의 가능한 어휘 명세"는 합의 쪽으로 살짝 끌어당긴 의역 / Barry Smith·Nicola Guarino — 형식 온톨로지 학파 (BFO, DOLCE) / John Searle 1995 <em>The Construction of Social Reality</em> — 제도적 사실, 본문의 사회적 존재론 자리 / Searle 1980 <em>Minds, Brains, and Programs</em> (중국어방) — 형식과 의미의 간극 / Tarski 1933 — 진리 의미론.
+      </div>
+      <div class="text-stone-500 italic pt-2 border-t border-stone-800/50">
+        <strong class="text-stone-400 not-italic">사실 단서</strong> · 본 글의 1인칭 화자·세미나·일주일의 시간 흐름은 단편 narrative입니다. 무안 몽탄면 한옥마을과 김씨고가 (#B-3021), 위험도 0.85 같은 디테일은 PATOS 데모의 <em>plausible mock</em> 데이터로, 실제 무안 한옥마을은 존재하지만 본문 수치·연도는 학습 시연용 가상입니다. 글의 핵심 통찰 — 조건문≠명제, 추론의 실체, 혼합 종에 대한 합의, schema와 ontology의 진짜 선 — 은 공학·사회적 존재론의 맥락에서 정확하며, 형이상학적 존재론과는 구분되어야 함을 본문에서 명시.
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

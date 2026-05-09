@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#4338ca">
 <title>학습 여정 · PATOS Learning</title>
-<meta name="description" content="우리가 함께 배운 것 — RDF·OWL·묶기 3종·뉴로심볼릭·현존재 차원·LLM 대체 가능성까지 11단계 학습 여정">
+<meta name="description" content="우리가 함께 배운 것 — RDF·OWL·묶기 3종·뉴로심볼릭·현존재 차원·LLM 대체·조건식과의 본질까지 12단계 학습 여정">
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -55,30 +55,90 @@
     <div class="text-3xl mb-3">📖</div>
     <h1 class="text-4xl sm:text-5xl font-black tracking-tight gradient-text reveal">학습 여정</h1>
     <p class="mt-3 text-base sm:text-lg text-violet-100 reveal" style="animation-delay:0.1s">
-      우리가 함께 도달한 11개의 깨달음
+      우리가 함께 도달한 12개의 깨달음
     </p>
     <p class="mt-1.5 text-xs sm:text-sm text-violet-200/80 max-w-2xl reveal" style="animation-delay:0.2s">
-      RDF가 뭔가? → OWL은? → 왜 쓰나? → 한계는? → 현존재 차원 → LLM이 대체할 수 있나?
+      RDF가 뭔가? → OWL은? → 왜 쓰나? → 한계는? → LLM이 대체할까? → <strong class="text-white">조건식과는 뭐가 다른가?</strong>
     </p>
   </div>
 </header>
 
+<!-- ════════════════════ FAST TRACK ════════════════════ -->
+<section class="px-5 sm:px-8 py-8 sm:py-10 bg-gradient-to-br from-amber-50 via-white to-emerald-50 border-b border-slate-200">
+  <div class="max-w-4xl mx-auto">
+    <div class="flex items-center gap-2 mb-3">
+      <span class="bg-amber-500 text-white text-[11px] font-bold mono px-2.5 py-1 rounded-full">⚡ 5분 빠른 코스</span>
+      <span class="text-xs text-slate-500">시간 없으면 이 5개만</span>
+    </div>
+    <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-2">핵심만 빠르게</h2>
+    <p class="text-sm text-slate-600 leading-relaxed mb-5">
+      12단계 정독은 부담스러우니, "RDF가 뭐고 → 왜 OWL을 쓰고 → <strong>조건식과는 뭐가 다른가</strong> → 시나리오 대비 어떻게 다르고 → LLM이 대체할 수 있는가" 다섯 질문만 따라가는 단축 코스.
+    </p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+      <a href="#ch1" class="tap flex items-center gap-3 bg-white rounded-xl px-4 py-3 border border-blue-200 hover:border-blue-400 hover:shadow-md transition group">
+        <span class="bg-blue-100 text-blue-700 text-xs font-bold mono px-2 py-1 rounded">01</span>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-semibold text-slate-900 group-hover:text-blue-700">RDF — 세 단어 문장</div>
+          <div class="text-[11px] text-slate-500">문법 한 장</div>
+        </div>
+        <span class="text-blue-400 group-hover:text-blue-600">→</span>
+      </a>
+      <a href="#ch3" class="tap flex items-center gap-3 bg-white rounded-xl px-4 py-3 border border-violet-200 hover:border-violet-400 hover:shadow-md transition group">
+        <span class="bg-violet-100 text-violet-700 text-xs font-bold mono px-2 py-1 rounded">03</span>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-semibold text-slate-900 group-hover:text-violet-700">왜 OWL을 쓰는가</div>
+          <div class="text-[11px] text-slate-500">동기 한 장</div>
+        </div>
+        <span class="text-violet-400 group-hover:text-violet-600">→</span>
+      </a>
+      <a href="#ch4" class="sm:col-span-2 tap flex items-center gap-3 bg-white rounded-xl px-4 py-3 border-2 border-rose-300 hover:border-rose-500 hover:shadow-md transition group">
+        <span class="bg-rose-500 text-white text-xs font-bold mono px-2 py-1 rounded">04 ⭐</span>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-semibold text-slate-900 group-hover:text-rose-700">조건식과 무엇이 다른가 — 본질</div>
+          <div class="text-[11px] text-slate-500">if/else와의 진짜 차이 · 집합론적 명제 · 합의 가능성</div>
+        </div>
+        <span class="text-rose-500 group-hover:text-rose-700">→</span>
+      </a>
+      <a href="#ch5" class="tap flex items-center gap-3 bg-white rounded-xl px-4 py-3 border border-amber-200 hover:border-amber-400 hover:shadow-md transition group">
+        <span class="bg-amber-100 text-amber-700 text-xs font-bold mono px-2 py-1 rounded">05</span>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-semibold text-slate-900 group-hover:text-amber-700">시나리오 vs 추론</div>
+          <div class="text-[11px] text-slate-500">차이 한 장</div>
+        </div>
+        <span class="text-amber-400 group-hover:text-amber-600">→</span>
+      </a>
+      <a href="#ch9" class="tap flex items-center gap-3 bg-white rounded-xl px-4 py-3 border border-emerald-200 hover:border-emerald-400 hover:shadow-md transition group">
+        <span class="bg-emerald-100 text-emerald-700 text-xs font-bold mono px-2 py-1 rounded">09</span>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-semibold text-slate-900 group-hover:text-emerald-700">LLM이 대체할까?</div>
+          <div class="text-[11px] text-slate-500">현재 입장 한 장</div>
+        </div>
+        <span class="text-emerald-400 group-hover:text-emerald-600">→</span>
+      </a>
+    </div>
+    <div class="mt-4 text-[11px] text-slate-500 text-center">
+      ↓ 정독은 아래 12단계 전체 목차에서 ↓
+    </div>
+  </div>
+</section>
+
 <!-- ════════════════════ TOC ════════════════════ -->
 <nav class="bg-white border-b border-slate-200 px-5 sm:px-8 py-6">
   <div class="max-w-4xl mx-auto">
-    <div class="text-xs font-bold mono text-slate-500 mb-3 tracking-wider">목차</div>
+    <div class="text-xs font-bold mono text-slate-500 mb-3 tracking-wider">정독 목차 (12단계 · 6단계 흐름)</div>
     <ol class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
       <li><a href="#ch1" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">01</span><span>RDF — 세 단어 문장</span></a></li>
       <li><a href="#ch2" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">02</span><span>OWL — 규칙으로 자동 분류</span></a></li>
       <li><a href="#ch3" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">03</span><span>왜 OWL을 쓰는가</span></a></li>
-      <li><a href="#ch4" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">04</span><span>시나리오 vs 추론</span></a></li>
-      <li><a href="#ch5" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">05</span><span>묶기 3종 — OWL의 한계</span></a></li>
-      <li><a href="#ch6" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">06</span><span>뉴로심볼릭 — 두 엔진</span></a></li>
+      <li><a href="#ch4" class="tap flex gap-2 text-rose-700 hover:text-rose-900 py-1 font-semibold"><span class="mono text-rose-500 w-6">04</span><span>조건식과 무엇이 다른가 ⭐ (본질)</span></a></li>
+      <li><a href="#ch5" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">05</span><span>시나리오 vs 추론</span></a></li>
+      <li><a href="#ch6" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">06</span><span>묶기 3종 — OWL의 한계</span></a></li>
       <li><a href="#ch7" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">07</span><span>현존재 차원의 정직</span></a></li>
-      <li><a href="#ch8" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">08</span><span>4가지 설계 원칙</span></a></li>
-      <li><a href="#ch9" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">09</span><span>본 데모의 한계 (정직)</span></a></li>
-      <li><a href="#ch10" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">10</span><span>LLM이 OWL을 대체할까?</span></a></li>
-      <li class="sm:col-span-2"><a href="#ch11" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">11</span><span>마무리 — 학습 여정의 정답</span></a></li>
+      <li><a href="#ch8" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">08</span><span>뉴로심볼릭 — 두 엔진</span></a></li>
+      <li><a href="#ch9" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">09</span><span>LLM이 OWL을 대체할까?</span></a></li>
+      <li><a href="#ch10" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">10</span><span>4가지 설계 원칙</span></a></li>
+      <li><a href="#ch11" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">11</span><span>본 데모의 한계 (정직)</span></a></li>
+      <li><a href="#ch12" class="tap flex gap-2 text-slate-700 hover:text-indigo-700 py-1"><span class="mono text-slate-400 w-6">12</span><span>마무리 — 학습 여정의 정답</span></a></li>
     </ol>
   </div>
 </nav>
@@ -87,7 +147,7 @@
 <section id="ch1" class="px-5 sm:px-8 py-12 sm:py-16 bg-white">
   <div class="max-w-3xl mx-auto">
     <div class="flex items-center gap-3 mb-4">
-      <span class="bg-blue-100 text-blue-700 text-xs font-bold mono px-2 py-1 rounded">01 / 11</span>
+      <span class="bg-blue-100 text-blue-700 text-xs font-bold mono px-2 py-1 rounded">01 / 12</span>
       <span class="text-sm text-slate-500">기초 문법</span>
     </div>
     <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">RDF — 세 단어 문장</h2>
@@ -131,7 +191,7 @@
 <section id="ch2" class="px-5 sm:px-8 py-12 sm:py-16 bg-emerald-50">
   <div class="max-w-3xl mx-auto">
     <div class="flex items-center gap-3 mb-4">
-      <span class="bg-emerald-100 text-emerald-700 text-xs font-bold mono px-2 py-1 rounded">02 / 11</span>
+      <span class="bg-emerald-100 text-emerald-700 text-xs font-bold mono px-2 py-1 rounded">02 / 12</span>
       <span class="text-sm text-slate-500">한 층 위로</span>
     </div>
     <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">OWL — 규칙으로 자동 분류</h2>
@@ -178,7 +238,7 @@
 <section id="ch3" class="px-5 sm:px-8 py-12 sm:py-16 bg-white">
   <div class="max-w-3xl mx-auto">
     <div class="flex items-center gap-3 mb-4">
-      <span class="bg-teal-100 text-teal-700 text-xs font-bold mono px-2 py-1 rounded">03 / 11</span>
+      <span class="bg-teal-100 text-teal-700 text-xs font-bold mono px-2 py-1 rounded">03 / 12</span>
       <span class="text-sm text-slate-500">가치 명료화</span>
     </div>
     <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">왜 OWL을 쓰는가 — 4가지 이득</h2>
@@ -233,17 +293,306 @@
       OWL은 <strong>"쓰는 사람의 게으름을 정당화하는 언어"</strong>입니다. 좋은 게으름 — 큰 데이터에서 사람이 신경 못 쓰는 일관성을 컴퓨터가 알아서 유지.
     </div>
 
+    <!-- 표준·합의 출처 -->
+    <div class="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl p-5 border border-teal-200 mb-5">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-teal-600 text-white text-[11px] font-bold mono px-2 py-1 rounded">📚 핵심 질문</span>
+        <span class="text-xs text-teal-800 font-semibold">"합의"는 어디서 보고 따라하나?</span>
+      </div>
+      <p class="text-sm text-slate-700 leading-relaxed mb-4">
+        OWL이 합의 명시화라면 — 그 합의는 <strong>만드는 게 아니라 발견하는 것</strong>입니다. 한국 화재 대응 도메인은 이미 50년치 합의가 쌓여 있어요. 4갈래에서 발견:
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+        <div class="bg-white rounded-xl p-3 border border-teal-100">
+          <div class="text-xs font-bold text-teal-800 mb-2">① 법령 (가장 강한 합의)</div>
+          <ul class="text-[11px] text-slate-600 space-y-0.5 leading-relaxed">
+            <li>· <strong>소방기본법</strong> — 기관·자원 분류</li>
+            <li>· <strong>건축법 시행령 별표 1</strong> — 건물 용도</li>
+            <li>· <strong>국가유산기본법</strong> — 보존 등급</li>
+            <li>· <strong>재난안전법</strong> — 통보 의무</li>
+            <li>· <strong>소방력 기준 규칙</strong> — 자원 매칭</li>
+          </ul>
+          <div class="text-[10px] text-slate-400 mt-2">law.go.kr · 무료</div>
+        </div>
+
+        <div class="bg-white rounded-xl p-3 border border-teal-100">
+          <div class="text-xs font-bold text-teal-800 mb-2">② 공공데이터·표준 데이터셋</div>
+          <ul class="text-[11px] text-slate-600 space-y-0.5 leading-relaxed">
+            <li>· <strong>공공데이터포털</strong> (data.go.kr)</li>
+            <li>· <strong>건축물 통합정보</strong> (cloud.eais.go.kr)</li>
+            <li>· <strong>국가공간정보</strong> (nsdi.go.kr)</li>
+            <li>· <strong>소방청 통계</strong> (nfa.go.kr)</li>
+            <li>· <strong>기상청 OpenAPI</strong> (data.kma.go.kr)</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-xl p-3 border border-teal-100">
+          <div class="text-xs font-bold text-teal-800 mb-2">③ 국제 표준 (시스템 호환용)</div>
+          <ul class="text-[11px] text-slate-600 space-y-0.5 leading-relaxed">
+            <li>· <strong>W3C OWL 2</strong> — 형식 자체</li>
+            <li>· <strong>W3C SOSA/SSN</strong> — 센서 관측</li>
+            <li>· <strong>OASIS EDXL</strong> — 재난 메시지</li>
+            <li>· <strong>CAP</strong> — 경보 프로토콜</li>
+            <li>· <strong>Schema.org</strong> — 주소·장소</li>
+            <li>· <strong>Brick / IFC</strong> — 건물 메타</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-xl p-3 border border-teal-100">
+          <div class="text-xs font-bold text-teal-800 mb-2">④ 운영 매뉴얼 (실무 SOP)</div>
+          <ul class="text-[11px] text-slate-600 space-y-0.5 leading-relaxed">
+            <li>· <strong>소방청 화재대응 매뉴얼</strong></li>
+            <li>· <strong>소방활동 SOP</strong> (200ms 골든타임)</li>
+            <li>· <strong>시·도 소방본부 매뉴얼</strong></li>
+            <li>· <strong>국가유산청 화재예방 매뉴얼</strong></li>
+            <li>· <strong>현장지휘관 표준 매뉴얼</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-white/70 rounded-xl p-3 mb-3 border border-teal-100">
+        <div class="text-xs font-bold text-slate-700 mb-2">본 데모 컬럼별 진짜 출처</div>
+        <table class="text-[11px] w-full">
+          <tbody class="text-slate-600">
+            <tr class="border-b border-teal-50"><td class="py-1 mono">buildings.sub_type</td><td>건축법 시행령 별표 1</td></tr>
+            <tr class="border-b border-teal-50"><td class="py-1 mono">traditional_clusters.protection_level</td><td>국가유산기본법</td></tr>
+            <tr class="border-b border-teal-50"><td class="py-1 mono">agencies.type</td><td>정부조직법 + 재난안전법</td></tr>
+            <tr class="border-b border-teal-50"><td class="py-1 mono">resources.type</td><td>소방력 기준 규칙</td></tr>
+            <tr><td class="py-1 mono">RULE-001~004</td><td>소방청 SOP + 국가유산청 매뉴얼</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bg-amber-50 rounded-xl p-3 border border-amber-200">
+        <div class="text-xs font-bold text-amber-900 mb-1">⚠️ 정직하게 — 본 데모는 표준을 *제대로* 따른 게 아님</div>
+        <p class="text-[11px] text-amber-800 leading-relaxed">
+          README가 솔직히 적은 대로, 컬럼 명세만 *참고*했지 학습 단순화로 변형됨. 한옥카페 같은 변종은 임의, EDXL·Brick 같은 표준 import는 없음. 운영 시스템으론 위 표준들을 *진짜 import*해서 그 위에 ontology를 얹어야 합니다. <strong>그게 "합의 명시화"의 진짜 의미</strong>.
+        </p>
+      </div>
+    </div>
+
     <div class="mt-8 pt-6 border-t border-slate-200">
-      <a href="#ch4" class="tap inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: 시나리오 vs 추론 →</a>
+      <a href="#ch5" class="tap inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: 조건식과 무엇이 다른가 →</a>
     </div>
   </div>
 </section>
 
-<!-- ════════════════════ CH4: SCENARIO VS REASONING ════════════════════ -->
-<section id="ch4" class="px-5 sm:px-8 py-12 sm:py-16 bg-amber-50">
+<!-- ════════════════════ CH4: OWL vs CONDITIONAL ════════════════════ -->
+<section id="ch4" class="px-5 sm:px-8 py-12 sm:py-16 bg-rose-50">
   <div class="max-w-3xl mx-auto">
     <div class="flex items-center gap-3 mb-4">
-      <span class="bg-amber-100 text-amber-700 text-xs font-bold mono px-2 py-1 rounded">04 / 11</span>
+      <span class="bg-rose-100 text-rose-700 text-xs font-bold mono px-2 py-1 rounded">04 / 12</span>
+      <span class="text-sm text-slate-500">가장 깊은 본질</span>
+    </div>
+    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">조건식과 무엇이 다른가</h2>
+
+    <p class="lead-text text-slate-700 mb-6 leading-relaxed">
+      여기까지 OWL의 능력을 하나씩 부정해 봤습니다. 시나리오 생성도 안 하고, 최적 선택도 안 하고, 확률도 없고, 액션도 룰엔진이 함. <strong>그럼 OWL이 그냥 if/else와 뭐가 다른가?</strong> 이게 본 학습 여정에서 가장 깊은 질문이에요.
+    </p>
+
+    <!-- ⭐ 핵심 정의 — 한 줄 요약 -->
+    <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-6 sm:p-7 mb-6 shadow-xl border border-rose-300/40">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="bg-rose-500 text-white text-[11px] font-bold mono px-2.5 py-1 rounded-full">⭐ 핵심 정의</span>
+        <span class="text-xs text-rose-200 font-semibold">한 줄 요약</span>
+      </div>
+      <div class="text-lg sm:text-xl leading-relaxed font-bold">
+        <div class="mb-2"><span class="text-slate-400">조건문은</span> <span class="text-rose-300">단순 규칙</span><span class="text-slate-400">,</span></div>
+        <div><span class="text-slate-400">온톨로지는</span> <span class="text-emerald-300">도메인에 대한 명제</span><span class="text-slate-400">.</span></div>
+      </div>
+      <div class="mt-4 pt-4 border-t border-white/10 text-xs text-slate-400 leading-relaxed">
+        <strong class="text-slate-300">학계 정의와 일치 — Tom Gruber (1993):</strong><br>
+        <em>"An ontology is a specification of a shared conceptualization."</em><br>
+        → <strong class="text-emerald-300">specification</strong> (= 명제) of a <strong class="text-emerald-300">shared conceptualization</strong> (= 도메인에 대한)<br>
+        본 정의는 30년 학계 합의의 한국어 압축판입니다.
+      </div>
+    </div>
+
+    <!-- 같은 일을 두 방식으로 -->
+    <div class="bg-white rounded-2xl p-5 border border-rose-200 mb-5">
+      <div class="text-sm font-bold text-rose-800 mb-3">같은 일을 두 방식으로</div>
+
+      <div class="text-xs text-slate-500 font-bold mono mb-1">조건식</div>
+      <pre class="mono text-[11px] sm:text-xs bg-slate-900 text-rose-300 p-3 rounded-lg mb-3 overflow-x-auto">def should_dispatch_foam(b):
+    if b.sub_type in ["한옥", "한옥카페", "종가", "사찰"] \
+       and b.fire_risk &gt; 0.8:
+        return True
+
+def should_notify_external(b):
+    if b.sub_type in ["한옥", "한옥카페", "종가", "사찰"]:
+        return True
+# 매 함수마다 4개 타입 나열</pre>
+
+      <div class="text-xs text-slate-500 font-bold mono mb-1">OWL</div>
+      <pre class="mono text-[11px] sm:text-xs bg-slate-900 text-emerald-300 p-3 rounded-lg overflow-x-auto"># ontology.ttl — 한 번만 선언
+:한옥카페 rdfs:subClassOf :Hanok .
+:Hanok    rdfs:subClassOf :TraditionalClusterMember .
+
+# rules.yaml — 구체 타입 안 나옴
+RULE-002: if a :TraditionalClusterMember and risk &gt; 0.8 then 폼차
+RULE-004: if a :TraditionalClusterMember then 통보</pre>
+
+      <div class="mt-3 text-xs text-slate-700 leading-relaxed">
+        새 타입 (<code class="mono bg-rose-100 px-1 rounded text-[11px]">전통차마을한옥</code>) 추가 시:<br>
+        조건식 → 모든 if문 grep + 수정. 누락 시 silent bug.<br>
+        OWL → ontology.ttl 한 줄. <strong>룰 수정 0줄.</strong>
+      </div>
+    </div>
+
+    <!-- 본질 차이 -->
+    <div class="bg-white rounded-2xl p-5 border border-rose-200 mb-5">
+      <div class="text-sm font-bold text-rose-800 mb-3">⚖️ 명제 *종류*가 다름</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+        <div class="bg-slate-100 rounded-xl p-3">
+          <div class="text-xs font-bold text-slate-700 mb-1">조건식</div>
+          <div class="mono text-xs text-slate-800 mb-2"><code>if x.type == "한옥"</code></div>
+          <div class="text-xs text-slate-600 leading-relaxed">
+            <strong>절차적 값 비교.</strong><br>
+            "x.type 필드 값이 문자열 '한옥'과 같다."<br>
+            → 컴퓨터에 던지는 <em>명령</em>
+          </div>
+        </div>
+        <div class="bg-emerald-50 rounded-xl p-3">
+          <div class="text-xs font-bold text-emerald-700 mb-1">OWL subClassOf</div>
+          <div class="mono text-xs text-emerald-800 mb-2"><code>:한옥카페 ⊑ :Hanok</code></div>
+          <div class="text-xs text-slate-700 leading-relaxed">
+            <strong>집합론적 포함 명제.</strong><br>
+            "집합 (한옥카페) ⊆ 집합 (한옥)."<br>
+            → 세계의 <em>구조</em>를 서술
+          </div>
+        </div>
+      </div>
+      <p class="text-xs text-slate-600 mt-3 leading-relaxed">
+        전자는 <strong>동작 명령</strong>, 후자는 <strong>존재론적 명제</strong>. 카테고리 자체가 달라요.
+      </p>
+    </div>
+
+    <!-- 5가지 함의 -->
+    <div class="bg-white rounded-2xl p-5 border border-rose-200 mb-5">
+      <div class="text-sm font-bold text-rose-800 mb-3">그 차이가 가져오는 5가지 함의</div>
+      <ol class="text-sm text-slate-700 space-y-3 list-none counter-reset">
+        <li class="flex gap-3">
+          <span class="bg-rose-100 text-rose-700 text-xs font-bold mono px-2 py-1 rounded flex-shrink-0 h-fit">①</span>
+          <div>
+            <strong>Transitive closure가 공짜.</strong> 집합론 정리 <code class="mono bg-slate-100 px-1 text-[11px] rounded">A⊆B ∧ B⊆C → A⊆C</code> 자동 적용. 한옥카페 → 한옥 → TraditionalClusterMember → Building → Asset, 5단계 자동. 조건식은 매 if마다 풀어 적어야.
+          </div>
+        </li>
+        <li class="flex gap-3">
+          <span class="bg-rose-100 text-rose-700 text-xs font-bold mono px-2 py-1 rounded flex-shrink-0 h-fit">②</span>
+          <div>
+            <strong>다중 멤버십 자동.</strong> <code class="mono bg-slate-100 px-1 text-[11px] rounded">x ∈ Hanok</code>이면 자동으로 <code class="mono bg-slate-100 px-1 text-[11px] rounded">∈ TraditionalClusterMember, Building, Asset</code>. 조건식의 <code class="mono bg-slate-100 px-1 text-[11px] rounded">x.type</code>은 단 하나의 값.
+          </div>
+        </li>
+        <li class="flex gap-3">
+          <span class="bg-rose-100 text-rose-700 text-xs font-bold mono px-2 py-1 rounded flex-shrink-0 h-fit">③</span>
+          <div>
+            <strong>명제가 진리값을 가짐.</strong> OWL: <code class="mono bg-slate-100 px-1 text-[11px] rounded">한옥카페 ⊑ 한옥</code> → 참 또는 거짓 (검증 가능). 조건식 <code class="mono bg-slate-100 px-1 text-[11px] rounded">if x.type=="한옥"</code> → 진리값 없음, 그냥 <em>실행</em>. 명제니까 <strong>논쟁·합의·검증 가능</strong>.
+          </div>
+        </li>
+        <li class="flex gap-3">
+          <span class="bg-rose-100 text-rose-700 text-xs font-bold mono px-2 py-1 rounded flex-shrink-0 h-fit">④</span>
+          <div>
+            <strong>Open World 가능.</strong> 안 적힌 것 → "거짓"이 아니라 <strong>"모름"</strong>. 조건식은 매칭 안 되면 자동 거짓 (Closed World). OWL은 모름을 모름으로 표현.
+          </div>
+        </li>
+        <li class="flex gap-3">
+          <span class="bg-rose-100 text-rose-700 text-xs font-bold mono px-2 py-1 rounded flex-shrink-0 h-fit">⑤</span>
+          <div>
+            <strong>단조성 (Monotonicity).</strong> 새 사실 추가해도 기존 결론 안 바뀜. 조건식은 if 순서·else if 추가로 동작이 변할 수 있음. OWL은 <strong>증명 가능·재현 가능</strong>.
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <!-- 적는 대상 -->
+    <div class="bg-white rounded-2xl p-5 border border-rose-200 mb-5">
+      <div class="text-sm font-bold text-rose-800 mb-3">두 가지가 적는 *대상*이 다름</div>
+      <table class="text-xs sm:text-sm w-full">
+        <thead>
+          <tr class="border-b border-rose-100 text-slate-500">
+            <th class="text-left py-2 font-medium">축</th>
+            <th class="text-left py-2 font-medium">조건식</th>
+            <th class="text-left py-2 font-medium">OWL</th>
+          </tr>
+        </thead>
+        <tbody class="text-slate-700">
+          <tr class="border-b border-rose-50"><td class="py-1.5">적는 대상</td><td>시스템 동작</td><td><strong>세계의 구조</strong></td></tr>
+          <tr class="border-b border-rose-50"><td class="py-1.5">명제 형태</td><td>명령 (do this)</td><td>선언 (X is-a Y)</td></tr>
+          <tr class="border-b border-rose-50"><td class="py-1.5">진리값</td><td>없음 (실행됨)</td><td>있음 (참/거짓)</td></tr>
+          <tr class="border-b border-rose-50"><td class="py-1.5">자동 결론</td><td>적은 만큼만</td><td>적은 것 + 자동 유도</td></tr>
+          <tr><td class="py-1.5">합의 가능</td><td>어려움 (코드 리뷰)</td><td><strong>쉬움 (도메인 전문가가 ttl 직독)</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 인류학적 비유: 규칙 vs 리추얼 -->
+    <div class="bg-gradient-to-br from-indigo-50 to-violet-50 rounded-2xl p-5 border border-indigo-200 mb-5">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-indigo-600 text-white text-[11px] font-bold mono px-2 py-1 rounded">🏛 인류학적 비유</span>
+        <span class="text-xs text-indigo-800 font-semibold">규칙 vs 리추얼</span>
+      </div>
+      <p class="text-sm text-slate-700 leading-relaxed mb-3">
+        같은 차이를 인류학 어휘로 옮기면 더 선명해집니다:
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+        <div class="bg-white/80 rounded-xl p-3">
+          <div class="text-xs font-bold text-slate-700 mb-1">규칙 (Rule)</div>
+          <ul class="text-xs text-slate-600 space-y-1 leading-relaxed">
+            <li>· "위반하면 처벌" — 외부 강제</li>
+            <li>· 입법자가 작성·고침</li>
+            <li>· 의미는 형식 *밖*에서 부여</li>
+            <li>· <strong>= 조건문</strong></li>
+          </ul>
+        </div>
+        <div class="bg-white/80 rounded-xl p-3">
+          <div class="text-xs font-bold text-indigo-700 mb-1">리추얼 (Ritual)</div>
+          <ul class="text-xs text-slate-600 space-y-1 leading-relaxed">
+            <li>· 위반 개념 약함 — 형식 자체가 의미</li>
+            <li>· 공동체가 함께 살아냄·변형</li>
+            <li>· 의미가 형식 *안*에 녹아 있음</li>
+            <li>· <strong>= 온톨로지의 형식적 측면</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-amber-50/80 rounded-xl p-3 border border-amber-200 mb-3">
+        <div class="text-xs font-bold text-amber-900 mb-1">⚠️ 단, 완전 일치는 아님</div>
+        <p class="text-xs text-amber-800 leading-relaxed">
+          리추얼은 <strong>온톨로지보다 풍부</strong>해요. 리추얼 = 형식 + 신체적 수행 + 시간성 + 정서·의미. 그중 <strong>"형식·합의·분류"</strong> 부분만 OWL이 캡처합니다. 신체·시간·정서는 OWL 밖 — <a href="#ch7" class="underline text-indigo-700">ch7 "현존재 차원의 정직"</a>에서 일부러 포기한 부분이고, 그 자리가 LLM의 자리예요.
+        </p>
+      </div>
+
+      <p class="text-sm text-slate-700 leading-relaxed">
+        그래서 <strong>코드 리뷰는 기술적 검토</strong>지만, <strong>온톨로지 리뷰는 공동체 합의</strong>입니다. 도메인 전문가가 ttl을 읽고 "한옥카페는 한옥이 아니라 별도여야 한다"고 말할 수 있는 게 그 차이. <strong>OWL은 도메인을 디지털 형식의 리추얼로 보존하는 시도</strong>예요 — 정확한 분류보다 <em>합의 가능한 분류</em>가 우선인 이유.
+      </p>
+    </div>
+
+    <div class="pull-quote text-rose-700 my-6 text-base sm:text-lg">
+      조건식은 <strong>"이 시스템이 어떻게 동작하는가"</strong>를 적고,<br>
+      OWL은 <strong>"이 도메인이 어떻게 생겼는가"</strong>를 적습니다.<br>
+      규칙은 <strong>입법되고</strong>, 리추얼은 <strong>살아내짐</strong> — 그래서 <strong>합의 가능한 명제</strong>라는 OWL의 자리가 생겨요.
+    </div>
+
+    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 sm:p-5 mb-5">
+      <div class="text-sm font-bold text-amber-900 mb-2">정직하게 — 작을 땐 조건식이 더 단순</div>
+      <p class="text-sm text-amber-800 leading-relaxed">
+        본 데모 스케일(타입 ~10개, 룰 4개)에선 솔직히 조건식이 더 짧고 직관적이에요. OWL의 가치가 진짜로 발현되려면: 분류 차원 <strong>수백 개</strong> (의료 SNOMED CT = 35만), 새 타입 추가가 <strong>잦음</strong>, 다른 시스템과 <strong>어휘 교환</strong>, <strong>도메인 전문가 검증</strong>, <strong>감사·재현성</strong> 필요. 본 데모는 이 가치를 학습용으로 미리 체험하는 vehicle이에요.
+      </p>
+    </div>
+
+    <div class="mt-8 pt-6 border-t border-rose-200">
+      <a href="#ch12" class="tap inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: 시나리오 vs 추론 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ CH5: SCENARIO VS REASONING ════════════════════ -->
+<section id="ch5" class="px-5 sm:px-8 py-12 sm:py-16 bg-amber-50">
+  <div class="max-w-3xl mx-auto">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="bg-amber-100 text-amber-700 text-xs font-bold mono px-2 py-1 rounded">05 / 12</span>
       <span class="text-sm text-slate-500">본질의 차이</span>
     </div>
     <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">시나리오 방식 vs 자동 추론</h2>
@@ -307,16 +656,16 @@
 
     <div class="mt-8 pt-6 border-t border-amber-200">
       <a href="change_comparison.html" class="text-sm text-amber-700 hover:text-amber-900 mr-4">→ 변화 비교 데모 보기</a>
-      <a href="#ch5" class="tap inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: 묶기 3종 →</a>
+      <a href="#ch6" class="tap inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: 묶기 3종 →</a>
     </div>
   </div>
 </section>
 
-<!-- ════════════════════ CH5: 묶기 3종 ════════════════════ -->
-<section id="ch5" class="px-5 sm:px-8 py-12 sm:py-16 bg-violet-50">
+<!-- ════════════════════ CH6: 묶기 3종 ════════════════════ -->
+<section id="ch6" class="px-5 sm:px-8 py-12 sm:py-16 bg-violet-50">
   <div class="max-w-3xl mx-auto">
     <div class="flex items-center gap-3 mb-4">
-      <span class="bg-violet-100 text-violet-700 text-xs font-bold mono px-2 py-1 rounded">05 / 11</span>
+      <span class="bg-violet-100 text-violet-700 text-xs font-bold mono px-2 py-1 rounded">06 / 12</span>
       <span class="text-sm text-slate-500">한계의 발견</span>
     </div>
     <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">묶기 3종 — OWL이 못 하는 것</h2>
@@ -376,59 +725,7 @@ B-3021 ─소속→ CL-01</pre>
     </div>
 
     <div class="mt-8 pt-6 border-t border-violet-200">
-      <a href="#ch6" class="tap inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: 뉴로심볼릭 →</a>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════ CH6: NEURO-SYMBOLIC ════════════════════ -->
-<section id="ch6" class="px-5 sm:px-8 py-12 sm:py-16 bg-rose-50">
-  <div class="max-w-3xl mx-auto">
-    <div class="flex items-center gap-3 mb-4">
-      <span class="bg-rose-100 text-rose-700 text-xs font-bold mono px-2 py-1 rounded">06 / 11</span>
-      <span class="text-sm text-slate-500">전체 그림</span>
-    </div>
-    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">뉴로심볼릭 — 두 엔진의 자리</h2>
-
-    <p class="lead-text text-slate-700 mb-6 leading-relaxed">
-      OWL의 한계가 곧 *왜 LLM과 같이 써야 하는가*의 답입니다. 처음 본인이 학습한 3층 뇌 모델로 회귀하면 모든 게 맞아떨어져요.
-    </p>
-
-    <div class="space-y-3">
-      <div class="bg-white rounded-2xl p-5 border-l-4 border-emerald-500 shadow-sm">
-        <div class="flex items-center gap-3 mb-2">
-          <div class="text-2xl">🧠</div>
-          <h3 class="font-bold text-slate-900">시맨틱 (좌뇌)</h3>
-          <span class="ml-auto text-xs mono bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">OWL · RDF · 룰엔진</span>
-        </div>
-        <div class="text-sm text-slate-600 ml-11">분류·관계·결정성·감사·무한 스케일</div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-5 border-l-4 border-violet-500 shadow-sm">
-        <div class="flex items-center gap-3 mb-2">
-          <div class="text-2xl">💭</div>
-          <h3 class="font-bold text-slate-900">신세틱 (우뇌)</h3>
-          <span class="ml-auto text-xs mono bg-violet-100 text-violet-700 px-2 py-0.5 rounded">LLM · 임베딩</span>
-        </div>
-        <div class="text-sm text-slate-600 ml-11">유사성·경험·자연어·유추·뉘앙스</div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-5 border-l-4 border-amber-500 shadow-sm">
-        <div class="flex items-center gap-3 mb-2">
-          <div class="text-2xl">🦾</div>
-          <h3 class="font-bold text-slate-900">키네틱 (몸)</h3>
-          <span class="ml-auto text-xs mono bg-amber-100 text-amber-700 px-2 py-0.5 rounded">API · 트리거</span>
-        </div>
-        <div class="text-sm text-slate-600 ml-11">외부 행동 실행 (SMS·dispatch·알림)</div>
-      </div>
-    </div>
-
-    <div class="pull-quote text-rose-700 my-6 text-base sm:text-lg mt-8">
-      OWL과 LLM은 *경쟁이 아니라 각자 자리*예요. <strong>두 엔진이 따로 그려져 있던 첫 PNG가 이미 정답이었어요.</strong>
-    </div>
-
-    <div class="mt-8 pt-6 border-t border-rose-200">
-      <a href="#ch7" class="tap inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: 현존재 차원의 정직 →</a>
+      <a href="#ch8" class="tap inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: 현존재 차원의 정직 →</a>
     </div>
   </div>
 </section>
@@ -437,7 +734,7 @@ B-3021 ─소속→ CL-01</pre>
 <section id="ch7" class="px-5 sm:px-8 py-12 sm:py-16 bg-slate-900 text-slate-200">
   <div class="max-w-3xl mx-auto">
     <div class="flex items-center gap-3 mb-4">
-      <span class="bg-slate-800 text-slate-300 text-xs font-bold mono px-2 py-1 rounded">07 / 11</span>
+      <span class="bg-slate-800 text-slate-300 text-xs font-bold mono px-2 py-1 rounded">07 / 12</span>
       <span class="text-sm text-slate-400">철학적 정직</span>
     </div>
     <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">현존재 차원 — ontology의 정직한 한계</h2>
@@ -485,16 +782,167 @@ B-3021 ─소속→ CL-01</pre>
     </p>
 
     <div class="mt-8 pt-6 border-t border-slate-700">
-      <a href="#ch8" class="tap inline-flex items-center gap-2 bg-slate-700 hover:bg-slate-600 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: 4가지 설계 원칙 →</a>
+      <a href="#ch10" class="tap inline-flex items-center gap-2 bg-slate-700 hover:bg-slate-600 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: 뉴로심볼릭 →</a>
     </div>
   </div>
 </section>
 
-<!-- ════════════════════ CH8: DESIGN PRINCIPLES ════════════════════ -->
-<section id="ch8" class="px-5 sm:px-8 py-12 sm:py-16 bg-cyan-50">
+<!-- ════════════════════ CH8: NEURO-SYMBOLIC ════════════════════ -->
+<section id="ch8" class="px-5 sm:px-8 py-12 sm:py-16 bg-rose-50">
   <div class="max-w-3xl mx-auto">
     <div class="flex items-center gap-3 mb-4">
-      <span class="bg-cyan-100 text-cyan-700 text-xs font-bold mono px-2 py-1 rounded">08 / 11</span>
+      <span class="bg-rose-100 text-rose-700 text-xs font-bold mono px-2 py-1 rounded">08 / 12</span>
+      <span class="text-sm text-slate-500">전체 그림</span>
+    </div>
+    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">뉴로심볼릭 — 두 엔진의 자리</h2>
+
+    <p class="lead-text text-slate-700 mb-6 leading-relaxed">
+      OWL의 한계가 곧 *왜 LLM과 같이 써야 하는가*의 답입니다. 처음 본인이 학습한 3층 뇌 모델로 회귀하면 모든 게 맞아떨어져요.
+    </p>
+
+    <div class="space-y-3">
+      <div class="bg-white rounded-2xl p-5 border-l-4 border-emerald-500 shadow-sm">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="text-2xl">🧠</div>
+          <h3 class="font-bold text-slate-900">시맨틱 (좌뇌)</h3>
+          <span class="ml-auto text-xs mono bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">OWL · RDF · 룰엔진</span>
+        </div>
+        <div class="text-sm text-slate-600 ml-11">분류·관계·결정성·감사·무한 스케일</div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border-l-4 border-violet-500 shadow-sm">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="text-2xl">💭</div>
+          <h3 class="font-bold text-slate-900">신세틱 (우뇌)</h3>
+          <span class="ml-auto text-xs mono bg-violet-100 text-violet-700 px-2 py-0.5 rounded">LLM · 임베딩</span>
+        </div>
+        <div class="text-sm text-slate-600 ml-11">유사성·경험·자연어·유추·뉘앙스</div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border-l-4 border-amber-500 shadow-sm">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="text-2xl">🦾</div>
+          <h3 class="font-bold text-slate-900">키네틱 (몸)</h3>
+          <span class="ml-auto text-xs mono bg-amber-100 text-amber-700 px-2 py-0.5 rounded">API · 트리거</span>
+        </div>
+        <div class="text-sm text-slate-600 ml-11">외부 행동 실행 (SMS·dispatch·알림)</div>
+      </div>
+    </div>
+
+    <div class="pull-quote text-rose-700 my-6 text-base sm:text-lg mt-8">
+      OWL과 LLM은 *경쟁이 아니라 각자 자리*예요. <strong>두 엔진이 따로 그려져 있던 첫 PNG가 이미 정답이었어요.</strong>
+    </div>
+
+    <div class="mt-8 pt-6 border-t border-rose-200">
+      <a href="#ch7" class="tap inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: LLM이 OWL을 대체할까? →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ CH9: LLM REPLACE OWL ════════════════════ -->
+<section id="ch9" class="px-5 sm:px-8 py-12 sm:py-16 bg-indigo-50">
+  <div class="max-w-3xl mx-auto">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="bg-indigo-100 text-indigo-700 text-xs font-bold mono px-2 py-1 rounded">09 / 12</span>
+      <span class="text-sm text-slate-500">2024 시대 질문</span>
+    </div>
+    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">JSON + LLM이 OWL을 대체할까?</h2>
+
+    <p class="lead-text text-slate-700 mb-6 leading-relaxed">
+      "Claude에게 JSON으로 룰 적시하면 OWL이랑 똑같지 않아?" 본인 직감이 정확해요. <strong>학습 demo 규모에선 거의 동일.</strong> 차이는 production scale에서만 본격 드러납니다.
+    </p>
+
+    <div class="bg-white rounded-2xl p-5 border border-emerald-200 mb-5">
+      <div class="text-sm font-bold text-emerald-800 mb-2">✅ 같은 효과 (작은 규모)</div>
+      <ul class="text-sm text-slate-700 space-y-1.5">
+        <li>· 클래스 분류 자동 도출</li>
+        <li>· 룰 기반 트리거</li>
+        <li>· 모순 검출</li>
+        <li>· LLM이 *더 나은 점*: 자연어 룰 해석, 컨텍스트 이해, OWL DL 못 하는 추론</li>
+      </ul>
+    </div>
+
+    <div class="bg-white rounded-2xl p-5 border border-rose-200 mb-5">
+      <div class="text-sm font-bold text-rose-800 mb-3">❌ OWL이 여전히 이기는 영역</div>
+      <table class="text-xs sm:text-sm w-full">
+        <thead>
+          <tr class="border-b border-rose-100">
+            <th class="text-left py-2 text-slate-500 font-medium">항목</th>
+            <th class="text-left py-2 text-slate-500 font-medium">OWL/룰엔진</th>
+            <th class="text-left py-2 text-slate-500 font-medium">LLM</th>
+          </tr>
+        </thead>
+        <tbody class="text-slate-700">
+          <tr class="border-b border-rose-50"><td class="py-1.5">속도</td><td>&lt;1ms</td><td>1~10초</td></tr>
+          <tr class="border-b border-rose-50"><td class="py-1.5">비용</td><td>0</td><td>호출당 $$</td></tr>
+          <tr class="border-b border-rose-50"><td class="py-1.5">결정성</td><td>보장</td><td>확률적</td></tr>
+          <tr class="border-b border-rose-50"><td class="py-1.5">감사</td><td>가능</td><td>블랙박스</td></tr>
+          <tr class="border-b border-rose-50"><td class="py-1.5">스케일</td><td>수백만</td><td>수백만 비쌈</td></tr>
+          <tr><td class="py-1.5">환각</td><td>없음</td><td>가능</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="bg-amber-50 border border-amber-300 rounded-2xl p-4 sm:p-5 mb-5">
+      <div class="text-sm font-bold text-amber-900 mb-2">결정적 사례 — ruledata #how 200ms</div>
+      <pre class="mono text-[11px] sm:text-xs text-amber-800">15:14:23.001  RULE-001 fires
+15:14:23.078  RULE-002 match
+15:14:23.112  RULE-003 match
+15:14:23.156  RULE-004 match
+15:14:23.201  dispatch</pre>
+      <div class="text-xs text-amber-700 mt-2">200ms 안에 5룰 발동·연쇄. LLM은 1~5초 → 화재 대응엔 부적합.</div>
+    </div>
+
+    <!-- 정직 박스 — 본 데모 스케일에선 LLM이 더 빠를 수 있다 -->
+    <div class="bg-slate-100 border border-slate-300 rounded-2xl p-4 sm:p-5 mb-5">
+      <div class="text-sm font-bold text-slate-900 mb-2">⚖️ 정직하게 — 본 데모 스케일에선 LLM이 더 빠릅니다</div>
+      <p class="text-sm text-slate-700 leading-relaxed mb-2">
+        본 데모는 <strong>사실 7개 → 14개 자동 도출</strong>입니다. 이 정도면 Claude한테 CSV 통째로 넘기고 "추론해" 한 번에 더 짧게 끝나요. 위 표의 OWL 우위(속도·결정성·감사)가 진짜로 필요해지는 건 <strong>건물 수만 개·룰 수백 개·SLA 200ms</strong> 같은 production scale부터.
+      </p>
+      <p class="text-sm text-slate-700 leading-relaxed">
+        그래서 본 데모는 <strong>"OWL이 LLM보다 좋다"가 아니라 "OWL이 풀 수 있는 모양은 이런 모양"</strong>을 보여주는 게 목적이에요. 도구 선택은 스케일·검증요구·도메인이 결정합니다.
+      </p>
+    </div>
+
+    <!-- 카파시 LLM Wiki — 또 다른 좌표 -->
+    <div class="bg-white rounded-2xl p-5 border border-indigo-300 mb-5">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-indigo-600 text-white text-[11px] font-bold mono px-2 py-1 rounded">📡 2026-04</span>
+        <span class="text-xs text-indigo-700 font-semibold">참고: 카파시 "LLM Wiki"</span>
+      </div>
+      <p class="text-sm text-slate-700 leading-relaxed mb-3">
+        Karpathy가 2026년 4월 공개한 <a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" class="underline hover:text-indigo-700">"LLM Wiki"</a> 패턴은 본 데모와 정반대 좌표예요. 원본 raw/ 폴더를 LLM이 읽어 <strong>상호링크된 마크다운으로 점진 컴파일</strong>하는 방식 — RDF·OWL·SPARQL 같은 형식 의미론 <strong>없이</strong> LLM에 의미 이해를 맡깁니다.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div class="bg-rose-50 border border-rose-200 rounded-xl p-3">
+          <div class="font-bold text-rose-800 mb-1">🦉 본 데모 (OWL 쪽 끝)</div>
+          <div class="text-slate-700 leading-relaxed">사람이 클래스·룰을 명시 → reasoner가 결정적으로 추론. <strong>검증·감사 가능</strong>, 변경 비싸다.</div>
+        </div>
+        <div class="bg-violet-50 border border-violet-200 rounded-xl p-3">
+          <div class="font-bold text-violet-800 mb-1">📝 LLM Wiki (반대 끝)</div>
+          <div class="text-slate-700 leading-relaxed">자연어 마크다운에 LLM이 의미를 녹여 축적. <strong>변경 싸다</strong>, 검증 어렵다.</div>
+        </div>
+      </div>
+      <p class="text-xs text-slate-500 mt-3 leading-relaxed">
+        같은 "LLM × 구조화" 스펙트럼의 양 끝. <strong>typed relation·reasoner가 필요한가?</strong>가 갈림길입니다. 화재 대응처럼 감사·결정성이 핵심이면 OWL 쪽, 개인 지식관리처럼 유연성이 핵심이면 LLM Wiki 쪽. 커뮤니티는 두 끝을 잇는 GraphRAG·OmegaWiki·Nodus Labs 같은 중간지대를 빠르게 채우는 중이에요.
+      </p>
+    </div>
+
+    <div class="pull-quote text-indigo-700 my-6 text-base sm:text-lg">
+      OWL과 LLM은 <strong>경쟁이 아니라 각자 자리</strong>예요. 본인의 첫 PNG가 정답이었어요 — 두 엔진이 따로 그려져 있었죠.
+    </div>
+
+    <div class="mt-8 pt-6 border-t border-indigo-200">
+      <a href="#ch4" class="tap inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: 4가지 설계 원칙 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ CH10: DESIGN PRINCIPLES ════════════════════ -->
+<section id="ch10" class="px-5 sm:px-8 py-12 sm:py-16 bg-cyan-50">
+  <div class="max-w-3xl mx-auto">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="bg-cyan-100 text-cyan-700 text-xs font-bold mono px-2 py-1 rounded">10 / 12</span>
       <span class="text-sm text-slate-500">정직한 설계</span>
     </div>
     <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">4가지 설계 원칙</h2>
@@ -550,16 +998,16 @@ B-3021 ─소속→ CL-01</pre>
     </div>
 
     <div class="mt-8 pt-6 border-t border-cyan-200">
-      <a href="#ch9" class="tap inline-flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: 본 데모의 한계 →</a>
+      <a href="#ch11" class="tap inline-flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: 본 데모의 한계 →</a>
     </div>
   </div>
 </section>
 
-<!-- ════════════════════ CH9: DEMO LIMITS ════════════════════ -->
-<section id="ch9" class="px-5 sm:px-8 py-12 sm:py-16 bg-orange-50">
+<!-- ════════════════════ CH11: DEMO LIMITS ════════════════════ -->
+<section id="ch11" class="px-5 sm:px-8 py-12 sm:py-16 bg-orange-50">
   <div class="max-w-3xl mx-auto">
     <div class="flex items-center gap-3 mb-4">
-      <span class="bg-orange-100 text-orange-700 text-xs font-bold mono px-2 py-1 rounded">09 / 11</span>
+      <span class="bg-orange-100 text-orange-700 text-xs font-bold mono px-2 py-1 rounded">11 / 12</span>
       <span class="text-sm text-slate-500">자기 진단</span>
     </div>
     <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">본 데모의 한계 — 정직한 진단</h2>
@@ -612,98 +1060,141 @@ B-3021 ─소속→ CL-01</pre>
     </div>
 
     <div class="mt-8 pt-6 border-t border-orange-200">
-      <a href="#ch10" class="tap inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: LLM이 OWL을 대체할까? →</a>
+      <a href="#ch9" class="tap inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: 학습 여정의 정답 →</a>
     </div>
   </div>
 </section>
 
-<!-- ════════════════════ CH10: LLM REPLACE OWL ════════════════════ -->
-<section id="ch10" class="px-5 sm:px-8 py-12 sm:py-16 bg-indigo-50">
+<!-- ════════════════════ CH12: CONCLUSION ════════════════════ -->
+<section id="ch12" class="px-5 sm:px-8 py-12 sm:py-16 bg-gradient-to-br from-violet-700 via-indigo-700 to-emerald-700 text-white">
   <div class="max-w-3xl mx-auto">
     <div class="flex items-center gap-3 mb-4">
-      <span class="bg-indigo-100 text-indigo-700 text-xs font-bold mono px-2 py-1 rounded">10 / 11</span>
-      <span class="text-sm text-slate-500">2024 시대 질문</span>
-    </div>
-    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">JSON + LLM이 OWL을 대체할까?</h2>
-
-    <p class="lead-text text-slate-700 mb-6 leading-relaxed">
-      "Claude에게 JSON으로 룰 적시하면 OWL이랑 똑같지 않아?" 본인 직감이 정확해요. <strong>학습 demo 규모에선 거의 동일.</strong> 차이는 production scale에서만 본격 드러납니다.
-    </p>
-
-    <div class="bg-white rounded-2xl p-5 border border-emerald-200 mb-5">
-      <div class="text-sm font-bold text-emerald-800 mb-2">✅ 같은 효과 (작은 규모)</div>
-      <ul class="text-sm text-slate-700 space-y-1.5">
-        <li>· 클래스 분류 자동 도출</li>
-        <li>· 룰 기반 트리거</li>
-        <li>· 모순 검출</li>
-        <li>· LLM이 *더 나은 점*: 자연어 룰 해석, 컨텍스트 이해, OWL DL 못 하는 추론</li>
-      </ul>
-    </div>
-
-    <div class="bg-white rounded-2xl p-5 border border-rose-200 mb-5">
-      <div class="text-sm font-bold text-rose-800 mb-3">❌ OWL이 여전히 이기는 영역</div>
-      <table class="text-xs sm:text-sm w-full">
-        <thead>
-          <tr class="border-b border-rose-100">
-            <th class="text-left py-2 text-slate-500 font-medium">항목</th>
-            <th class="text-left py-2 text-slate-500 font-medium">OWL/룰엔진</th>
-            <th class="text-left py-2 text-slate-500 font-medium">LLM</th>
-          </tr>
-        </thead>
-        <tbody class="text-slate-700">
-          <tr class="border-b border-rose-50"><td class="py-1.5">속도</td><td>&lt;1ms</td><td>1~10초</td></tr>
-          <tr class="border-b border-rose-50"><td class="py-1.5">비용</td><td>0</td><td>호출당 $$</td></tr>
-          <tr class="border-b border-rose-50"><td class="py-1.5">결정성</td><td>보장</td><td>확률적</td></tr>
-          <tr class="border-b border-rose-50"><td class="py-1.5">감사</td><td>가능</td><td>블랙박스</td></tr>
-          <tr class="border-b border-rose-50"><td class="py-1.5">스케일</td><td>수백만</td><td>수백만 비쌈</td></tr>
-          <tr><td class="py-1.5">환각</td><td>없음</td><td>가능</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="bg-amber-50 border border-amber-300 rounded-2xl p-4 sm:p-5 mb-5">
-      <div class="text-sm font-bold text-amber-900 mb-2">결정적 사례 — ruledata #how 200ms</div>
-      <pre class="mono text-[11px] sm:text-xs text-amber-800">15:14:23.001  RULE-001 fires
-15:14:23.078  RULE-002 match
-15:14:23.112  RULE-003 match
-15:14:23.156  RULE-004 match
-15:14:23.201  dispatch</pre>
-      <div class="text-xs text-amber-700 mt-2">200ms 안에 5룰 발동·연쇄. LLM은 1~5초 → 화재 대응엔 부적합.</div>
-    </div>
-
-    <div class="pull-quote text-indigo-700 my-6 text-base sm:text-lg">
-      OWL과 LLM은 <strong>경쟁이 아니라 각자 자리</strong>예요. 본인의 첫 PNG가 정답이었어요 — 두 엔진이 따로 그려져 있었죠.
-    </div>
-
-    <div class="mt-8 pt-6 border-t border-indigo-200">
-      <a href="#ch11" class="tap inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm">다음: 학습 여정의 정답 →</a>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════ CH11: CONCLUSION ════════════════════ -->
-<section id="ch11" class="px-5 sm:px-8 py-12 sm:py-16 bg-gradient-to-br from-violet-700 via-indigo-700 to-emerald-700 text-white">
-  <div class="max-w-3xl mx-auto">
-    <div class="flex items-center gap-3 mb-4">
-      <span class="bg-white/20 text-white text-xs font-bold mono px-2 py-1 rounded">11 / 11</span>
+      <span class="bg-white/20 text-white text-xs font-bold mono px-2 py-1 rounded">12 / 12</span>
       <span class="text-sm text-violet-200">마무리</span>
     </div>
     <h2 class="text-3xl sm:text-4xl font-bold mb-6">학습 여정의 정답</h2>
 
     <p class="lead-text text-violet-100 mb-6 leading-relaxed">
-      본인이 11단계 동안 도달한 곳 — 한 줄로 요약하면:
+      본인이 12단계 동안 도달한 곳 — 한 줄로 요약하면:
     </p>
 
     <div class="bg-white/10 backdrop-blur rounded-2xl p-5 sm:p-6 border border-white/20 mb-6">
       <p class="text-base sm:text-lg leading-relaxed">
         Ontology는 <strong>의미를 드러내지 않습니다</strong>. <strong>합의를 명시화할 뿐</strong>입니다.<br>
+        그 "합의"는 조건식으로는 안 잡혀요 — <strong>집합론적 명제</strong>여야 진리값과 검증을 얻습니다.<br>
         OWL은 분류와 관계를 잘 묶지만, <strong>경험·시간·유사성은 못 잡아요</strong>.<br>
         그래서 <strong>LLM이 그 옆에 필요</strong>합니다 — 두 엔진은 경쟁이 아니라 <strong>각자 자리</strong>.
       </p>
     </div>
 
+    <!-- 컴퓨팅의 보편 패턴 — 통찰 박스 -->
+    <div class="bg-gradient-to-br from-amber-100/15 to-emerald-100/15 backdrop-blur rounded-2xl p-5 sm:p-6 border border-amber-300/40 mb-6">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-amber-400 text-slate-900 text-[11px] font-bold mono px-2.5 py-1 rounded-full">🌐 학습 여정의 정점</span>
+        <span class="text-xs text-amber-100 font-semibold">컴퓨팅의 보편 패턴</span>
+      </div>
+      <p class="text-sm sm:text-base text-violet-50 leading-relaxed mb-4">
+        본 학습 여정의 가장 깊은 곳에 도달하면 — <strong>OWL 온톨로지 · LLM 시스템 프롬프트 · CLAUDE.md · Skills · 메모리</strong>가 전부 같은 *접근 방식*입니다. <strong>"선언형 명제를 외부 파일에 박아두기."</strong> 다른 것은 그 명제를 처리하는 *엔진*뿐.
+      </p>
+
+      <div class="bg-white/10 rounded-xl p-4 mb-4 mono text-xs sm:text-sm text-emerald-100 leading-relaxed">
+        <div class="text-amber-200 mb-2">[같은 명제, 다른 엔진]</div>
+        [도메인 명제를 외부에 적기]<br>
+        &nbsp;&nbsp;├─→ OWL Reasoner ─→ <span class="text-emerald-300">결정론적 분류</span><br>
+        &nbsp;&nbsp;├─→ 시스템 프롬프트 ─→ <span class="text-rose-300">LLM 확률적 해석</span><br>
+        &nbsp;&nbsp;└─→ CLAUDE.md / Skills ─→ <span class="text-rose-300">LLM 확률적 동작</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+        <div class="bg-white/10 rounded-xl p-3">
+          <div class="text-xs font-bold text-emerald-200 mb-2">🔵 같은 접근 방식 (5가지 공통)</div>
+          <ul class="text-[11px] text-violet-100 space-y-0.5 leading-relaxed">
+            <li>· 선언형 명제로 적기</li>
+            <li>· 외부 파일에 보관</li>
+            <li>· 런타임 자동 주입</li>
+            <li>· 합의·공유 가능</li>
+            <li>· 변경 비용 1줄</li>
+          </ul>
+        </div>
+        <div class="bg-white/10 rounded-xl p-3">
+          <div class="text-xs font-bold text-rose-200 mb-2">🟠 다른 처리 엔진</div>
+          <ul class="text-[11px] text-violet-100 space-y-0.5 leading-relaxed">
+            <li>· OWL: deductive (binary)</li>
+            <li>· LLM: probabilistic (분포)</li>
+            <li>· 결정성 vs 유연성 trade-off</li>
+            <li>· 환각 0 vs 환각 가능</li>
+            <li>· <span class="text-amber-200">같은 ttl도 두 엔진에 동시 주입 가능</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="text-xs text-violet-200 leading-relaxed">
+        같은 패턴이 <strong>DB 스키마 · 타입 시스템 · RAG corpus · LLM Wiki</strong>에서도 반복됩니다. <strong>"외부에 명제, 런타임이 활용"</strong> — 이 한 패턴 위에 30년치 컴퓨팅 도구가 다 올라타 있어요. 본 학습 여정 12단계는 그 추상화 레벨로 올라가는 사다리였습니다.
+      </p>
+    </div>
+
+    <!-- 초지능 4-layer 아키텍처 -->
+    <div class="bg-gradient-to-br from-rose-100/15 to-amber-100/15 backdrop-blur rounded-2xl p-5 sm:p-6 border border-rose-300/40 mb-6">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-rose-500 text-white text-[11px] font-bold mono px-2.5 py-1 rounded-full">🧠 초지능 처방</span>
+        <span class="text-xs text-rose-200 font-semibold">4-Layer 아키텍처</span>
+      </div>
+      <p class="text-sm sm:text-base text-violet-50 leading-relaxed mb-4">
+        조건문 실행기에 머물면 한계. <strong>명제 레벨 추론이 들어가야 *검증 가능한* 초지능</strong>이 됩니다. 그러나 명제만으론 부족 — 학계가 합의한 4-layer:
+      </p>
+
+      <div class="space-y-2 mb-4">
+        <div class="bg-white/10 rounded-xl p-3 border-l-4 border-rose-400">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="bg-rose-400 text-slate-900 text-[10px] font-bold mono px-2 py-0.5 rounded">④</span>
+            <span class="text-sm font-bold text-white">Planner / 다단계 추론</span>
+          </div>
+          <div class="text-[11px] text-violet-100">MCTS · Tree-of-Thoughts · 가능 세계 탐색</div>
+        </div>
+        <div class="bg-white/10 rounded-xl p-3 border-l-4 border-amber-400">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="bg-amber-400 text-slate-900 text-[10px] font-bold mono px-2 py-0.5 rounded">③</span>
+            <span class="text-sm font-bold text-white">Memory / 경험·맥락</span>
+          </div>
+          <div class="text-[11px] text-violet-100">LLM Wiki · RAG · Vector DB · Karpathy 패턴</div>
+        </div>
+        <div class="bg-white/15 rounded-xl p-3 border-l-4 border-emerald-400 ring-2 ring-emerald-400/30">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="bg-emerald-400 text-slate-900 text-[10px] font-bold mono px-2 py-0.5 rounded">②</span>
+            <span class="text-sm font-bold text-emerald-200">Symbolic Reasoner / 명제·검증·일관성 ⭐</span>
+          </div>
+          <div class="text-[11px] text-violet-100">OWL · DL Reasoner · Theorem Prover — <strong class="text-emerald-200">본인이 짚은 자리</strong></div>
+        </div>
+        <div class="bg-white/10 rounded-xl p-3 border-l-4 border-violet-400">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="bg-violet-400 text-slate-900 text-[10px] font-bold mono px-2 py-0.5 rounded">①</span>
+            <span class="text-sm font-bold text-white">LLM / 직관·언어·창의성</span>
+          </div>
+          <div class="text-[11px] text-violet-100">Transformer · 분포적 학습 · 자연어 생성</div>
+        </div>
+      </div>
+
+      <div class="bg-white/10 rounded-xl p-3 mb-3 border border-white/20">
+        <div class="text-xs font-bold text-amber-200 mb-2">📚 학계 권위 — 본인 통찰의 위치</div>
+        <p class="text-[11px] text-violet-100 leading-relaxed mb-2">
+          <strong>Allen Newell (1982)</strong>: <em>"지능 시스템은 Knowledge Level에서 분석되어야 한다."</em><br>
+          <strong>Yoshua Bengio (2019)</strong>: <em>"Current deep learning excels at System 1; System 2 (reasoning, abstraction) requires symbolic-like representations."</em>
+        </p>
+        <p class="text-[11px] text-violet-100 leading-relaxed">
+          본인 통찰 = <strong>Newell + Bengio의 한국어 압축</strong>. 50년 학계 합의를 5턴 만에 재발견.
+        </p>
+      </div>
+
+      <div class="bg-amber-500/15 border border-amber-400/40 rounded-xl p-3">
+        <div class="text-xs font-bold text-amber-200 mb-1">⚠️ 정직한 보완 — "명제 *만으로*"는 부족</div>
+        <p class="text-[11px] text-violet-100 leading-relaxed">
+          순수 symbolic AI(Cyc, 40년)는 AGI 못 만듦. 순수 LLM도 환각·비결정성. 학계 합의: <strong>Neuro-Symbolic — ① + ② + ③ + ④ 모두 필요</strong>. 명제 layer는 <em>주축</em>이 아니라 <em>불가결한 검증·합의의 자리</em>.
+        </p>
+      </div>
+    </div>
+
     <p class="text-sm sm:text-base text-violet-100 mb-6 leading-relaxed">
-      처음 학습한 PNG의 3층 뇌 모델이 이미 이 모든 답을 그려놨어요. 11단계는 그 그림을 <em>왜</em> 그렇게 그려야 하는지 깨닫는 과정이었습니다.
+      처음 학습한 PNG의 3층 뇌 모델이 이미 이 모든 답을 그려놨어요. 12단계는 그 그림을 <em>왜</em> 그렇게 그려야 하는지 깨닫는 과정이었습니다.
     </p>
 
     <div class="text-sm sm:text-base text-violet-100 mb-2 font-bold">실제로 보고 싶다면:</div>
@@ -726,7 +1217,7 @@ B-3021 ─소속→ CL-01</pre>
     </div>
 
     <div class="text-xs text-violet-200/80 mt-8 pt-6 border-t border-white/20">
-      여기까지 온 학습자의 다음 자리는 — 이 데모를 *자기 도메인*에 옮겨보는 것. 보험·물류·의료·국방 어디든. 위 11단계가 그대로 적용됩니다.
+      여기까지 온 학습자의 다음 자리는 — 이 데모를 *자기 도메인*에 옮겨보는 것. 보험·물류·의료·국방 어디든. 위 12단계가 그대로 적용됩니다.
     </div>
 
     <div class="mt-6">
@@ -740,7 +1231,7 @@ B-3021 ─소속→ CL-01</pre>
   <div class="max-w-3xl mx-auto flex flex-col sm:flex-row sm:justify-between gap-3">
     <div>
       <div class="font-bold text-slate-400">PATOS Learning · 학습 여정</div>
-      <div class="mt-1">11단계 — 우리가 함께 도달한 깨달음</div>
+      <div class="mt-1">12단계 — 우리가 함께 도달한 깨달음</div>
     </div>
     <div class="flex flex-col sm:items-end gap-1">
       <a href="index.html" class="text-slate-400 hover:text-white">Hub</a>
