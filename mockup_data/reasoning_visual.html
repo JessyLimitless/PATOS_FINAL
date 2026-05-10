@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>명제의 함축 — TypeDB·OWL 추론 시각화 · PATOS Learning</title>
+<meta name="description" content="네 줄의 명제가 어떻게 수십 개의 결론으로 펼쳐지는가. TypeDB·OWL reasoner의 함축 도출을 단계별 그래프로.">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  body { font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+  .node-asserted { fill: #f1f5f9; stroke: #475569; stroke-width: 1.5; }
+  .node-inferred { fill: #fee2e2; stroke: #dc2626; stroke-width: 1.5; stroke-dasharray: 0; }
+  .node-class    { fill: #ddd6fe; stroke: #6d28d9; stroke-width: 1.5; }
+  .node-instance { fill: #fef3c7; stroke: #b45309; stroke-width: 1.5; }
+  .node-pulse    { animation: pulseIn 0.5s ease-out; }
+
+  @keyframes pulseIn {
+    0%   { transform: scale(0.3); opacity: 0; }
+    60%  { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .pulse-edge { stroke-dasharray: 4 3; animation: dashFlow 1.2s linear infinite; }
+  @keyframes dashFlow { to { stroke-dashoffset: -14; } }
+
+  .step-active { background: #fef3c7; border-left: 3px solid #d97706; }
+  .step-done   { color: #64748b; }
+  .step-pending { color: #cbd5e1; }
+
+  .log-line.inferred { color: #b91c1c; font-weight: 600; }
+  .log-line.asserted { color: #1e293b; }
+  .log-line.rule     { color: #6d28d9; font-weight: 600; }
+
+  .fade-up { animation: fadeUp 0.45s ease-out both; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+<!-- HERO -->
+<header class="bg-gradient-to-br from-slate-900 via-indigo-900 to-violet-900 text-white">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
+    <a href="index.html" class="text-xs text-indigo-200 hover:text-white inline-flex items-center gap-1 mb-6 mono tracking-wider">← HUB</a>
+    <div class="text-[11px] font-bold mono text-amber-400 mb-3 tracking-[0.3em]">REASONING VISUAL · PATOS LEARNING</div>
+    <h1 class="text-3xl sm:text-5xl font-bold tracking-tight mb-3">
+      명제의 함축 — 네 줄이 어떻게 수십 개로 펼쳐지나
+    </h1>
+    <p class="text-sm sm:text-lg text-indigo-200 leading-relaxed">
+      TypeDB·OWL reasoner의 작동 — *우리가 적은 것* vs *적은 것에서 따라오는 것*. 단계별 그래프 시각화.
+    </p>
+    <div class="mt-5 flex flex-wrap gap-2 text-xs">
+      <span class="bg-white/10 px-3 py-1 rounded-full mono">subClassOf transitive</span>
+      <span class="bg-white/10 px-3 py-1 rounded-full mono">instance classification</span>
+      <span class="bg-white/10 px-3 py-1 rounded-full mono">symmetric property</span>
+      <span class="bg-white/10 px-3 py-1 rounded-full mono">rule firing</span>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
+
+<!-- Top control bar -->
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 mb-5 sticky top-2 z-10">
+  <div class="flex flex-wrap items-center gap-3">
+    <button id="btnReset" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold px-4 py-2 rounded-lg transition">⏮ 처음부터</button>
+    <button id="btnStep" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-5 py-2 rounded-lg transition shadow">▶ 다음 단계</button>
+    <button id="btnAuto" class="bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">⏵ 자동 진행</button>
+    <div class="ml-auto text-sm">
+      <span class="text-slate-500">Step</span>
+      <span id="stepNum" class="mono font-bold text-indigo-700">0</span>
+      <span class="text-slate-400">/ 9</span>
+    </div>
+  </div>
+  <div class="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed" id="stepDesc">
+    <strong>준비.</strong> "▶ 다음 단계"를 눌러 — 사람이 적은 명제 4줄에서 시작해, reasoner가 어떻게 수십 개의 결론을 끌어내는지 단계별로 보세요.
+  </div>
+</div>
+
+<!-- Main grid: schema | graph | log -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+  <!-- LEFT: TypeQL/TTL schema + facts -->
+  <aside class="lg:col-span-3 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
+    <div class="text-xs font-bold mono text-violet-700 mb-3 tracking-wider">📝 INPUT (사람이 적음)</div>
+
+    <div class="text-xs text-slate-500 font-bold mono mb-1">Schema (TypeQL 풍)</div>
+    <pre class="mono text-[11px] bg-slate-900 text-violet-300 p-3 rounded-lg mb-4 overflow-x-auto leading-relaxed" id="schemaBox">define
+
+한옥카페 sub 한옥;
+한옥     sub 전통건축물;
+전통건축물 sub 건물;
+건물     sub 자산;
+
+adjacent sub relation,
+  symmetric;</pre>
+
+    <div class="text-xs text-slate-500 font-bold mono mb-1">Rules</div>
+    <pre class="mono text-[11px] bg-slate-900 text-emerald-300 p-3 rounded-lg mb-4 overflow-x-auto leading-relaxed" id="ruleBox">rule fire-risk-dispatch:
+  when {
+    $b isa 전통건축물;
+    $b has fire_risk &gt;= 0.8;
+  } then {
+    dispatch(폼차, 3);
+  };</pre>
+
+    <div class="text-xs text-slate-500 font-bold mono mb-1">Facts (insert)</div>
+    <pre class="mono text-[11px] bg-slate-900 text-amber-300 p-3 rounded-lg overflow-x-auto leading-relaxed" id="factsBox">insert
+$b1 isa 한옥카페;
+$b2 isa 한옥;
+(b1, b2) isa adjacent;
+$b1 has fire_risk 0.85;</pre>
+
+    <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-500 leading-relaxed">
+      <strong>총 4줄 + α.</strong> 이게 사람이 적는 모든 것. 나머지는 reasoner가 알아서.
+    </div>
+  </aside>
+
+  <!-- CENTER: graph -->
+  <section class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-3 sm:p-4">
+    <div class="flex items-center justify-between mb-2 px-2">
+      <div class="text-xs font-bold mono text-indigo-700 tracking-wider">🕸 GRAPH (그래프)</div>
+      <div class="text-[11px] text-slate-500 flex items-center gap-3">
+        <span class="inline-flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full" style="background:#ddd6fe;border:1.5px solid #6d28d9"></span>Class</span>
+        <span class="inline-flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full" style="background:#fef3c7;border:1.5px solid #b45309"></span>Instance</span>
+        <span class="inline-flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full" style="background:#fee2e2;border:1.5px solid #dc2626"></span>Inferred</span>
+      </div>
+    </div>
+    <div class="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+      <svg id="graph" viewBox="0 0 700 480" class="w-full h-[420px] sm:h-[480px]">
+        <defs>
+          <marker id="arrow" viewBox="0 -5 10 10" refX="10" refY="0" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,-5L10,0L0,5" fill="#475569"/>
+          </marker>
+          <marker id="arrowRed" viewBox="0 -5 10 10" refX="10" refY="0" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,-5L10,0L0,5" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowViolet" viewBox="0 -5 10 10" refX="10" refY="0" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,-5L10,0L0,5" fill="#6d28d9"/>
+          </marker>
+        </defs>
+        <!-- nodes/edges injected by JS -->
+      </svg>
+    </div>
+    <div class="mt-2 px-2 text-[11px] text-slate-500">
+      회색 화살표 = sub (subClassOf), 보라 = adjacent (symmetric), 노랑 = isa (instance), <strong class="text-rose-600">빨강 점선 = 추론된 것</strong>
+    </div>
+  </section>
+
+  <!-- RIGHT: inference log -->
+  <aside class="lg:col-span-3 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
+    <div class="text-xs font-bold mono text-rose-700 mb-3 tracking-wider">🔍 INFERENCE LOG</div>
+    <div id="log" class="space-y-1.5 text-[11px] mono leading-relaxed max-h-[420px] overflow-y-auto pr-1">
+      <div class="text-slate-400">(초기 — 아직 reasoner가 돌지 않음)</div>
+    </div>
+    <div class="mt-4 pt-3 border-t border-slate-100">
+      <div class="flex items-center justify-between text-[11px]">
+        <span class="text-slate-500">사람이 적은 명제</span>
+        <span class="mono font-bold text-slate-700"><span id="cntAsserted">0</span></span>
+      </div>
+      <div class="flex items-center justify-between text-[11px] mt-1">
+        <span class="text-rose-600">자동 도출된 명제</span>
+        <span class="mono font-bold text-rose-700"><span id="cntInferred">0</span></span>
+      </div>
+      <div class="flex items-center justify-between text-[11px] mt-1 pt-2 border-t border-slate-100">
+        <span class="text-slate-700 font-bold">함축 비율</span>
+        <span class="mono font-bold text-indigo-700"><span id="ratio">—</span></span>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- Step list -->
+<section class="mt-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
+  <div class="text-xs font-bold mono text-slate-500 mb-3 tracking-wider">9단계 진행</div>
+  <ol id="stepList" class="space-y-2 text-sm leading-relaxed"></ol>
+</section>
+
+<!-- Closing insight -->
+<section class="mt-6 bg-gradient-to-br from-indigo-50 to-rose-50 rounded-2xl border border-indigo-200 p-5 sm:p-7">
+  <div class="text-xs font-bold mono text-rose-700 mb-3 tracking-wider">💡 발견</div>
+  <p class="text-sm sm:text-base text-slate-800 leading-relaxed mb-3">
+    네 줄(+ 룰 한 개)을 적었더니, reasoner가 그 안에서 <strong>20개 안팎의 함축</strong>을 끝까지 끌어냈습니다. 이게 *추론구조의 실체*예요. 컴퓨터가 우리를 위해 판단해주는 게 아니라 — <strong>우리가 미리 명제로 적어둔 구조를 따라 함축이 자동으로 펼쳐진 것</strong>일 뿐입니다.
+  </p>
+  <p class="text-sm text-slate-700 leading-relaxed mb-3">
+    적은 것은 적게 적었지만, 그 적은 것 안에 잠긴 결론은 작지 않습니다. <em>우리가 적어둔 것</em>과 <em>적어둔 것에서 따라오는 것</em>은 다른 크기의 집합이고, reasoner는 후자를 끝까지 끌어내는 도구일 뿐입니다.
+  </p>
+  <div class="text-xs text-slate-500 mt-4 pt-3 border-t border-slate-200">
+    더 깊이 →
+    <a href="column.html" class="text-rose-700 hover:text-rose-900 underline ml-2">📰 두 가지 의문</a>
+    <a href="essay.html" class="text-indigo-700 hover:text-indigo-900 underline ml-3">📚 학구적 에세이</a>
+    <a href="learning_journey.html" class="text-violet-700 hover:text-violet-900 underline ml-3">📖 학습 여정 12단계</a>
+  </div>
+</section>
+
+</main>
+
+<footer class="mt-8 bg-slate-900 text-slate-500 px-5 sm:px-8 py-8 text-xs">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex flex-col sm:flex-row sm:justify-between gap-3">
+      <div>
+        <div class="font-bold text-slate-400 mono">PATOS LEARNING · REASONING VISUAL</div>
+        <div class="mt-1 italic">명제 네 줄에서 함축 20개로 — TypeDB·OWL reasoner의 작동 시각화</div>
+      </div>
+      <div class="flex flex-col sm:items-end gap-1">
+        <a href="index.html" class="text-slate-400 hover:text-white">← Hub</a>
+        <a href="owl_reasoner_demo.html" class="text-slate-400 hover:text-white">트리플 리스트 시연</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+'use strict';
+
+// ─── 그래프 노드 좌표 (SVG 700x480) ──────────────────────────────
+const nodes = {
+  // 클래스 노드 (위계, 위→아래)
+  asset:    { x: 350, y: 50,  label: '자산',         type: 'class' },
+  building: { x: 350, y: 130, label: '건물',         type: 'class' },
+  trad:     { x: 350, y: 210, label: '전통건축물',   type: 'class' },
+  hanok:    { x: 350, y: 290, label: '한옥',         type: 'class' },
+  cafe:     { x: 350, y: 370, label: '한옥카페',     type: 'class' },
+  // 인스턴스 노드 (좌측)
+  b1:       { x: 110, y: 370, label: 'B-3021', type: 'instance' },
+  b2:       { x: 110, y: 290, label: 'B-3019', type: 'instance' },
+  // 룰 발화 노드 (우측)
+  dispatch: { x: 590, y: 250, label: '🚒 dispatch\n(폼차 3대)', type: 'action' },
+};
+
+// ─── 단계별 시퀀스 ────────────────────────────────────────────────
+const steps = [
+  // step 0: 초기
+  {
+    desc: '<strong>준비.</strong> 그래프는 비어 있습니다. "▶ 다음 단계"를 누르세요.',
+    title: '초기',
+    nodes: [],
+    edges: [],
+    log:   [],
+  },
+  // step 1: 클래스 계층 정의
+  {
+    desc: '<strong>① Schema 입력.</strong> 사람이 ttl 또는 TypeQL에 클래스 계층 4줄을 적었다.',
+    title: '클래스 계층 (asserted)',
+    nodes: ['asset','building','trad','hanok','cafe'],
+    edges: [
+      {from:'cafe',to:'hanok',label:'sub',kind:'asserted'},
+      {from:'hanok',to:'trad',label:'sub',kind:'asserted'},
+      {from:'trad',to:'building',label:'sub',kind:'asserted'},
+      {from:'building',to:'asset',label:'sub',kind:'asserted'},
+    ],
+    log: [
+      {kind:'asserted', text:'한옥카페 sub 한옥'},
+      {kind:'asserted', text:'한옥 sub 전통건축물'},
+      {kind:'asserted', text:'전통건축물 sub 건물'},
+      {kind:'asserted', text:'건물 sub 자산'},
+    ],
+  },
+  // step 2: subClassOf transitive closure
+  {
+    desc: '<strong>② Reasoner 실행 — subClassOf transitive closure.</strong> 4줄에서 6줄이 자동 도출. *적은 적 없는 명제들*.',
+    title: '추론: transitive closure',
+    addNodes: [],
+    addEdges: [
+      {from:'cafe',to:'trad',label:'sub*',kind:'inferred'},
+      {from:'cafe',to:'building',label:'sub*',kind:'inferred'},
+      {from:'cafe',to:'asset',label:'sub*',kind:'inferred'},
+      {from:'hanok',to:'building',label:'sub*',kind:'inferred'},
+      {from:'hanok',to:'asset',label:'sub*',kind:'inferred'},
+      {from:'trad',to:'asset',label:'sub*',kind:'inferred'},
+    ],
+    log: [
+      {kind:'inferred', text:'⊢ 한옥카페 sub* 전통건축물'},
+      {kind:'inferred', text:'⊢ 한옥카페 sub* 건물'},
+      {kind:'inferred', text:'⊢ 한옥카페 sub* 자산'},
+      {kind:'inferred', text:'⊢ 한옥 sub* 건물'},
+      {kind:'inferred', text:'⊢ 한옥 sub* 자산'},
+      {kind:'inferred', text:'⊢ 전통건축물 sub* 자산'},
+    ],
+  },
+  // step 3: 인스턴스 1 추가
+  {
+    desc: '<strong>③ Insert.</strong> B-3021을 한옥카페로 등록. 한 줄 추가.',
+    title: '인스턴스 1 (asserted)',
+    addNodes: ['b1'],
+    addEdges: [
+      {from:'b1',to:'cafe',label:'isa',kind:'instance'},
+    ],
+    log: [
+      {kind:'asserted', text:'$b1 isa 한옥카페'},
+    ],
+  },
+  // step 4: instance classification
+  {
+    desc: '<strong>④ Reasoner — instance classification.</strong> B-3021은 한옥카페일 뿐 아니라 — 한옥, 전통건축물, 건물, 자산 *모두*. 적은 적 없음.',
+    title: '추론: 인스턴스 자동 분류',
+    addNodes: [],
+    addEdges: [
+      {from:'b1',to:'hanok',label:'isa*',kind:'inferred'},
+      {from:'b1',to:'trad',label:'isa*',kind:'inferred'},
+      {from:'b1',to:'building',label:'isa*',kind:'inferred'},
+      {from:'b1',to:'asset',label:'isa*',kind:'inferred'},
+    ],
+    log: [
+      {kind:'inferred', text:'⊢ B-3021 isa 한옥'},
+      {kind:'inferred', text:'⊢ B-3021 isa 전통건축물'},
+      {kind:'inferred', text:'⊢ B-3021 isa 건물'},
+      {kind:'inferred', text:'⊢ B-3021 isa 자산'},
+    ],
+  },
+  // step 5: 인스턴스 2 + adjacent
+  {
+    desc: '<strong>⑤ Insert.</strong> B-3019를 한옥으로 등록 + (B-3021, B-3019) adjacent 한 방향만 적음.',
+    title: '인스턴스 2 + adjacent (asserted)',
+    addNodes: ['b2'],
+    addEdges: [
+      {from:'b2',to:'hanok',label:'isa',kind:'instance'},
+      {from:'b1',to:'b2',label:'adjacent',kind:'symmetric-asserted'},
+    ],
+    log: [
+      {kind:'asserted', text:'$b2 isa 한옥'},
+      {kind:'asserted', text:'(b1, b2) isa adjacent'},
+    ],
+  },
+  // step 6: B-3019 classification + symmetric inference
+  {
+    desc: '<strong>⑥ Reasoner — symmetric + classification.</strong> B-3019도 자동 분류 + adjacent 양방향 자동.',
+    title: '추론: symmetric + classification',
+    addNodes: [],
+    addEdges: [
+      {from:'b2',to:'trad',label:'isa*',kind:'inferred'},
+      {from:'b2',to:'building',label:'isa*',kind:'inferred'},
+      {from:'b2',to:'asset',label:'isa*',kind:'inferred'},
+      {from:'b2',to:'b1',label:'adjacent (symmetric)',kind:'inferred'},
+    ],
+    log: [
+      {kind:'inferred', text:'⊢ B-3019 isa 전통건축물'},
+      {kind:'inferred', text:'⊢ B-3019 isa 건물'},
+      {kind:'inferred', text:'⊢ B-3019 isa 자산'},
+      {kind:'inferred', text:'⊢ (b2, b1) isa adjacent  // symmetric'},
+    ],
+  },
+  // step 7: fire_risk attribute
+  {
+    desc: '<strong>⑦ Insert attribute.</strong> B-3021에 fire_risk = 0.85 추가. 한 줄.',
+    title: 'attribute (asserted)',
+    addNodes: [],
+    addEdges: [],
+    extra: 'B-3021 has fire_risk 0.85',
+    log: [
+      {kind:'asserted', text:'$b1 has fire_risk 0.85'},
+    ],
+  },
+  // step 8: rule fires
+  {
+    desc: '<strong>⑧ Rule firing.</strong> "전통건축물 + fire_risk &gt;= 0.8 → dispatch 폼차 3대" 룰이 발화. B-3021은 (③의 inferred) 전통건축물이므로 자동 매칭.',
+    title: '룰 발화',
+    addNodes: ['dispatch'],
+    addEdges: [
+      {from:'b1',to:'dispatch',label:'rule fires',kind:'rule'},
+    ],
+    log: [
+      {kind:'rule', text:'▶ rule fire-risk-dispatch matched'},
+      {kind:'rule', text:'   on $b1 (B-3021 — 전통건축물 by inference)'},
+      {kind:'inferred', text:'⊢ dispatch(폼차, 3)'},
+    ],
+  },
+  // step 9: 마무리
+  {
+    desc: '<strong>⑨ 완료.</strong> 사람이 적은 명제 = 7개. reasoner가 도출한 명제 = 18개. <strong>함축 비율 ≈ 1:2.6</strong>. 이게 *추론구조*의 실체.',
+    title: '함축 펼침 완료',
+    addNodes: [],
+    addEdges: [],
+    log: [
+      {kind:'rule', text:'─ reasoner 작업 완료 ─'},
+      {kind:'rule', text:'asserted: 7,  inferred: 18'},
+    ],
+  },
+];
+
+// ─── 상태 ─────────────────────────────────────────────────────────
+let currentStep = 0;
+let visibleNodes = new Set();
+let visibleEdges = [];
+let logEntries = [];
+let cntAsserted = 0;
+let cntInferred = 0;
+let autoTimer = null;
+
+// ─── 렌더링 ───────────────────────────────────────────────────────
+function renderGraph() {
+  const svg = document.getElementById('graph');
+  // 초기화 (defs 보존)
+  const defs = svg.querySelector('defs');
+  svg.innerHTML = '';
+  if (defs) svg.appendChild(defs);
+
+  // 엣지 먼저 (노드 아래에 깔리도록)
+  visibleEdges.forEach((e, i) => {
+    const a = nodes[e.from], b = nodes[e.to];
+    if (!a || !b) return;
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    // 노드 반지름만큼 줄임 (대략 38)
+    const r = 38;
+    const sx = a.x + dx/dist * r;
+    const sy = a.y + dy/dist * r;
+    const ex = b.x - dx/dist * r;
+    const ey = b.y - dy/dist * r;
+
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', sx); line.setAttribute('y1', sy);
+    line.setAttribute('x2', ex); line.setAttribute('y2', ey);
+
+    let stroke, marker, dash = '0';
+    if (e.kind === 'inferred')           { stroke = '#dc2626'; marker = 'arrowRed';    dash = '5 4'; }
+    else if (e.kind === 'rule')          { stroke = '#6d28d9'; marker = 'arrowViolet'; dash = '0';   line.classList.add('pulse-edge'); }
+    else if (e.kind === 'instance')      { stroke = '#b45309'; marker = 'arrow';       dash = '0';   }
+    else if (e.kind === 'symmetric-asserted') { stroke = '#6d28d9'; marker = ''; dash = '0'; }
+    else                                 { stroke = '#475569'; marker = 'arrow';       dash = '0';   }
+
+    line.setAttribute('stroke', stroke);
+    line.setAttribute('stroke-width', '1.5');
+    line.setAttribute('stroke-dasharray', dash);
+    if (marker) line.setAttribute('marker-end', `url(#${marker})`);
+    svg.appendChild(line);
+
+    // 라벨
+    if (e.label) {
+      const mx = (a.x + b.x) / 2;
+      const my = (a.y + b.y) / 2;
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', mx);
+      text.setAttribute('y', my - 4);
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('fill', stroke);
+      text.setAttribute('font-size', '10');
+      text.setAttribute('font-family', 'JetBrains Mono, monospace');
+      text.setAttribute('font-weight', '600');
+      // 흰색 배경 효과
+      const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      const padW = e.label.length * 5.5 + 6;
+      bg.setAttribute('x', mx - padW/2);
+      bg.setAttribute('y', my - 14);
+      bg.setAttribute('width', padW);
+      bg.setAttribute('height', 12);
+      bg.setAttribute('fill', '#f8fafc');
+      bg.setAttribute('rx', '2');
+      svg.appendChild(bg);
+      text.textContent = e.label;
+      svg.appendChild(text);
+    }
+  });
+
+  // 노드
+  visibleNodes.forEach(id => {
+    const n = nodes[id];
+    if (!n) return;
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.classList.add('node-pulse');
+
+    const r = (n.type === 'action') ? 42 : 36;
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', n.x);
+    circle.setAttribute('cy', n.y);
+    circle.setAttribute('r', r);
+    if (n.type === 'class')         circle.setAttribute('class', 'node-class');
+    else if (n.type === 'instance') circle.setAttribute('class', 'node-instance');
+    else if (n.type === 'action')   { circle.setAttribute('fill', '#fef3c7'); circle.setAttribute('stroke', '#d97706'); circle.setAttribute('stroke-width', '2'); }
+    else                            circle.setAttribute('class', 'node-asserted');
+    g.appendChild(circle);
+
+    // 라벨 (멀티 라인 대응)
+    const lines = n.label.split('\n');
+    lines.forEach((ln, i) => {
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', n.x);
+      text.setAttribute('y', n.y + 4 - (lines.length - 1) * 6 + i * 12);
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('font-size', n.type === 'action' ? '10' : '12');
+      text.setAttribute('font-weight', '600');
+      text.setAttribute('font-family', 'Inter, sans-serif');
+      text.setAttribute('fill', '#1e293b');
+      text.textContent = ln;
+      g.appendChild(text);
+    });
+
+    svg.appendChild(g);
+  });
+}
+
+function renderLog() {
+  const box = document.getElementById('log');
+  if (logEntries.length === 0) {
+    box.innerHTML = '<div class="text-slate-400">(초기 — 아직 reasoner가 돌지 않음)</div>';
+    return;
+  }
+  box.innerHTML = logEntries.map(e =>
+    `<div class="log-line ${e.kind} fade-up">${escapeHtml(e.text)}</div>`
+  ).join('');
+  box.scrollTop = box.scrollHeight;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderCounts() {
+  document.getElementById('cntAsserted').textContent = cntAsserted;
+  document.getElementById('cntInferred').textContent = cntInferred;
+  document.getElementById('ratio').textContent =
+    cntAsserted > 0 ? `1 : ${(cntInferred / cntAsserted).toFixed(1)}` : '—';
+}
+
+function renderStepList() {
+  const list = document.getElementById('stepList');
+  list.innerHTML = steps.map((s, i) => {
+    let cls = 'step-pending';
+    if (i === currentStep) cls = 'step-active';
+    else if (i < currentStep) cls = 'step-done';
+    if (i === 0) return ''; // step 0은 초기 상태라 목록에 안 보임
+    return `<li class="px-3 py-2 rounded-lg ${cls}"><span class="mono text-xs font-bold mr-2">${String(i).padStart(2,'0')}</span>${s.title}</li>`;
+  }).filter(Boolean).join('');
+}
+
+function renderStepDesc() {
+  document.getElementById('stepDesc').innerHTML = steps[currentStep].desc;
+  document.getElementById('stepNum').textContent = currentStep;
+}
+
+// ─── 진행 ─────────────────────────────────────────────────────────
+function applyStep(idx) {
+  const s = steps[idx];
+  if (idx === 0) {
+    visibleNodes = new Set();
+    visibleEdges = [];
+    logEntries = [];
+    cntAsserted = 0;
+    cntInferred = 0;
+    return;
+  }
+  // 노드 추가
+  const adds = s.addNodes || s.nodes || [];
+  adds.forEach(n => visibleNodes.add(n));
+  // 엣지 추가
+  const eAdds = s.addEdges || s.edges || [];
+  eAdds.forEach(e => visibleEdges.push(e));
+  // 로그 추가
+  if (s.log) {
+    logEntries.push({kind:'rule', text: `── step ${idx}: ${s.title} ──`});
+    s.log.forEach(l => {
+      logEntries.push(l);
+      if (l.kind === 'asserted') cntAsserted++;
+      else if (l.kind === 'inferred') cntInferred++;
+    });
+  }
+}
+
+function next() {
+  if (currentStep >= steps.length - 1) { stopAuto(); return; }
+  currentStep++;
+  applyStep(currentStep);
+  render();
+}
+
+function reset() {
+  stopAuto();
+  currentStep = 0;
+  applyStep(0);
+  render();
+}
+
+function toggleAuto() {
+  if (autoTimer) { stopAuto(); }
+  else {
+    document.getElementById('btnAuto').textContent = '⏸ 일시정지';
+    document.getElementById('btnAuto').classList.replace('bg-amber-500','bg-rose-500');
+    document.getElementById('btnAuto').classList.replace('hover:bg-amber-600','hover:bg-rose-600');
+    autoTimer = setInterval(() => {
+      if (currentStep >= steps.length - 1) { stopAuto(); return; }
+      next();
+    }, 1500);
+  }
+}
+function stopAuto() {
+  if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+  const btn = document.getElementById('btnAuto');
+  btn.textContent = '⏵ 자동 진행';
+  btn.classList.replace('bg-rose-500','bg-amber-500');
+  btn.classList.replace('hover:bg-rose-600','hover:bg-amber-600');
+}
+
+function render() {
+  renderGraph();
+  renderLog();
+  renderCounts();
+  renderStepList();
+  renderStepDesc();
+}
+
+document.getElementById('btnStep').addEventListener('click', next);
+document.getElementById('btnReset').addEventListener('click', reset);
+document.getElementById('btnAuto').addEventListener('click', toggleAuto);
+
+// 초기 렌더
+render();
+</script>
+
+</body>
+</html>

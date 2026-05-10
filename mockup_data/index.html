@@ -239,11 +239,21 @@
   <div class="max-w-5xl mx-auto">
     <div class="mb-8">
       <div class="text-xs font-bold mono text-violet-700 mb-2 tracking-wider">DEMOS</div>
-      <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">대화형 데모 3종</h2>
+      <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">대화형 데모 4종</h2>
       <p class="text-sm text-slate-500 mt-1">학습 여정을 읽은 뒤, 실제 동작을 확인해보세요</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-5">
+
+      <a href="reasoning_visual.html" class="group block bg-white rounded-2xl border-2 border-rose-200 shadow-sm hover:shadow-xl hover:border-rose-400 transition-all p-5 sm:p-6 tap relative">
+        <span class="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold mono px-2 py-0.5 rounded-full">NEW ⭐</span>
+        <div class="w-12 h-12 bg-gradient-to-br from-rose-500 to-pink-600 rounded-xl flex items-center justify-center text-2xl mb-4 shadow-lg shadow-rose-200">🕸</div>
+        <h3 class="font-bold text-slate-900 text-lg group-hover:text-rose-700 transition">명제의 함축 — 그래프 시각화</h3>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">사람이 적은 명제 4줄 → reasoner가 18개 함축 자동 도출. 단계별로 그래프가 펼쳐짐. TypeDB·OWL의 *추론구조 실체*.</p>
+        <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-rose-600 mono group-hover:text-rose-800 flex items-center gap-1">
+          <span>reasoning_visual.html</span> <span>→</span>
+        </div>
+      </a>
 
       <a href="mapping_diagram.html" class="group block bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-violet-300 transition-all p-5 sm:p-6 tap">
         <div class="w-12 h-12 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-xl flex items-center justify-center text-2xl mb-4 shadow-lg shadow-violet-200">🗺️</div>
@@ -256,7 +266,7 @@
 
       <a href="owl_reasoner_demo.html" class="group block bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all p-5 sm:p-6 tap">
         <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center text-2xl mb-4 shadow-lg shadow-emerald-200">🦉</div>
-        <h3 class="font-bold text-slate-900 text-lg group-hover:text-emerald-700 transition">OWL 자동 추론</h3>
+        <h3 class="font-bold text-slate-900 text-lg group-hover:text-emerald-700 transition">OWL 자동 추론 (트리플)</h3>
         <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">7개 사실로 시작 → ▶ RUN 누르면 컴퓨터가 14개 새 사실 자동 도출. forward-chaining 5룰 시연.</p>
         <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-emerald-600 mono group-hover:text-emerald-800 flex items-center gap-1">
           <span>owl_reasoner_demo.html</span> <span>→</span>
