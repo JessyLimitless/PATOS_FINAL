@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>TypeDB란 무엇인가 — 한 사람의 세계관에서 시작된 데이터베이스 · PATOS Learning</title>
+<meta name="description" content="한 박사과정생의 결핍에서 출발해 세계관이 된 데이터베이스. PERA 모델, Closed World, n-ary hypergraph, 네이티브 추론 — TypeDB의 다섯 입장.">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  body { font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.75; color: #1e293b; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .serif { font-family: 'Noto Serif KR', serif; }
+  .prose p { margin-bottom: 1.2em; font-size: 1.02rem; }
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 2.2em;
+    margin-bottom: 0.7em;
+    color: #4338ca;
+    border-left: 4px solid #4338ca;
+    padding-left: 0.7em;
+  }
+  .prose h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 1.6em;
+    margin-bottom: 0.5em;
+    color: #475569;
+  }
+  .prose code {
+    font-family: 'JetBrains Mono', monospace;
+    background: #f1f5f9;
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #be185d;
+  }
+  .prose strong { color: #0f172a; font-weight: 700; }
+  .prose em { color: #be185d; font-style: italic; }
+  .prose blockquote {
+    border-left: 3px solid #6366f1;
+    padding: 0.4em 1em;
+    margin: 1.2em 0;
+    color: #475569;
+    background: #eef2ff;
+    font-style: italic;
+  }
+  .pull-quote {
+    font-size: 1.3rem;
+    line-height: 1.55;
+    text-align: center;
+    color: #4338ca;
+    font-weight: 700;
+    margin: 2em 0;
+    padding: 1.2em 0;
+    border-top: 2px solid #c7d2fe;
+    border-bottom: 2px solid #c7d2fe;
+  }
+  .stance-card {
+    background: white;
+    border-left: 4px solid #6366f1;
+    border-radius: 8px;
+    padding: 1em 1.2em;
+    margin: 0.6em 0;
+  }
+  .stance-card .num {
+    color: #6366f1;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+  }
+  table.cmp { width: 100%; font-size: 0.9rem; border-collapse: collapse; margin: 1em 0; }
+  table.cmp th, table.cmp td { padding: 0.6em 0.7em; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  table.cmp th { background: #f8fafc; text-align: left; font-weight: 700; color: #475569; }
+  table.cmp tr:hover { background: #f8fafc; }
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+<!-- HERO -->
+<header class="relative bg-gradient-to-br from-slate-900 via-indigo-900 to-violet-900 text-white overflow-hidden">
+  <div class="absolute top-0 right-0 w-72 h-72 bg-emerald-400/20 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-0 left-0 w-72 h-72 bg-rose-400/15 rounded-full blur-3xl"></div>
+
+  <div class="relative max-w-3xl mx-auto px-6 sm:px-10 py-14 sm:py-20">
+    <a href="index.html" class="text-xs text-indigo-200 hover:text-white inline-flex items-center gap-1 mb-8 mono tracking-wider">← HUB</a>
+    <div class="text-[11px] font-bold mono text-emerald-400 mb-4 tracking-[0.3em]">TECH INTRO · PATOS LEARNING</div>
+    <h1 class="text-3xl sm:text-5xl font-bold tracking-tight mb-4 leading-[1.15]" style="font-family: 'Noto Serif KR', serif;">
+      TypeDB란 무엇인가
+    </h1>
+    <p class="text-base sm:text-xl text-indigo-200 italic mt-4 leading-relaxed">
+      한 사람의 세계관에서 시작된 데이터베이스
+    </p>
+    <div class="mt-8 flex flex-wrap items-center gap-3 text-xs text-indigo-300 mono">
+      <span>약 7분 정독</span>
+      <span class="text-indigo-700">·</span>
+      <span>기술 입문 + 형이상학적 commitment</span>
+    </div>
+  </div>
+</header>
+
+<!-- BODY -->
+<article class="prose max-w-2xl mx-auto px-6 sm:px-10 py-12 sm:py-16">
+
+<p>
+2014년경, 케임브리지 대학의 한 박사과정생이 세포 안의 단백질 상호작용을 데이터베이스에 적어보려 하고 있었다. 한 단백질이 다른 단백질에 영향을 주고, 그 영향이 *어느 조건에서, 어느 시점에, 어느 농도로* 일어나는지 — 그 모든 것을 함께 적어야 했다. SQL로 적어보았다. 너무 평평했다. 표 사이의 외래키가 정작 *관계*의 본질을 잃었다. Neo4j로 적어보았다. 그래프는 둘 사이만 연결됐고, 셋 이상이 얽힌 관계는 부서졌다. OWL로 적어보았다. 표현력은 충분했지만 추론이 분리되어 있고 사용이 무거웠다.
+</p>
+
+<p>
+박사과정생의 이름은 <strong>Haikal Pribadi</strong>, 인도네시아 출신이었다. 그는 *결핍*에서 출발해 새 시스템을 만들기 시작했다. 2017년 런던에서 <strong>Grakn Labs</strong>를 설립했고, 같은 이름의 데이터베이스 제품을 내놓았다. 2022년 회사명을 <strong>Vaticle</strong>로 바꾸면서 제품도 <strong>TypeDB</strong>로 개명했다. 지금 우리가 보는 TypeDB는 그 박사과정생의 *결핍과 결단*에서 자란 시스템이다.
+</p>
+
+<div class="pull-quote">
+TypeDB는 데이터베이스이자 — 한 사람의 형이상학이다.
+</div>
+
+<h2>세계관 — PERA</h2>
+
+<p>
+TypeDB가 SQL이나 Neo4j와 가장 다른 점은 *기술적 사양*이 아니다. <strong>세계를 어떻게 분해하는가</strong>에 대한 입장이 다르다. SQL은 세계를 *행과 열*로 본다. Neo4j는 *노드와 엣지*로. RDF는 *주어·술어·목적어 트리플*로. TypeDB는 — <strong>Polymorphic Entity-Relation-Attribute (PERA)</strong> 3원자로 본다.
+</p>
+
+<ul class="ml-5 mb-6 text-sm text-slate-700 leading-relaxed list-disc">
+  <li><strong>Entity</strong> — 독립적으로 존재하는 것 (사람, 회사, 한옥)</li>
+  <li><strong>Relation</strong> — 그것들이 어떻게 연결되는가 (employment, adjacent)</li>
+  <li><strong>Attribute</strong> — 그것들이 어떤 값을 가지는가 (name="김씨고가", year=1923)</li>
+</ul>
+
+<p>
+이 셋만으로 모든 도메인을 표현할 수 있다는 것이 — Pribadi의 *형이상학적 commitment*다. 단순한 설계 결정이 아니라, *세계는 이 셋으로 분해된다*는 입장 표명이다. 아리스토텔레스가 <em>실체와 속성과 관계</em>를 카테고리의 핵심 축으로 본 그 자리에서 출발해, 2400년이 지나 PERA로 다시 정리된 셈이다.
+</p>
+
+<h2>다섯 가지 핵심 입장</h2>
+
+<div class="stance-card">
+  <div class="num">01</div>
+  <strong>Type-first</strong> — 스키마 없으면 데이터도 없다.
+  <p class="mt-1 text-sm text-slate-600">대부분의 DB가 *데이터 먼저, 타입은 선택*이지만, TypeDB는 정반대다. 모든 데이터는 *정의된 타입의 인스턴스*여야만 입력 가능. 컴파일 타임 검증에 가까운 강한 결단이다.</p>
+</div>
+
+<div class="stance-card">
+  <div class="num">02</div>
+  <strong>n-ary Hypergraph</strong> — 관계는 둘이 아니라 셋, 넷, 다섯일 수 있다.
+  <p class="mt-1 text-sm text-slate-600">RDF의 <code>(주어, 술어, 목적어)</code>는 binary다. TypeDB의 <code>employment(person, company, role, since)</code>는 4항. 세계는 binary로 분해되지 않는다는 입장.</p>
+</div>
+
+<div class="stance-card">
+  <div class="num">03</div>
+  <strong>Polymorphism</strong> — 한 entity가 여러 타입에 동시에 속할 수 있다.
+  <p class="mt-1 text-sm text-slate-600">객체지향 언어의 타입 시스템을 DB에 가져왔다. <code>한옥카페 sub 한옥</code>이고 동시에 <code>한옥카페 sub 상업시설</code>일 수 있다. *혼합 종*을 언어 차원에서 지원.</p>
+</div>
+
+<div class="stance-card">
+  <div class="num">04</div>
+  <strong>Native Reasoning</strong> — 추론은 외부가 아닌 데이터의 본질이다.
+  <p class="mt-1 text-sm text-slate-600">OWL은 reasoner(HermiT, Pellet)를 따로 돌린다. TypeDB는 룰을 schema의 일부로 두고 *쿼리 시점에 자동 적용*. "추론하는 데이터"라는 commitment.</p>
+</div>
+
+<div class="stance-card">
+  <div class="num">05</div>
+  <strong>Closed World</strong> — 적혀 있지 않으면 거짓이다.
+  <p class="mt-1 text-sm text-slate-600">OWL의 <em>Open World</em>(적혀 있지 않으면 *모름*)와 정반대 결단. SQL의 결단력 + OWL의 표현력을 절충한 자리. 의도된 trade-off.</p>
+</div>
+
+<h2>다섯 DB의 세계관 비교</h2>
+
+<table class="cmp">
+  <thead>
+    <tr><th>DB</th><th>세계의 기본 단위</th><th>형이상학적 입장</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>SQL DB</strong></td><td>행과 열</td><td>"세계는 평평한 표다"</td></tr>
+    <tr><td><strong>Mongo</strong></td><td>문서 (JSON)</td><td>"세계는 중첩된 구조다"</td></tr>
+    <tr><td><strong>Neo4j</strong></td><td>노드와 엣지</td><td>"세계는 binary 관계의 망이다"</td></tr>
+    <tr><td><strong>RDF / OWL</strong></td><td>트리플 (S-P-O)</td><td>"세계는 주어-술어-목적어로 분해된다"</td></tr>
+    <tr style="background:#fef3c7"><td><strong>TypeDB</strong></td><td>Entity-Relation-Attribute</td><td><strong>"세계는 타입화된 ERA로 분해되며, 추론은 데이터의 본질이다"</strong></td></tr>
+  </tbody>
+</table>
+
+<p>
+각 DB는 *데이터 도구*이기 전에 *세계를 보는 입장*이다. Pribadi가 만든 게 단순한 데이터베이스가 아니라 작은 *세계관*인 이유가 여기 있다.
+</p>
+
+<h2>TypeQL — 한 줄에 담긴 입장</h2>
+
+<p>TypeDB의 쿼리 언어 TypeQL은 SQL이나 SPARQL과 결이 다르다. 짧은 예제 하나:</p>
+
+<pre class="mono text-xs sm:text-sm bg-slate-900 text-emerald-300 p-4 rounded-xl mb-3 overflow-x-auto">define
+
+한옥카페 sub 한옥;
+한옥     sub 전통건축물;
+전통건축물 sub 건물;
+
+employment sub relation,
+  relates employee,
+  relates employer,
+  relates role;
+
+person sub entity,
+  plays employment:employee,
+  owns name;
+
+rule transitive-membership:
+  when {
+    $x sub $y;
+    $y sub $z;
+  } then {
+    $x sub $z;
+  };</pre>
+
+<p>
+이 한 블록 안에 — *타입 계층*, *다항 관계*, *역할 분리*, *추론 규칙*이 모두 있다. 같은 일을 SQL로 하려면 여러 테이블과 트리거가 필요하고, RDF로 하려면 여러 트리플과 별도 reasoner가 필요하다. TypeDB는 이걸 *한 언어 안에서* 표현한다.
+</p>
+
+<h2>OWL과의 진짜 차이</h2>
+
+<p>
+같은 가족(*온톨로지 시스템*)인데 두 시스템은 서로 다른 결단을 내렸다.
+</p>
+
+<table class="cmp">
+  <thead><tr><th></th><th>OWL</th><th>TypeDB</th></tr></thead>
+  <tbody>
+    <tr><td>출처</td><td>W3C 표준 (2004)</td><td>Vaticle (2017)</td></tr>
+    <tr><td>만든 이</td><td>학계 합의 (Hendler, Berners-Lee 등)</td><td>Haikal Pribadi · 단일 회사</td></tr>
+    <tr><td>기본 단위</td><td>RDF 트리플 (binary)</td><td>Entity-Relation-Attribute (n-ary)</td></tr>
+    <tr><td>세계 가정</td><td>Open World</td><td>Closed World</td></tr>
+    <tr><td>추론</td><td>외부 reasoner</td><td>네이티브, schema 일부</td></tr>
+    <tr><td>형이상학</td><td>Description Logic 기반, 신중함</td><td>PERA 기반, 결단력</td></tr>
+    <tr><td>표준 신뢰성</td><td>매우 높음 (W3C 표준)</td><td>중간 (단일 회사 의존)</td></tr>
+    <tr><td>대표 응용</td><td>의료 SNOMED CT, FIBO 금융</td><td>BenevolentAI 신약 개발, Bayer, Cisco</td></tr>
+  </tbody>
+</table>
+
+<p>
+같은 단어(<em>ontology</em>)를 빌렸지만 — 작업의 자리가 다르다. <strong>OWL은 *형이상학적 신중함*을, TypeDB는 *공학적 결단력*을 택했다.</strong> 도메인이 어느 쪽 무게를 더 요구하느냐에 따라 답이 갈린다.
+</p>
+
+<h2>어떤 자리에서 쓸까</h2>
+
+<p>
+TypeDB가 진짜로 빛나는 곳은 — <strong>강 타입 + 다항 관계 + 추론이 동시에 필요한 도메인</strong>이다.
+</p>
+
+<ul class="ml-5 mb-6 text-sm text-slate-700 leading-relaxed list-disc">
+  <li><strong>생물학·신약 개발</strong> — 단백질·유전자·약물의 다항 상호작용 (BenevolentAI 사례)</li>
+  <li><strong>의료 정보</strong> — 환자·증상·진단·치료의 4항 관계</li>
+  <li><strong>금융 컴플라이언스</strong> — 거래·당사자·규제·시점의 다항 추적</li>
+  <li><strong>법무·계약</strong> — 당사자·의무·조항·기간이 얽힌 관계</li>
+  <li><strong>네트워크 자산 관리</strong> — Cisco의 사례가 대표적</li>
+</ul>
+
+<p>
+반대로 — <strong>TypeDB가 과한 자리도 있다</strong>. 단순 CRUD 앱(블로그, 쇼핑몰), OLAP 분석, 시계열 — 이런 자리엔 SQL이나 ClickHouse가 더 어울린다. 추론과 강 타입이 *없어도 되는* 도메인에 TypeDB를 쓰는 건 — *과한 무기*다.
+</p>
+
+<h2>한계와 비판</h2>
+
+<p>
+정직하게 짚어야 할 것들도 있다.
+</p>
+
+<ul class="ml-5 mb-6 text-sm text-slate-700 leading-relaxed list-disc">
+  <li><strong>단일 회사 의존</strong> — Vaticle의 운명에 따라 시스템이 흔들릴 수 있다. W3C 표준인 OWL과 다른 자리.</li>
+  <li><strong>라이선스</strong> — Polyform Perimeter (반-경쟁 조항 포함). 완전 오픈소스 아님.</li>
+  <li><strong>학습 곡선</strong> — TypeQL은 SQL보다 추상적이라 진입이 까다롭다.</li>
+  <li><strong>성능 미숙성</strong> — 분산·고가용성 측면에서 PostgreSQL 같은 성숙 시스템과 격차.</li>
+  <li><strong>커뮤니티 규모</strong> — Stack Overflow 답변 수, 사례 수에서 SQL의 1만분의 1 수준.</li>
+</ul>
+
+<p>
+세계관이 강한 시스템은 — *그 세계관에 동의하는 사람들의 합의*에 의존한다. TypeDB는 아직 작은 합의 위에 서 있다. 그게 이 시스템의 *현재의 자리*다.
+</p>
+
+<h2>한 줄 결론</h2>
+
+<div class="pull-quote">
+TypeDB는 도구이자 입장이다.<br>
+ERA로 세계를 보는 사람들의 — 작지만 단단한 합의.
+</div>
+
+<p>
+Pribadi가 한 박사 과정에서 시작한 결핍이 — 9년 만에 *세계관*이 되어 우리 앞에 있다. 그 세계관에 동의하지 않으면 SQL이나 OWL로 가면 된다. 동의하면 TypeDB가 답이다. 그러나 *어느 쪽이든* — 데이터를 적는 일이 이미 *세계를 분해하는 입장*이라는 것을, TypeDB는 우리에게 명시적으로 보여준다. 거기서부터 우리는 *어떤 형이상학을 빌릴지* 의식적으로 고를 수 있다. 그게 한 사람의 세계관이 — 모두에게 남기는 가장 큰 선물이다.
+</p>
+
+<p class="mt-8 pt-6 border-t border-slate-200 text-sm text-slate-600">
+이 시스템 너머의 사유로 가고 싶으면 →
+<a href="column.html" class="text-rose-700 hover:text-rose-900 underline ml-1">📰 두 가지 의문</a> (인사이트 칼럼: 함축·합의·존재론)
+<a href="essay.html" class="text-indigo-700 hover:text-indigo-900 underline ml-3">📚 학구적 에세이</a>
+<a href="learning_journey.html" class="text-violet-700 hover:text-violet-900 underline ml-3">📖 학습 여정 12단계</a>
+<a href="reasoning_visual.html" class="text-emerald-700 hover:text-emerald-900 underline ml-3">🕸 함축 시각화</a>
+</p>
+
+</article>
+
+<!-- FOOTER -->
+<footer class="bg-slate-900 text-slate-500 px-6 sm:px-10 py-12 text-xs">
+  <div class="max-w-2xl mx-auto">
+    <div class="flex flex-col sm:flex-row sm:justify-between gap-3 mb-6">
+      <div>
+        <div class="font-bold text-slate-300 mono tracking-wider">PATOS LEARNING · TECH INTRO</div>
+        <div class="mt-1 italic">TypeDB란 무엇인가 — 한 사람의 세계관에서 시작된 데이터베이스</div>
+      </div>
+      <div class="flex flex-col sm:items-end gap-1">
+        <a href="index.html" class="text-slate-400 hover:text-white">← Hub</a>
+        <a href="column.html" class="text-slate-400 hover:text-white">두 가지 의문 (칼럼)</a>
+      </div>
+    </div>
+    <div class="border-t border-slate-800 pt-5 leading-relaxed">
+      <strong class="text-slate-400">출처</strong> · TypeDB 공식 문서 (typedb.com) / Vaticle 회사 블로그 / Haikal Pribadi 인터뷰 / TypeQL 언어 명세 / Pribadi 박사 학위 논문 (Cambridge, 생물학적 시스템 모델링) / OWL과의 비교는 W3C OWL 2 권고(2009·2012) 기반 / 사용 사례는 Vaticle 공개 사례 페이지 참조 (BenevolentAI, Bayer, Cisco 등). 본 글은 2026-05 시점 정보 기준이며, 개인 회사 시스템 특성상 향후 변경 가능.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
